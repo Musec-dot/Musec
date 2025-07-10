@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musec Login</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800"
+    />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body
+    class="min-h-screen flex items-center justify-center bg-[#161122] font-['Plus_Jakarta_Sans','Noto_Sans',sans-serif]"
+    style="--checkbox-tick-svg: url('data:image/svg+xml,%3csvg viewBox=%270 0 16 16%27 fill=%27rgb(255,255,255)%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3cpath d=%27M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z%27/%3e%3c/svg%3e');"
+  >
+    <div class="w-full max-w-md px-6 py-8 bg-[#1e1830] rounded-2xl shadow-lg">
+      <div class="flex items-center justify-center gap-3 pb-6 text-white">
+        <svg viewBox="0 0 48 48" class="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z"
+            fill="currentColor"
+          />
+        </svg>
+        <h2 class="text-lg font-bold tracking-tight">Musec</h2>
+      </div>
+
+      <h2 class="text-white text-2xl font-bold text-center pb-6">Welcome To Musec</h2>
+
+      <!-- LOGIN FORM START -->
+      <form action="/signup" method="POST" class="space-y-4">
+        <!-- Email Field -->
+          <label class="block">
+          <p class="text-white text-sm font-medium pb-1">Name</p>
+          <input
+            name="name"
+            type="text"
+            required
+            placeholder="name"
+            class="form-input w-full rounded-xl border border-[#433465] bg-[#211a32] text-white placeholder-[#a393c8] h-12 px-4"
+          />
+        </label>
+        <label class="block">
+          <p class="text-white text-sm font-medium pb-1">Email</p>
+          <input
+            name="email"
+            type="email"
+            required
+            placeholder="Email"
+            class="form-input w-full rounded-xl border border-[#433465] bg-[#211a32] text-white placeholder-[#a393c8] h-12 px-4"
+          />
+        </label>
+
+        <!-- Password Field -->
+        <label class="block">
+          <p class="text-white text-sm font-medium pb-1">Password</p>
+          <input
+            name="password"
+            type="password"
+            required
+            placeholder="Password"
+            class="form-input w-full rounded-xl border border-[#433465] bg-[#211a32] text-white placeholder-[#a393c8] h-12 px-4"
+          />
+        </label>
+
+        <!-- Remember Me and Forgot Password -->
+        <div class="flex items-center justify-between pt-1">
+          <label class="flex items-center gap-2 text-white text-sm">
+            <input
+              type="checkbox"
+              name="remember"
+              class="h-4 w-4 rounded border-[#433465] bg-transparent text-[#7847ea] focus:ring-0 focus:ring-offset-0 focus:border-[#433465]"
+            />
+            Remember me
+          </label>
+          <a href="#" class="text-[#a393c8] text-sm underline">Forgot password?</a>
+        </div>
+<% if (locals.err) { %>
+ <label class="block">
+          <p class="text-white text-sm font-medium pb-1">Wrong Password Or Email</p></label>
+<% } %>
+        <!-- Login Button -->
+        <button
+          type="submit"
+          class="w-full h-12 mt-4 rounded-xl bg-[#7847ea] text-white text-base font-bold tracking-wide hover:bg-[#6b3fe0] transition"
+        >
+          Log in
+        </button>
+      </form>
+      <!-- LOGIN FORM END -->
+    </div>
+  </body>
+</html>
