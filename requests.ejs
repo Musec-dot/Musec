@@ -12,7 +12,12 @@
     <h1 class="text-3xl font-bold mb-8 border-b border-purple-500 pb-2">
       Pending Friend Requests
     </h1>
-
+<a
+  href="/"
+  class="inline-block mb-6 text-sm bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition duration-200"
+>
+  Back to Home
+</a>
     <% if (requests.length > 0) { %>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         <% requests.forEach(req => { %>
@@ -26,6 +31,15 @@
                 class="w-full bg-purple-600 hover:bg-purple-700 py-2 px-4 rounded-lg font-medium transition duration-200"
               >
                 Accept Request
+              </button>
+              <br><br>
+            </form>
+             <form action="/requests/reject/<%= req._id %>" method="POST">
+              <button
+                type="submit"
+                class="mt-90 w-full bg-purple-600 hover:bg-purple-700 py-2 px-4 rounded-lg font-medium transition duration-200"
+              >
+                Decline Request
               </button>
             </form>
           </div>
