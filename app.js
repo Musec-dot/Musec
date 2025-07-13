@@ -29,10 +29,10 @@ app.use(express.urlencoded({ extended: false }));
 mongoose.connect('mongodb+srv://microsoftrishik:Kathikebab-14@musec.1atpodc.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+}).then(() => console.log(' Connected to MongoDB Atlas'))
+  .catch(err => console.error(' MongoDB connection error:', err));
 
-// ---------- JWT UTILS ----------
+
 const secret = 'rishik@123';
 
 function setUser(user) {
@@ -53,7 +53,7 @@ function getUser(token) {
   }
 }
 
-// ---------- AUTH MIDDLEWARE ----------
+
 async function check(req, res, next) {
   const token = req.cookies?.uid;
   if (!token) {
@@ -72,9 +72,9 @@ async function check(req, res, next) {
 
 app.use(check);
 
-// ---------- SOCKET.IO ----------
+
 io.on("connection", (socket) => {
-  console.log("🟢 A user connected");
+  console.log(" A user connected");
 
   socket.on("joinRoom", ({ userId, friendId }) => {
     const room = [userId, friendId].sort().join("_");
@@ -88,7 +88,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// ---------- ROUTES ----------
+
 app.use('/requests', friendRoutes);
 
 app.get('/', async (req, res) => {
@@ -156,7 +156,7 @@ app.post('/signup-music', async (req, res) => {
   }
 });
 
-// ---------- CHAT ROUTE ----------
+
 app.get("/chat/:friendId", async (req, res) => {
   const friendId = req.params.friendId;
   const messages = await Message.find({
@@ -174,7 +174,6 @@ app.get("/chat/:friendId", async (req, res) => {
   });
 });
 
-// ---------- SERVER ----------
 server.listen(8000, () => {
   console.log('🚀 Server running on http://localhost:8000');
 });
