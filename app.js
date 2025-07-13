@@ -7,7 +7,7 @@ const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
 
-// Models and routes
+
 const User = require('./user');
 const music = require('./music');
 const friendRoutes = require('./routes/friendRoutes');
@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// ---------- MIDDLEWARES ----------
+
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./'));
 
@@ -25,7 +25,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-// ---------- DATABASE CONNECTION ----------
 mongoose.connect('mongodb+srv://microsoftrishik:Kathikebab-14@musec.1atpodc.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true
