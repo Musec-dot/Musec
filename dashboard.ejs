@@ -45,19 +45,29 @@
   </div>
 </header>
 <aside class="w-64 bg-[#1e1e2f] border-r border-[#2f2447] p-4 hidden md:block">
-    <h2 class="text-white text-xl font-semibold mb-4">Your Friends</h2>
-    <ul class="space-y-3">
-      <% if (locals.friends && locals.friends.length > 0) { %>
-        <% locals.friends.forEach(friend => { %>
-          <li class="text-white text-sm bg-[#2a223d] rounded-lg p-2 truncate hover:bg-[#3a2c5a] transition">
-            <%= friend.username %>
-          </li>
-        <% }) %>
-      <% } else { %>
-        <li class="text-[#a393c8] text-sm">No friends yet.</li>
-      <% } %>
-    </ul>
-  </aside>
+  <h2 class="text-white text-xl font-semibold mb-4">Your Friends</h2>
+  <ul class="space-y-3">
+    <% if (locals.friends && locals.friends.length > 0) { %>
+      <% locals.friends.forEach(friend => { %>
+        <li class="bg-[#2a223d] p-3 rounded-lg hover:bg-[#3a2c5a] transition">
+          <div class="flex justify-between items-center">
+            <span class="text-white text-sm truncate"><%= friend.username %></span>
+            <a
+              href="/chat/<%= friend._id %>"
+              class="ml-2 text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-md transition"
+              title="Chat"
+            >
+              💬
+            </a>
+          </div>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li class="text-[#a393c8] text-sm">No friends yet.</li>
+    <% } %>
+  </ul>
+</aside>
+
         <div class="px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
             <div class="@container">

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#0f0f1b] text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat with <%= friend.username %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="flex flex-col h-screen">
+
+  <header class="bg-[#1e1e2f] px-6 py-4 flex items-center justify-between shadow-md">
+    <a href="/" class="text-sm text-gray-300 hover:text-white">&larr; Back to Home</a>
+    <h2 class="text-lg font-semibold">Chat with <%= friend.username %></h2>
+    <div></div>
+  </header>
+
+  <main id="chatBox" class="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+    <% messages.forEach(msg => { %>
+  <div class="<%= msg.from._id.toString() === me.toString() ? 'text-right' : 'text-left' %>">
+    <div class="inline-block px-4 py-2 rounded-xl max-w-xs
+      <%= msg.from._id.toString() === me.toString() ? 'bg-purple-600 text-white' : 'bg-gray-700 text-white' %>">
+      <%= msg.content %>
+    </div>
+  </div>
+<% }) %>
+  </main>
+
+  <form id="chatForm" class="bg-[#1e1e2f] p-4 flex gap-4">
+    <input
+      type="text"
+      id="msgInput"
+      placeholder="Type a message..."
+      class="flex-1 px-4 py-2 rounded-lg bg-[#2c2c40] text-white border border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600"
+    />
+    <button
+      id="sendBtn"
+      class="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-lg font-medium transition"
+    >
+      Send
+    </button>
+  </form>
+
+  <script>
+    const socket = io();
+    const userId = "<%= me %>";
+    const friendId = "<%= friend._id %>";
+    const chatBox = document.getElementById("chatBox");
+
+    socket.emit("joinRoom", { userId, friendId });
+
+    document.getElementById("chatForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("msgInput");
+      const content = input.value.trim();
+      if (!content) return;
+
+      socket.emit("sendMessage", { from: userId, to: friendId, content });
+      input.value = "";
+    });
+
+    socket.on("newMessage", (msg) => {
+      const isMine = msg.from === userId;
+      const div = document.createElement("div");
+      div.className = isMine ? "text-right" : "text-left";
+
+      const bubble = document.createElement("div");
+      bubble.className =
+        "inline-block px-4 py-2 rounded-xl max-w-xs " +
+        (isMine ? "bg-purple-600 text-white" : "bg-gray-700 text-white");
+      bubble.textContent = msg.content;
+
+      div.appendChild(bubble);
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
+
+</body>
+</html>
