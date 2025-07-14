@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
-
+require('dotenv').config();
 
 const User = require('./user');
 const music = require('./music');
@@ -173,6 +173,7 @@ app.get("/chat/:friendId", async (req, res) => {
   });
 });
 
-server.listen(8000, () => {
-  console.log('🚀 Server running on http://localhost:8000');
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
