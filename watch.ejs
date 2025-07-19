@@ -1,52 +1,29 @@
-<!DOCTYPE html>
-<html lang="en" class="bg-[#0f0f1b] text-white">
-<head>
-  <meta charset="UTF-8" />
-  <title>Watch Live</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/socket.io/socket.io.js"></script>
-</head>
-<body class="flex flex-col items-center justify-center min-h-screen gap-4">
+<!DOCTYPE html><html class="bg-[#0f0f1b] text-white">
+<head><meta charset="utf-8"/><title>Watch Live</title>
+<script src="https://cdn.tailwindcss.com"></script><script src="/socket.io/socket.io.js"></script></head>
+<body class="flex flex-col items-center py-8 gap-6">
 
-  <h1 class="text-2xl font-bold text-purple-400">🎬 Live Stream</h1>
-  <video id="video" autoplay playsinline controls class="rounded-lg shadow-lg w-[720px] h-[405px] bg-black"></video>
+<h2 class="text-2xl font-bold text-purple-400">🎬 Live with <%= stream.streamer.username %></h2>
+<video id="vid" autoplay playsinline controls class="w-[720px] h-[405px] rounded-lg bg-black shadow-lg"></video>
 
-  <script>
-    const video = document.getElementById('video');
-    const socket = io();
-    let pc;
+<script>
+const socket=io(), video=document.getElementById('vid');
+const streamId="<%= stream.streamId %>";
+let pc;
 
-    socket.on('connect', () => {
-      socket.emit('watcher');
-    });
+socket.emit('watcher',{streamId});
 
-    socket.on('offer', async (id, desc) => {
-      pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+socket.on('offer', async (id,desc)=>{
+  pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+  pc.ontrack=e=>video.srcObject=e.streams[0];
+  pc.onicecandidate=e=>e.candidate&&socket.emit('candidate',id,e.candidate);
+  await pc.setRemoteDescription(desc);
+  const ans=await pc.createAnswer();
+  await pc.setLocalDescription(ans);
+  socket.emit('answer',id,pc.localDescription);
+});
 
-      pc.ontrack = e => {
-        video.srcObject = e.streams[0];
-      };
-
-      pc.setRemoteDescription(desc).then(() => pc.createAnswer())
-        .then(answer => pc.setLocalDescription(answer))
-        .then(() => {
-          socket.emit('answer', id, pc.localDescription);
-        });
-
-      pc.onicecandidate = e => {
-        if (e.candidate) {
-          socket.emit('candidate', id, e.candidate);
-        }
-      };
-    });
-
-    socket.on('candidate', (id, candidate) => {
-      pc.addIceCandidate(new RTCIceCandidate(candidate));
-    });
-
-    window.onbeforeunload = () => {
-      socket.close();
-    };
-  </script>
-</body>
-</html>
+socket.on('candidate',(id,c)=>pc?.addIceCandidate(new RTCIceCandidate(c)));
+window.onbeforeunload=()=>{socket.close(); pc?.close();};
+</script>
+</body></html>

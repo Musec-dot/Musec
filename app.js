@@ -7,12 +7,12 @@ const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
-
+const { v4: uuidv4 } = require('uuid')
 const User = require('./user');
 const music = require('./music');
 const friendRoutes = require('./routes/friendRoutes');
 const Message = require('./models/Message');
-
+const LiveStream = require('./liveStream')
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -71,7 +71,7 @@ async function check(req, res, next) {
 
 app.use(check);
 
-let broadcaster;
+const streamBroadcasters = {}; 
 io.on("connection", (socket) => {
   console.log(" A user connected");
 
@@ -86,26 +86,27 @@ io.on("connection", (socket) => {
     const room = [from, to].sort().join("_");
     io.to(room).emit("newMessage", newMsg);
   });
-  socket.on("broadcaster", () => {
-    socket.broadcast.emit("broadcaster");
+   socket.on('broadcaster', ({ streamId }) => {
+    streamBroadcasters[streamId] = socket.id;
+    socket.join(streamId);
   });
 
-  socket.on("watcher", () => {
-    socket.broadcast.emit("watcher", socket.id);
+  socket.on('watcher', ({ streamId }) => {
+    const bId = streamBroadcasters[streamId];
+    if (bId) io.to(bId).emit('watcher', socket.id);
   });
 
-  socket.on("offer", (id, message) => {
-    io.to(id).emit("offer", socket.id, message);
-  });
+  socket.on('offer', (id, desc)   => io.to(id).emit('offer', socket.id, desc));
+  socket.on('answer', (id, desc)  => io.to(id).emit('answer', socket.id, desc));
+  socket.on('candidate', (id, c)  => io.to(id).emit('candidate', socket.id, c));
 
-  socket.on("answer", (id, message) => {
-    io.to(id).emit("answer", socket.id, message);
-  });
+  socket.on('disconnect', () => {
 
-  socket.on("candidate", (id, message) => {
-    io.to(id).emit("candidate", socket.id, message);
+    socket.broadcast.emit('disconnectPeer', socket.id);
+    
+    for (const [sid, sockId] of Object.entries(streamBroadcasters))
+      if (sockId === socket.id) delete streamBroadcasters[sid];
   });
-
   socket.on("disconnect", () => {
     socket.broadcast.emit("disconnectPeer", socket.id);
   });
@@ -118,15 +119,47 @@ app.use('/requests', friendRoutes);
 
 app.get('/', async (req, res) => {
   if (!req.user) return res.render('home');
-  const allUsers = await User.find({});
+
+  const liveStreams = await LiveStream.find({ isLive: true }).populate('streamer');
+  const allUsers    = await User.find({});
+
   res.render('dashboard', {
-    name: req.user.username,
-    allUsers,
+    name:  req.user.username,
     friends: req.user.friends,
-    recommendedUsers:[]
+    allUsers,
+    liveStreams
   });
 });
+app.get('/go-live', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  let existing = await LiveStream.findOne({ streamer: req.user._id, isLive: true });
+  const streamId = existing ? existing.streamId : uuidv4();
 
+  if (!existing) {
+    await LiveStream.create({ streamId, streamer: req.user._id });
+  }
+  res.redirect(`/live/${streamId}`);
+});
+app.get('/live/:streamId', async (req, res) => {
+  const stream = await LiveStream.findOne({ streamId: req.params.streamId, isLive: true })
+                   .populate('streamer');
+  if (!stream || stream.streamer._id.toString() !== req.user._id.toString())
+    return res.status(403).send('Not your stream or stream ended');
+  res.render('live', { stream });
+});
+app.get('/watch/:streamId', async (req, res) => {
+  const stream = await LiveStream.findOne({ streamId: req.params.streamId, isLive: true })
+                   .populate('streamer');
+  if (!stream) return res.status(404).send('Stream not found');
+  res.render('watch', { stream });
+});
+app.post('/end-stream', async (req, res) => {
+  await LiveStream.findOneAndUpdate(
+    { streamer: req.user._id, isLive: true },
+    { isLive: false }
+  );
+  res.redirect('/');
+});
 app.get('/signup', (req, res) => {
   res.render('signup');
 });

@@ -28,11 +28,26 @@
       </div>
       <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Musec</h2>
     </div>
+    <% if (liveStreams.length) { %>
+  <h2 class="text-xl font-bold mb-4 text-red-400">Live Now</h2>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+    <% liveStreams.forEach(s => { %>
+      <div class="bg-[#1e1e2f] p-4 rounded-lg shadow flex flex-col items-start">
+        <p class="font-semibold mb-2"><%= s.streamer.username %></p>
+        <a href="/watch/<%= s.streamId %>" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">Watch</a>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+
+<a href="/go-live" class="inline-block bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg mb-8">
+  
+</a>
     <div class="flex items-center gap-9">
       <a class="text-white text-sm font-medium leading-normal" href="#">Explore</a>
       <a class="text-white text-sm font-medium leading-normal" href="/signup-music">Become a Musician</a>
-      <a href="/live" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"> Go Live</a>
-  <a href="/watch" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"> Watch Live</a>
+      
     </div>
   </div>
 

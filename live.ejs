@@ -1,89 +1,67 @@
-<!DOCTYPE html>
-<html lang="en" class="bg-[#0f0f1b] text-white">
-<head>
-  <meta charset="UTF-8" />
-  <title>Go Live</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/socket.io/socket.io.js"></script>
-</head>
-<body class="flex flex-col items-center justify-center min-h-screen gap-6">
+<!DOCTYPE html><html class="bg-[#0f0f1b] text-white">
+<head><meta charset="utf-8"/><title>Go Live</title>
+<script src="https://cdn.tailwindcss.com"></script><script src="/socket.io/socket.io.js"></script></head>
+<body class="flex flex-col items-center py-8 gap-6">
 
-  <h1 class="text-2xl font-bold text-purple-400">🎥 You're Live</h1>
-  <video id="video" autoplay muted playsinline class="rounded-lg shadow-xl w-[720px] h-[405px] bg-black"></video>
+<h2 class="text-2xl font-bold text-purple-400">🔴 You’re Live</h2>
+<video id="vid" autoplay muted playsinline class="w-[720px] h-[405px] rounded-lg bg-black shadow-lg"></video>
 
-  <div class="flex gap-4">
-    <button id="muteBtn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Mute</button>
-    <button id="screenShareBtn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Share Screen</button>
-  </div>
+<div class="flex gap-3">
+  <button id="mute"  class="ctl">Mute</button>
+  <button id="share" class="ctl">Share Screen</button>
+  <form action="/end-stream" method="POST">
+    <button class="ctl bg-red-600 hover:bg-red-700">End Stream</button>
+  </form>
+</div>
 
-  <script>
-    const video = document.getElementById('video');
-    const socket = io();
-    const peers = {};
-    let stream;
+<style>.ctl{@apply bg-[#2c2c40] hover:bg-[#3c3c55] px-4 py-2 rounded transition}</style>
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(s => {
-      stream = s;
-      video.srcObject = stream;
-      socket.emit('broadcaster');
-    });
+<script>
+const socket = io(), video = document.getElementById('vid');
+const peers={}, streamId="<%= stream.streamId %>";
+let stream, screen=false;
 
-    socket.on('watcher', id => {
-      const pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
-      peers[id] = pc;
+// media
+navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{
+  stream=s; video.srcObject=s; socket.emit('broadcaster',{streamId});
+});
 
-      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+// ICE helper
+const newPC = id => {
+  const pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+  stream.getTracks().forEach(t=>pc.addTrack(t,stream));
+  pc.onicecandidate=e=>e.candidate&&socket.emit('candidate',id,e.candidate);
+  return pc;
+};
 
-      pc.onicecandidate = e => {
-        if (e.candidate) socket.emit('candidate', id, e.candidate);
-      };
+// signaling
+socket.on('watcher', id=>{
+  const pc=peers[id]=newPC(id);
+  pc.createOffer().then(d=>pc.setLocalDescription(d)).then(()=>socket.emit('offer',id,pc.localDescription));
+});
+socket.on('answer', (id,desc)=>peers[id]?.setRemoteDescription(desc));
+socket.on('candidate', (id,cand)=>peers[id]?.addIceCandidate(new RTCIceCandidate(cand)));
+socket.on('disconnectPeer', id=>{peers[id]?.close(); delete peers[id];});
 
-      pc.createOffer().then(d => pc.setLocalDescription(d)).then(() => {
-        socket.emit('offer', id, pc.localDescription);
-      });
-    });
+// mute toggle
+document.getElementById('mute').onclick=e=>{
+  stream.getAudioTracks().forEach(t=>t.enabled=!t.enabled);
+  e.target.textContent=t.enabled?'Mute':'Unmute';
+};
 
-    socket.on('answer', (id, desc) => {
-      peers[id].setRemoteDescription(desc);
-    });
-
-    socket.on('candidate', (id, candidate) => {
-      peers[id].addIceCandidate(new RTCIceCandidate(candidate));
-    });
-
-    socket.on('disconnectPeer', id => {
-      if (peers[id]) {
-        peers[id].close();
-        delete peers[id];
-      }
-    });
-
-    // Mute / Unmute toggle
-    document.getElementById('muteBtn').onclick = () => {
-      stream.getAudioTracks().forEach(track => {
-        track.enabled = !track.enabled;
-      });
-    };
-
-    // Screen sharing
-    document.getElementById('screenShareBtn').onclick = async () => {
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      const screenTrack = screenStream.getVideoTracks()[0];
-
-      for (let id in peers) {
-        const sender = peers[id].getSenders().find(s => s.track.kind === 'video');
-        if (sender) sender.replaceTrack(screenTrack);
-      }
-
-      screenTrack.onended = () => {
-        stream.getVideoTracks().forEach(track => {
-          for (let id in peers) {
-            const sender = peers[id].getSenders().find(s => s.track.kind === 'video');
-            if (sender) sender.replaceTrack(track);
-          }
-        });
-      };
-    };
-  </script>
-</body>
-</html>
+// screen share
+document.getElementById('share').onclick=async e=>{
+  if(!screen){
+    const sS=await navigator.mediaDevices.getDisplayMedia({video:true});
+    const track=sS.getVideoTracks()[0];
+    for(const pc of Object.values(peers)) pc.getSenders().find(s=>s.track.kind==='video').replaceTrack(track);
+    track.onended=()=>document.getElementById('share').click();
+    e.target.textContent='Stop Share'; screen=true;
+  }else{
+    const cam=stream.getVideoTracks()[0];
+    for(const pc of Object.values(peers)) pc.getSenders().find(s=>s.track.kind==='video').replaceTrack(cam);
+    e.target.textContent='Share Screen'; screen=false;
+  }
+};
+</script>
+</body></html>
