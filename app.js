@@ -71,7 +71,7 @@ async function check(req, res, next) {
 
 app.use(check);
 
-
+let broadcaster;
 io.on("connection", (socket) => {
   console.log(" A user connected");
 
@@ -79,12 +79,38 @@ io.on("connection", (socket) => {
     const room = [userId, friendId].sort().join("_");
     socket.join(room);
   });
+  
 
   socket.on("sendMessage", async ({ from, to, content }) => {
     const newMsg = await Message.create({ from, to, content });
     const room = [from, to].sort().join("_");
     io.to(room).emit("newMessage", newMsg);
   });
+  socket.on("broadcaster", () => {
+    socket.broadcast.emit("broadcaster");
+  });
+
+  socket.on("watcher", () => {
+    socket.broadcast.emit("watcher", socket.id);
+  });
+
+  socket.on("offer", (id, message) => {
+    io.to(id).emit("offer", socket.id, message);
+  });
+
+  socket.on("answer", (id, message) => {
+    io.to(id).emit("answer", socket.id, message);
+  });
+
+  socket.on("candidate", (id, message) => {
+    io.to(id).emit("candidate", socket.id, message);
+  });
+
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("disconnectPeer", socket.id);
+  });
+
+ 
 });
 
 
@@ -96,7 +122,8 @@ app.get('/', async (req, res) => {
   res.render('dashboard', {
     name: req.user.username,
     allUsers,
-    friends: req.user.friends
+    friends: req.user.friends,
+    recommendedUsers:[]
   });
 });
 
@@ -171,6 +198,31 @@ app.get("/chat/:friendId", async (req, res) => {
     messages,
     me: req.user._id
   });
+});
+app.get('/update-profile', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  res.render('user_profile', { user: req.user });
+});
+
+app.post('/update-profile', async (req, res) => {
+  const { genres, instruments, city, country } = req.body;
+
+  await User.findByIdAndUpdate(req.user._id, {
+    genres: Array.isArray(genres) ? genres : [genres],
+    instruments: Array.isArray(instruments) ? instruments : [instruments],
+    city,
+    country
+  });
+
+  res.redirect('/');
+});
+app.get('/live', (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  res.render('live', { user: req.user });
+});
+app.get('/watch', (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  res.render('watch', { user: req.user });
 });
 
 const PORT = process.env.PORT || 8000;

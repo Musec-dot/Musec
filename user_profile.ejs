@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#0f0f1b] text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center px-6 py-12">
+
+  <div class="w-full max-w-2xl bg-[#1e1e2f] p-8 rounded-2xl shadow-md">
+    <h1 class="text-2xl font-bold mb-6 text-purple-400 text-center">Complete Your Profile</h1>
+
+    <form action="/update-profile" method="POST" class="space-y-6">
+
+      <div>
+        <label class="block text-sm mb-1">Username</label>
+        <input type="text" name="username" value="<%= user.username %>" class="w-full px-4 py-2 bg-[#2c2c40] text-white rounded-lg" readonly>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Genres (Select multiple)</label>
+        <select name="genres" multiple class="w-full px-4 py-2 bg-[#2c2c40] text-white rounded-lg h-32">
+          <option value="rock">Rock</option>
+          <option value="pop">Pop</option>
+          <option value="jazz">Jazz</option>
+          <option value="classical">Classical</option>
+          <option value="hiphop">Hip-Hop</option>
+          <option value="indie">Indie</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Instruments (Select multiple)</label>
+        <select name="instruments" multiple class="w-full px-4 py-2 bg-[#2c2c40] text-white rounded-lg h-32">
+          <option value="guitar">Guitar</option>
+          <option value="drums">Drums</option>
+          <option value="violin">Violin</option>
+          <option value="keyboard">Keyboard</option>
+          <option value="flute">Flute</option>
+          <option value="vocals">Vocals</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">City</label>
+        <input type="text" name="city" value="<%= user.city || '' %>" class="w-full px-4 py-2 bg-[#2c2c40] text-white rounded-lg">
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Country</label>
+        <input type="text" name="country" value="<%= user.country || '' %>" class="w-full px-4 py-2 bg-[#2c2c40] text-white rounded-lg">
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition">
+          Save Profile
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</body>
+</html>
