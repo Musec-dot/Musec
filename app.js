@@ -14,10 +14,11 @@ const friendRoutes = require('./routes/friendRoutes');
 const Message = require('./models/Message');
 const LiveStream = require('./liveStream')
 const app = express();
+
 const server = http.createServer(app);
 const io = new Server(server);
-
-
+const userSocketMap = new Map();   // userId  -> socket.id
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./'));
 
@@ -73,6 +74,9 @@ app.use(check);
 
 const streamBroadcasters = {}; 
 io.on("connection", (socket) => {
+  const userId = socket.handshake.query.userId;
+  if (userId) userSocketMap.set(userId, socket.id);
+
   console.log(" A user connected");
 
   socket.on("joinRoom", ({ userId, friendId }) => {
@@ -81,11 +85,19 @@ io.on("connection", (socket) => {
   });
   
 
-  socket.on("sendMessage", async ({ from, to, content }) => {
-    const newMsg = await Message.create({ from, to, content });
-    const room = [from, to].sort().join("_");
-    io.to(room).emit("newMessage", newMsg);
-  });
+ socket.on('sendMessage', async ({ from, to, content }) => {
+  const newMsg = await Message.create({ from, to, content });
+
+  const room = [from, to].sort().join('_');
+  io.to(room).emit('newMessage', newMsg);
+
+  
+  const recvSocketId = userSocketMap.get(to);
+  if (recvSocketId) {
+    io.to(recvSocketId).emit('notifyMessage'); 
+  }
+});
+
    socket.on('broadcaster', ({ streamId }) => {
     streamBroadcasters[streamId] = socket.id;
     socket.join(streamId);
@@ -107,8 +119,9 @@ io.on("connection", (socket) => {
     for (const [sid, sockId] of Object.entries(streamBroadcasters))
       if (sockId === socket.id) delete streamBroadcasters[sid];
   });
-  socket.on("disconnect", () => {
-    socket.broadcast.emit("disconnectPeer", socket.id);
+  socket.on('disconnect', () => {
+    userSocketMap.delete(userId);          // tidy up
+    socket.broadcast.emit('disconnectPeer', socket.id);
   });
 
  
@@ -116,20 +129,27 @@ io.on("connection", (socket) => {
 
 
 app.use('/requests', friendRoutes);
-
+app.get('/msg',(req,res)=>{
+  res.render('msg',{
+     friends: req.user.friends,
+  })
+})
 app.get('/', async (req, res) => {
+  
   if (!req.user) return res.render('home');
 
   const liveStreams = await LiveStream.find({ isLive: true }).populate('streamer');
   const allUsers    = await User.find({});
-
+const unreadMessages = await Message.find({ to: req.user._id, seen: false });
   res.render('dashboard', {
-    name:  req.user.username,
-    friends: req.user.friends,
-    allUsers,
-    liveStreams
-  });
+  name: req.user.username,
+  friends: req.user.friends,
+  allUsers,
+  liveStreams,
+  user: req.user,     // ✅ Add the full user,
+  hasUnreadMessages: unreadMessages.length > 0
 });
+}); 
 app.get('/go-live', async (req, res) => {
   if (!req.user) return res.redirect('/login');
   let existing = await LiveStream.findOne({ streamer: req.user._id, isLive: true });
@@ -140,12 +160,11 @@ app.get('/go-live', async (req, res) => {
   }
   res.redirect(`/live/${streamId}`);
 });
-app.get('/live/:streamId', async (req, res) => {
-  const stream = await LiveStream.findOne({ streamId: req.params.streamId, isLive: true })
-                   .populate('streamer');
-  if (!stream || stream.streamer._id.toString() !== req.user._id.toString())
-    return res.status(403).send('Not your stream or stream ended');
-  res.render('live', { stream });
+app.get('/live/:id', async (req, res) => {
+    const stream = await LiveStream.findOne({ streamId: req.params.id });
+    if (!stream) return res.status(404).send("Stream not found");
+    
+    res.render('live', { stream }); 
 });
 app.get('/watch/:streamId', async (req, res) => {
   const stream = await LiveStream.findOne({ streamId: req.params.streamId, isLive: true })
@@ -217,7 +236,12 @@ app.post('/signup-music', async (req, res) => {
 
 
 app.get("/chat/:friendId", async (req, res) => {
-  const friendId = req.params.friendId;
+  const friendId = req.params.friendId
+  await Message.updateMany(
+  { from: friendId, to: req.user._id, seen: false },
+  { $set: { seen: true } }
+);
+  
   const messages = await Message.find({
     $or: [
       { from: req.user._id, to: friendId },

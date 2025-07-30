@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Mobile Message Card Styling */
+.messages-card {
+  background-color: #2a223d;
+  border: 1px solid #3a2c5a;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.messages-card h3 {
+  color: #ffffff;
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.message-avatars img {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  border: 2px solid #6b46c1; /* purple ring */
+}
+
+/* Messages icon */
+.messages-card-icon {
+  color: #a393c8;
+  font-size: 1.5rem;
+}
+
+/* Sidebar: Friends List */
+aside {
+  background-color: #1e1e2f;
+  border-right: 1px solid #2f2447;
+  padding: 16px;
+}
+
+aside h2 {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+aside ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+aside ul li {
+  background-color: #2a223d;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+aside ul li:hover {
+  background-color: #3a2c5a;
+}
+
+aside ul li span {
+  color: white;
+  font-size: 0.875rem; /* text-sm */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 130px;
+  display: inline-block;
+}
+
+aside ul li a {
+  background-color: #7c3aed;
+  color: white;
+  font-size: 0.75rem; /* text-xs */
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  text-decoration: none;
+}
+
+aside ul li a:hover {
+  background-color: #6b21a8;
+}
+
+    </style>
+</head>
+<body>
+    <!-- MESSAGES CARD (Dashboard Top or Mobile Section) -->
+<section class="messages-card md:hidden block p-4">
+  <h3 class="text-white text-lg font-semibold mb-2">Messages</h3>
+  <div class="message-avatars flex space-x-2">
+    <img src="1.png" alt="Avatar 1" class="w-10 h-10 rounded-full">
+    <img src="2.png" alt="Avatar 2" class="w-10 h-10 rounded-full">
+    <img src="1.png" alt="Avatar 3" class="w-10 h-10 rounded-full">
+  </div>
+  <i class="fas fa-comment-alt messages-card-icon text-white mt-2 text-lg"></i>
+</section>
+
+<!-- SIDEBAR: FRIEND LIST -->
+<aside class="w-64 bg-[#1e1e2f] border-r border-[#2f2447] p-4 hidden md:block">
+  <h2 class="text-white text-xl font-semibold mb-4">Your Friends</h2>
+  <ul class="space-y-3">
+    <% if (locals.friends && locals.friends.length > 0) { %>
+      <% locals.friends.forEach(friend => { %>
+        <li class="bg-[#2a223d] p-3 rounded-lg hover:bg-[#3a2c5a] transition">
+          <div class="flex justify-between items-center">
+            <span class="text-white text-sm truncate"><%= friend.username %></span>
+            <a
+              href="/chat/<%= friend._id %>"
+              class="ml-2 text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-md transition"
+              title="Chat"
+            >
+              Messages
+            </a>
+          </div>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li class="text-[#a393c8] text-sm">No friends yet.</li>
+    <% } %>
+  </ul>
+</aside>
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musec Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Calibri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="gradient-overlay"></div>
+
+    <header class="header">
+        <div class="header-nav">
+    
+    <a href="#" class="live-button go-live">
+        <i class="fas fa-video icon"></i>
+        <span>Go Live</span>
+    </a>
+    <a href="#" class="live-button live-stream">
+        <i class="fas fa-broadcast-tower icon"></i>
+        <span>Live Stream</span>
+    </a>
+    </div>
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i> 
+            <input type="text" placeholder="Parin goat?">
+        </div>
+        <nav class="header-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home icon"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-users icon"></i>
+                <span>Network</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-comment-dots icon"></i>
+                <span>Messaging</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-bell icon"></i>
+                <span>Notifications</span>
+            </a>
+        </nav>
+        <img class="profile-pic-header" src="1.png" alt="User Profile Picture">
+    </header>
+
+    <main class="main-content">
+        <div class="left-column">
+            <section class="user-greeting">
+
+
+
+                <div class="profile-pic-large">
+                    <img src="2.png" alt="Pranav Kapur Profile Picture">
+                </div>
+                <div class="user-info">
+                    <div class="welcome-text">Welcome back!</div>
+                    <div class="user-name">Pranav Kapur</div>
+                </div>
+            </section>
+
+            <section class="create-post-card">
+                <div class="post-input-area">
+                    <img class="profile-pic-small" src="3.png" alt="Your Profile Picture">
+                    <input type="text" placeholder="Write a post">
+                </div>
+                <div class="post-options">
+                    <div class="post-option">
+                        <i class="fas fa-video"></i>
+                        <span>Video</span>
+                    </div>
+                    <div class="post-option">
+                        <i class="fas fa-image"></i>
+                        <span>Photo</span>
+                    </div>
+                    <div class="post-option">
+                        <i class="fas fa-headphones"></i>
+                        <span>Audio</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="find-studios-card">
+                <h3>Find studios near you</h3>
+                <div class="map-container">
+                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d112173.03012712397!2d77.12658483326946!3d28.52747816283357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1752987752691!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>         <div class="map-marker marker-1">
+                        <div class="pin-shadow"></div>
+                        <div class="pin-body"></div>
+                    </div>
+                    <div class="map-marker marker-2">
+                        <div class="pin-shadow"></div>
+                        <div class="pin-body"></div>
+                    </div>
+                </div>
+
+                <div class="studio-listing">
+                    <div class="studio-content">
+                        <h4>Musec studio</h4>
+                        <div class="studio-details">
+                            <span>3.5 km</span>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.9</span>
+                            </div>
+                            <div class="availability">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Available</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="book-button">BOOK</button>
+                </div>
+
+                <div class="studio-listing">
+                    <div class="studio-content">
+                        <h4>Parin studio</h4>
+                        <div class="studio-details">
+                            <span>3.5 km</span>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.9</span>
+                            </div>
+                            <div class="availability">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Available</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="book-button">BOOK</button>
+                </div>
+               
+            </section>
+        </div>
+
+        <div class="middle-column">
+ <div class="story-bar">
+  <div class="story-circle add-story">
+    <span class="plus-icon">+</span>
+  </div>
+  <div class="story-circle" style="background-image: url('1.png');"></div>
+  <div class="story-circle" style="background-image: url('2.png');"></div>
+  <div class="story-circle" style="background-image: url('1.png');"></div>
+  <div class="story-circle" style="background-image: url('2.png');"></div>
+ 
+</div>
+
+            <article class="post-card">
+                <div class="post-header">
+                    <img class="profile-pic-post" src="2.png" alt="Pranav Kapur Profile Picture">
+                    <div class="post-author-info">
+                        <div class="name">Pranav Kapur</div>
+                        <div class="followers">100,000 followers</div>
+                        <div class="time-ago">1 week ago</div>
+                    </div>
+                    <div class="post-options-dots"></div>
+                </div>
+                <div class="post-content">
+                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
+                </div>
+                <img class="post-image" src="https://i0.wp.com/picjumbo.com/wp-content/uploads/calming-nature-wallpaper-free-image.jpeg?w=600&quality=80" alt="Post Image">
+                <div class="post-actions">
+                    <div class="action-button">
+                        <i class="fas fa-thumbs-up icon"></i>
+                        <span>react</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-comment icon"></i>
+                        <span>comment</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-share-square icon"></i>
+                        <span>repost</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-paper-plane icon"></i>
+                        <span>share</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card">
+                <div class="post-header">
+                    <img class="profile-pic-post" src="1.png" alt="Pranav Kapur Profile Picture">
+                    <div class="post-author-info">
+                        <div class="name">Pranav Kapur</div>
+                        <div class="followers">100,000 followers</div>
+                        <div class="time-ago">1 week ago</div>
+                    </div>
+                    <div class="post-options-dots"></div>
+                </div>
+                <div class="post-content">
+                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
+                </div>
+                <img class="post-image" src="https://media.istockphoto.com/id/1280385511/photo/colorful-background.jpg?s=612x612&w=0&k=20&c=kj0PRQlgvWLzA1-1me6iZp5mlwsZhC4QlcvIEb1J1bs=" alt="Post Image">
+                <div class="post-actions">
+                    <div class="action-button">
+                        <i class="fas fa-thumbs-up icon"></i>
+                        <span>react</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-comment icon"></i>
+                        <span>comment</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-share-square icon"></i>
+                        <span>repost</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-paper-plane icon"></i>
+                        <span>share</span>
+                    </div>
+                </div>
+            </article>
+            <article class="post-card">
+                <div class="post-header">
+                    <img class="profile-pic-post" src="2.png" alt="Pranav Kapur Profile Picture">
+                    <div class="post-author-info">
+                        <div class="name">Pranav Kapur</div>
+                        <div class="followers">100,000 followers</div>
+                        <div class="time-ago">1 week ago</div>
+                    </div>
+                    <div class="post-options-dots"></div>
+                </div>
+                <div class="post-content">
+                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
+                </div>
+                <img class="post-image" src="https://i0.wp.com/picjumbo.com/wp-content/uploads/calming-nature-wallpaper-free-image.jpeg?w=600&quality=80" alt="Post Image">
+                <div class="post-actions">
+                    <div class="action-button">
+                        <i class="fas fa-thumbs-up icon"></i>
+                        <span>react</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-comment icon"></i>
+                        <span>comment</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-share-square icon"></i>
+                        <span>repost</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-paper-plane icon"></i>
+                        <span>share</span>
+                    </div>
+                </div>
+            </article>
+            <article class="post-card">
+                <div class="post-header">
+                    <img class="profile-pic-post" src="2.png" alt="Pranav Kapur Profile Picture">
+                    <div class="post-author-info">
+                        <div class="name">Pranav Kapur</div>
+                        <div class="followers">100,000 followers</div>
+                        <div class="time-ago">1 week ago</div>
+                    </div>
+                    <div class="post-options-dots"></div>
+                </div>
+                <div class="post-content">
+                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
+                </div>
+                <img class="post-image" src="https://media.istockphoto.com/id/1280385511/photo/colorful-background.jpg?s=612x612&w=0&k=20&c=kj0PRQlgvWLzA1-1me6iZp5mlwsZhC4QlcvIEb1J1bs=" alt="Post Image">
+                <div class="post-actions">
+                    <div class="action-button">
+                        <i class="fas fa-thumbs-up icon"></i>
+                        <span>react</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-comment icon"></i>
+                        <span>comment</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-share-square icon"></i>
+                        <span>repost</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-paper-plane icon"></i>
+                        <span>share</span>
+                    </div>
+                </div>
+            </article>
+            <article class="post-card">
+                <div class="post-header">
+                    <img class="profile-pic-post" src="1.png" alt="Pranav Kapur Profile Picture">
+                    <div class="post-author-info">
+                        <div class="name">Pranav Kapur</div>
+                        <div class="followers">100,000 followers</div>
+                        <div class="time-ago">1 week ago</div>
+                    </div>
+                    <div class="post-options-dots"></div>
+                </div>
+                <div class="post-content">
+                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
+                </div>
+                <img class="post-image" src="https://i0.wp.com/picjumbo.com/wp-content/uploads/calming-nature-wallpaper-free-image.jpeg?w=600&quality=80" alt="Post Image">
+                <div class="post-actions">
+                    <div class="action-button">
+                        <i class="fas fa-thumbs-up icon"></i>
+                        <span>react</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-comment icon"></i>
+                        <span>comment</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-share-square icon"></i>
+                        <span>repost</span>
+                    </div>
+                    <div class="action-button">
+                        <i class="fas fa-paper-plane icon"></i>
+                        <span>share</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <aside class="right-column">
+            <section class="connect-card">
+                <div class="connect-card-header">
+                    <h3>Connect with musicians</h3>
+                    <div class="close-button">
+                        <i class="fas fa-arrow-left arrow"></i>
+                    </div>
+                </div>
+                <div class="musician-list">
+                    <div class="musician-profile">
+                        <img class="profile-pic" src="1.png" alt="Musician Profile">
+                        <div class="musician-info">
+                            <div class="name">Pranav Kapur</div>
+                            <div class="role">UI/UX designer</div>
+                        </div>
+                        <button class="connect-button">CONNECT</button>
+                    </div>
+                    <div class="musician-profile">
+                        <img class="profile-pic" src="2.png" alt="Musician Profile">
+                        <div class="musician-info">
+                            <div class="name">Pranav Kapur</div>
+                            <div class="role">UI/UX designer</div>
+                        </div>
+                        <button class="connect-button">CONNECT</button>
+                    </div>
+                    <div class="musician-profile">
+                        <img class="profile-pic" src="1.png" alt="Musician Profile">
+                        <div class="musician-info">
+                            <div class="name">Pranav Kapur</div>
+                            <div class="role">UI/UX designer</div>
+                        </div>
+                        <button class="connect-button">CONNECT</button>
+                    </div>
+                    <div class="musician-profile">
+                        <img class="profile-pic" src="2.png" alt="Musician Profile">
+                        <div class="musician-info">
+                            <div class="name">Pranav Kapur</div>
+                            <div class="role">UI/UX designer</div>
+                        </div>
+                        <button class="connect-button">CONNECT</button>
+                    </div>
+                    <div class="musician-profile">
+                        <img class="profile-pic" src="2.png" alt="Musician Profile">
+                        <div class="musician-info">
+                            <div class="name">Pranav Kapur</div>
+                            <div class="role">UI/UX designer</div>
+                        </div>
+                        <button class="connect-button">CONNECT</button>
+                    </div>
+                    <div class="musician-profile">
+                        <img class="profile-pic" src="1.png" alt="Musician Profile">
+                        <div class="musician-info">
+                            <div class="name">Pranav Kapur</div>
+                            <div class="role">UI/UX designer</div>
+                        </div>
+                        <button class="connect-button">CONNECT</button>
+                    </div>
+                </div>
+            </section>
+    
+            <section class="messages-card">
+                <h3>Messages</h3>
+                <div class="message-avatars">
+                    <button href="/msg">View</button>
+                    <img src="1.png" alt="Avatar 1">
+                    <img src="2.png" alt="Avatar 2">
+                    <img src="1.png" alt="Avatar 3">
+                </div>
+                <i class="fas fa-comment-alt messages-card-icon"></i>
+            </section>
+        </aside>
+    </main>
+ 
+</body>
+</html>
