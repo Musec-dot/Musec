@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account - Password</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+   body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #000;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.gradient-overlay-create-account-pass {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at bottom, rgba(100, 0, 255, 0.4) 0%, transparent 60%);
+    opacity: 0.8;
+    z-index: -1;
+}
+
+.create-account-pass-container {
+    text-align: left;
+    width: 90%;
+    max-width: 400px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.create-account-pass-container h1 {
+    font-size: 2.2em;
+    margin-bottom: 50px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.password-input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.password-input-group input {
+    width: 100%;
+    padding: 10px 0;
+    background: none;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 1.1em;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.password-input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.password-input-group input:focus {
+    border-color: #6a11cb;
+}
+
+.password-input-group .underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #6a11cb;
+    transition: width 0.3s ease;
+}
+
+.password-input-group input:focus + .underline {
+    width: 100%;
+}
+
+.password-strength {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 50px;
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.strength-indicator {
+    display: flex;
+    gap: 5px;
+}
+
+.strength-indicator .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #018401;
+}
+
+.next-button-pass {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+    background: none;
+    border: none;
+    border-radius: 0;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.8em;
+    box-shadow: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+    margin-top: 30px;
+    margin-bottom: 50px;
+    float: right;
+    padding: 0;
+}
+
+.next-button-pass:hover {
+    transform: translateY(-3px);
+    color: #ffffff;
+}
+
+@media (max-width: 600px) {
+    .create-account-pass-container {
+        padding: 0 20px;
+        width: 95%;
+    }
+
+    .create-account-pass-container h1 {
+        font-size: 1.8em;
+        margin-bottom: 40px;
+    }
+
+    .password-input-group input {
+        font-size: 1em;
+    }
+
+    .next-button-pass {
+        width: auto;
+        height: auto;
+        font-size: 1.5em;
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
+
+    .password-strength {
+        font-size: 0.85em;
+    }
+
+    .strength-indicator .dot {
+        width: 7px;
+        height: 7px;
+    }
+}
+  </style>
+</head>
+<body class="create-account-pass-page">
+  <div class="gradient-overlay-create-account-pass"></div>
+
+  <div class="create-account-pass-container">
+    <h1>Create an account</h1>
+
+    <div class="password-input-group">
+      <input type="password" id="password" placeholder="password" required />
+      <div class="underline"></div>
+    </div>
+
+    <div class="password-strength">
+      <span>Strength:</span>
+      <div class="strength-indicator">
+        <span class="dot" data-strength="1"></span>
+        <span class="dot" data-strength="2"></span>
+        <span class="dot" data-strength="3"></span>
+        <span class="dot" data-strength="4"></span>
+        <span class="dot" data-strength="5"></span>
+      </div>
+    </div>
+
+    <button class="next-button-pass" onclick="savePasswordAndContinue()">
+      <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+
+  <script>
+    function savePasswordAndContinue() {
+      const password = document.getElementById("password").value.trim();
+      if (!password) {
+        alert("Please enter a password.");
+        return;
+      }
+      sessionStorage.setItem("password", password);
+      window.location.href = "/signup/name";
+    }
+  </script>
+</body>
+</html>

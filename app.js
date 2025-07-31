@@ -180,9 +180,14 @@ app.post('/end-stream', async (req, res) => {
   res.redirect('/');
 });
 app.get('/signup', (req, res) => {
-  res.render('signup');
+  res.render('create_account');
 });
-
+app.get('/signup/password', (req, res) => {
+  res.render('create_account_pass');
+});
+app.get('/signup/name', (req, res) => {
+  res.render('name');
+});
 app.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -191,7 +196,7 @@ app.post('/signup', async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.render('signup', { err });
+    res.render('create_account', { err });
   }
 });
 
