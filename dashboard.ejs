@@ -1458,26 +1458,37 @@ margin-top: 30px;
                 </div>
             </section>
 
-            <section class="create-post-card">
-                <div class="post-input-area">
-                    <img class="profile-pic-small" src="/images/1.png" alt="Your Profile Picture">
-                    <input type="text" placeholder="Write a post">
-                </div>
-                <div class="post-options">
-                    <div class="post-option">
-                        <i class="fas fa-video"></i>
-                        <span>Video</span>
-                    </div>
-                    <div class="post-option">
-                        <i class="fas fa-image"></i>
-                        <span>Photo</span>
-                    </div>
-                    <div class="post-option">
-                        <i class="fas fa-headphones"></i>
-                        <span>Audio</span>
-                    </div>
-                </div>
-            </section>
+         <section class="create-post-card">
+  <form action="/new" method="POST" enctype="multipart/form-data">
+    <div class="post-input-area">
+      <img class="profile-pic-small" src="3.png" alt="Your Profile Picture">
+      <input type="text" name="title" placeholder="Write a post" required>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" name="media" id="mediaInput" accept="image/*,video/*,audio/*" style="display: none;">
+
+    <!-- Post options as clickable labels -->
+    <div class="post-options">
+      <label class="post-option" for="mediaInput">
+        <i class="fas fa-video"></i>
+        <span>Video</span>
+      </label>
+      <label class="post-option" for="mediaInput">
+        <i class="fas fa-image"></i>
+        <span>Photo</span>
+      </label>
+      <label class="post-option" for="mediaInput">
+        <i class="fas fa-headphones"></i>
+        <span>Audio</span>
+      </label>
+    </div>
+
+    
+    <button type="submit" style="display: none;">Post</button>
+  </form>
+</section>
+
 
             <section class="find-studios-card">
                 <h3>Find studios near you</h3>
@@ -1634,172 +1645,44 @@ margin-top: 30px;
 
 
 
-            <article class="post-card">
-                <div class="post-header">
-                    <img class="profile-pic-post" src="/images/1.png" alt="Pranav Kapur Profile Picture">
-                    <div class="post-author-info">
-                        <div class="name">Pranav Kapur</div>
-                        <div class="followers">100,000 followers</div>
-                        <div class="time-ago">1 week ago</div>
-                    </div>
-                    <div class="post-options-dots"></div>
-                </div>
-                <div class="post-content">
-                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
-                </div>
-                <img class="post-image" src="https://i0.wp.com/picjumbo.com/wp-content/uploads/calming-nature-wallpaper-free-image.jpeg?w=600&quality=80" alt="Post Image">
-                <div class="post-actions">
-                    <div class="action-button">
-                        <i class="fas fa-thumbs-up icon"></i>
-                        <span>react</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-comment icon"></i>
-                        <span>comment</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-share-square icon"></i>
-                        <span>repost</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-paper-plane icon"></i>
-                        <span>share</span>
-                    </div>
-                </div>
-            </article>
+            <% posts.forEach(function(post) { %>
+  <article class="post-card">
+    <!-- Post Header with profile image and author -->
+    <div class="post-header">
+      <img class="profile-pic-post" src="/images/1.png" alt="Profile Picture">
+      <div class="post-author-info">
+        
 
-            <article class="post-card">
-                <div class="post-header">
-                    <img class="profile-pic-post" src="/images/1.png" alt="Pranav Kapur Profile Picture">
-                    <div class="post-author-info">
-                        <div class="name">Pranav Kapur</div>
-                        <div class="followers">100,000 followers</div>
-                        <div class="time-ago">1 week ago</div>
-                    </div>
-                    <div class="post-options-dots"></div>
-                </div>
-                <div class="post-content">
-                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
-                </div>
-                <img class="post-image" src="https://media.istockphoto.com/id/1280385511/photo/colorful-background.jpg?s=612x612&w=0&k=20&c=kj0PRQlgvWLzA1-1me6iZp5mlwsZhC4QlcvIEb1J1bs=" alt="Post Image">
-                <div class="post-actions">
-                    <div class="action-button">
-                        <i class="fas fa-thumbs-up icon"></i>
-                        <span>react</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-comment icon"></i>
-                        <span>comment</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-share-square icon"></i>
-                        <span>repost</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-paper-plane icon"></i>
-                        <span>share</span>
-                    </div>
-                </div>
-            </article>
-            <article class="post-card">
-                <div class="post-header">
-                    <img class="profile-pic-post" src="/images/1.png" alt="Pranav Kapur Profile Picture">
-                    <div class="post-author-info">
-                        <div class="name">Pranav Kapur</div>
-                        <div class="followers">100,000 followers</div>
-                        <div class="time-ago">1 week ago</div>
-                    </div>
-                    <div class="post-options-dots"></div>
-                </div>
-                <div class="post-content">
-                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
-                </div>
-                <img class="post-image" src="https://i0.wp.com/picjumbo.com/wp-content/uploads/calming-nature-wallpaper-free-image.jpeg?w=600&quality=80" alt="Post Image">
-                <div class="post-actions">
-                    <div class="action-button">
-                        <i class="fas fa-thumbs-up icon"></i>
-                        <span>react</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-comment icon"></i>
-                        <span>comment</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-share-square icon"></i>
-                        <span>repost</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-paper-plane icon"></i>
-                        <span>share</span>
-                    </div>
-                </div>
-            </article>
-            <article class="post-card">
-                <div class="post-header">
-                    <img class="profile-pic-post" src="/images/1.png" alt="Pranav Kapur Profile Picture">
-                    <div class="post-author-info">
-                        <div class="name">Pranav Kapur</div>
-                        <div class="followers">100,000 followers</div>
-                        <div class="time-ago">1 week ago</div>
-                    </div>
-                    <div class="post-options-dots"></div>
-                </div>
-                <div class="post-content">
-                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
-                </div>
-                <img class="post-image" src="https://media.istockphoto.com/id/1280385511/photo/colorful-background.jpg?s=612x612&w=0&k=20&c=kj0PRQlgvWLzA1-1me6iZp5mlwsZhC4QlcvIEb1J1bs=" alt="Post Image">
-                <div class="post-actions">
-                    <div class="action-button">
-                        <i class="fas fa-thumbs-up icon"></i>
-                        <span>react</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-comment icon"></i>
-                        <span>comment</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-share-square icon"></i>
-                        <span>repost</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-paper-plane icon"></i>
-                        <span>share</span>
-                    </div>
-                </div>
-            </article>
-            <article class="post-card">
-                <div class="post-header">
-                    <img class="profile-pic-post" src="/images/1.png" alt="Pranav Kapur Profile Picture">
-                    <div class="post-author-info">
-                        <div class="name">Pranav Kapur</div>
-                        <div class="followers">100,000 followers</div>
-                        <div class="time-ago">1 week ago</div>
-                    </div>
-                    <div class="post-options-dots"></div>
-                </div>
-                <div class="post-content">
-                    Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi
-                </div>
-                <img class="post-image" src="https://i0.wp.com/picjumbo.com/wp-content/uploads/calming-nature-wallpaper-free-image.jpeg?w=600&quality=80" alt="Post Image">
-                <div class="post-actions">
-                    <div class="action-button">
-                        <i class="fas fa-thumbs-up icon"></i>
-                        <span>react</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-comment icon"></i>
-                        <span>comment</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-share-square icon"></i>
-                        <span>repost</span>
-                    </div>
-                    <div class="action-button">
-                        <i class="fas fa-paper-plane icon"></i>
-                        <span>share</span>
-                    </div>
-                </div>
-            </article>
+          <h1><%= post.author?.username || 'User' %></h1>
+       
+         
+      </div>
+    </div>
+
+    <!-- Post Content -->
+    <div class="post-content">
+      <h2><%= post.title %></h2>
+      <% if (post.content && post.content.trim() !== "") { %>
+        <p><%= post.content %></p>
+      <% } %>
+
+      <% if (post.fileUrl && post.fileType === 'image') { %>
+        <img class="post-media" src="<%= post.fileUrl %>" alt="Post image" />
+      <% } else if (post.fileUrl && post.fileType === 'video') { %>
+        <video class="post-media" controls>
+          <source src="<%= post.fileUrl %>" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      <% } else if (post.fileUrl && post.fileType === 'audio') { %>
+        <audio class="post-media" controls>
+          <source src="<%= post.fileUrl %>" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      <% } %>
+    </div>
+  </article>
+<% }); %>
+
         </div>
 
         <aside class="right-column">
