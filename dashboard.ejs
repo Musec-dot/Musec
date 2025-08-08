@@ -1172,7 +1172,10 @@
 
       <div class="post-header-right">
         <i class="fas fa-ellipsis-h"></i>
-        <button class="connect-btn">Connect</button>
+        <form action="/requests/send" method="POST" style="margin: 0;">
+        <input type="hidden" name="toId" value="<%= post.author?._id %>">
+        <button class="connect-btn" type="submit">Connect</button>
+      </form>
       </div>
     </div>
 
@@ -1215,7 +1218,8 @@
                 <h4>Pranav Kapur</h4>
                 <p>UI/UX designer</p>
               </div>
-              <button class="connect-btn">Connect</button>
+              
+              
             </div>
             <% if (locals.allUsers) { %>
   <% allUsers.forEach(user => { %>
