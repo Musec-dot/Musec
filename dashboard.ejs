@@ -1172,10 +1172,12 @@
 
       <div class="post-header-right">
         <i class="fas fa-ellipsis-h"></i>
+        <% if (locals.user && locals.user._id.toString() !== post.author?._id?.toString()) { %>
         <form action="/requests/send" method="POST" style="margin: 0;">
         <input type="hidden" name="toId" value="<%= post.author?._id %>">
         <button class="connect-btn" type="submit">Connect</button>
       </form>
+      <% } %>
       </div>
     </div>
 
