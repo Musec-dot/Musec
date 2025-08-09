@@ -1154,10 +1154,11 @@
   <div class="post">
     <!-- Post Header -->
     <div class="post-header">
-      <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" 
-           alt="<%= post.author?.username || 'User' %>" 
-           class="post-avatar-pic">
-      
+     <a href="/user/<%= post.author?._id %>">
+  <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" 
+       alt="<%= post.author?.username || 'User' %>" 
+       class="post-avatar-pic">
+</a>
       <div class="post-header-info">
         <h4><%= post.author?.username || 'User' %></h4>
         <p><%= post.author?.followersCount || 0 %> followers</p>

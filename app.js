@@ -207,7 +207,21 @@ app.get('/login', (req, res) => {
   if (!req.user) return res.render('login');
   res.redirect('/');
 });
+app.get("/user/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
 
+    const posts = await Post.find({ author: userId })
+      .populate("author") 
+      .sort({ createdAt: -1 });
+
+    res.render("bio", { user, posts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });

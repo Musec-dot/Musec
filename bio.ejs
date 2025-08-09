@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.username %> - Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --dark-bg: #111111;
+    --darker-bg: #0d0d0d;
+    --border-color: #222;
+    --text-color: #eee;
+    --secondary-text-color: #888;
+    --accent-color: #929BFF;
+    --search-bg: #1a1a1a;
+    --input-border: #C0C0C0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--darker-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-custom {
+    background-color: var(--dark-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.625rem 1.875rem;
+    height: auto;
+}
+
+.navbar-brand img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 25rem;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--secondary-text-color);
+    font-size: 0.875rem;
+    pointer-events: none;
+}
+
+.search-input {
+    background-color: var(--search-bg);
+    border: 1px solid var(--input-border);
+    padding: 0.625rem 0.9375rem 0.625rem 2.1875rem;
+    border-radius: 1.5625rem;
+    color: var(--text-color);
+    width: 100%;
+    outline: none;
+    transition: border 0.2s ease;
+}
+
+.search-input::placeholder {
+    color: white;
+    opacity: 1;
+}
+
+.search-input:focus {
+    border: 2px solid var(--accent-color);
+    color: var(black);
+}
+
+.nav-link-custom {
+    color: var(--secondary-text-color) !important;
+    font-size: 0.875rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem 2.5rem;
+    transition: color 0.2s ease;
+    margin-left: 2rem;
+}
+
+.nav-link-custom i {
+    font-size: 1.125rem;
+    margin-bottom: 0.3125rem;
+}
+
+.nav-link-custom.active,
+.nav-link-custom:hover {
+    color: var(--accent-color) !important;
+}
+
+.avatar {
+    width: 2.8125rem;
+    height: 2.8125rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 1rem;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 2rem;
+}
+
+.profile-pic-container {
+    width: 8rem;
+    height: 8rem;
+    background-color: #2a2a2a;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 2rem;
+    overflow: hidden;
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.profile-info {
+    flex-grow: 1;
+}
+
+.profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-info h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.profile-info .pronouns {
+    color: var(--secondary-text-color);
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-stat-item {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.profile-stat-item strong {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    margin-right: 0.5rem;
+}
+
+.profile-stat-item span {
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
+}
+
+.connect-and-ellipsis {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.ellipsis-icon {
+    color: var(--secondary-text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.connect-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 1.5rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.connect-btn:hover {
+    background-color: #7a83d4;
+}
+
+.location {
+    color: var(--secondary-text-color);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.bio-section {
+    background-color: var(--dark-bg);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.bio-section h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.bio-text-wrapper {
+    position: relative;
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+}
+
+.bio-text-wrapper.expanded {
+    max-height: fit-content;
+}
+
+.bio-text-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to top, var(--dark-bg), transparent);
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+}
+
+.bio-text-wrapper.expanded::after {
+    opacity: 0;
+}
+
+.bio-text {
+    line-height: 1.6;
+    color: var(--text-color);
+    margin-bottom: 0;
+}
+
+.read-more-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0;
+    text-decoration: underline;
+    margin-top: 0.5rem;
+}
+
+.posts-section {
+    background-color: var(--dark-bg);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.posts-header h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.create-new-btn {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 1.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.create-new-btn:hover {
+    background-color: #555;
+}
+
+.post-cards-container {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) #333;
+}
+
+.post-cards-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.post-cards-container::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 10px;
+}
+
+.post-cards-container::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 10px;
+    border: 2px solid #333;
+}
+
+.post-card {
+    flex: 0 0 auto;
+    width: 18rem;
+    height: 12rem;
+    background-color: #2a2a2a;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--secondary-text-color);
+    font-size: 1.2rem;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-custom .container-fluid {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .search-container {
+        order: 1;
+        margin-bottom: 1rem;
+    }
+    .navbar-collapse {
+        order: 3;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    .navbar-nav {
+        width: 100%;
+        justify-content: space-around;
+    }
+    .nav-link-custom {
+        padding: 0.5rem 0.2rem;
+        flex: 1;
+    }
+    .avatar {
+        order: 2;
+        margin-left: auto;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .main-content {
+        padding: 1rem;
+    }
+    .profile-info h2 {
+        font-size: 2rem;
+    }
+    .profile-stats {
+        flex-direction: row;
+        gap: 2rem;
+        align-items: center;
+    }
+    .post-card {
+        width: 16rem;
+        height: 10rem;
+    }
+}
+    </style>
+</head>
+<body>
+     <div id="zoom-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+            <div class="container-fluid">
+                <div class="search-container me-lg-auto mb-2 mb-lg-0">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="form-control search-input" placeholder="Search...">
+                </div>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav mb-2 mb-lg-0" style="margin-left: -5rem;">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" href="/">
+                                <i class="fas fa-home"></i> <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" href="/network">
+                                <i class="fas fa-user-friends"></i> <span>Network</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" href="/messages">
+                                <i class="fas fa-comment-dots"></i> <span>Messaging</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" href="/notifications">
+                                <i class="fas fa-bell"></i> <span>Notifications</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="d-flex ms-lg-auto">
+                    <img src="<%= user.profilePic || 'https://placehold.co/45x45/333333/FFFFFF?text=U' %>"
+                         class="avatar"
+                         alt="<%= user.username %>"
+                         onerror="this.onerror=null;this.src='https://placehold.co/45x45/333333/FFFFFF?text=U';">
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <section class="profile-header">
+                <div class="profile-pic-container">
+                    <% if (user.profilePic) { %>
+                        <img src="<%= user.profilePic %>" alt="<%= user.username %>">
+                    <% } else { %>
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    <% } %>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name-row">
+                        <h2><%= user.username %> <% if (user.pronouns) { %><span class="pronouns"><%= user.pronouns %></span><% } %></h2>
+                        <div class="connect-and-ellipsis">
+                            <i class="fas fa-ellipsis-h ellipsis-icon"></i>
+                            <% if (!locals.loggedInUser || locals.loggedInUser._id.toString() !== user._id.toString()) { %>
+                                <button class="connect-btn">Connect</button>
+                            <% } %>
+                        </div>
+                    </div>
+                    <p class="mb-1"><%= user.headline || '' %></p>
+                    <div class="profile-stats">
+                        <div class="profile-stat-item"><strong><%= posts.length %></strong> <span>Posts</span></div>
+                        <div class="profile-stat-item"><strong><%= user.followersCount || 0 %></strong> <span>Followers</span></div>
+                    </div>
+                    <p class="location"><%= user.location || '' %></p>
+                </div>
+            </section>
+
+            <section class="bio-section">
+                <h3>Bio</h3>
+                <div class="bio-text-wrapper" id="bioTextWrapper">
+                    <p class="bio-text" id="bioText">
+                        <%= user.bio || 'No bio available.' %>
+                    </p>
+                </div>
+                <% if (user.bio && user.bio.length > 200) { %>
+                    <button class="read-more-btn" id="readMoreBtn">read more</button>
+                <% } %>
+            </section>
+
+            <section class="posts-section">
+                <div class="posts-header">
+                    <h3>Post</h3>
+                    <% if (locals.loggedInUser && locals.loggedInUser._id.toString() === user._id.toString()) { %>
+                        <button class="create-new-btn">Create New</button>
+                    <% } %>
+                </div>
+                <div class="post-cards-container">
+                    <% if (posts.length === 0) { %>
+                        <p>No posts yet.</p>
+                    <% } else { %>
+                        <% posts.forEach(function(post) { %>
+                            <div class="post-card">
+                                <h4><%= post.title || 'Untitled Post' %></h4>
+                                <% if (post.fileUrl && post.fileType === 'image') { %>
+                                    <img src="<%= post.fileUrl %>" alt="Post image">
+                                <% } else if (post.fileType === 'video') { %>
+                                    <video controls>
+                                        <source src="<%= post.fileUrl %>" type="video/mp4">
+                                    </video>
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+    const bioTextWrapper = document.getElementById('bioTextWrapper');
+    const bioText = document.getElementById('bioText');
+    const readMoreBtn = document.getElementById('readMoreBtn');
+
+    function checkOverflow() {
+        bioTextWrapper.classList.remove('expanded');
+        bioTextWrapper.style.maxHeight = 'none';
+        
+        const isOverflowing = bioText.scrollHeight > 100;
+        
+        if (isOverflowing) {
+            bioTextWrapper.style.maxHeight = '100px';
+            bioTextWrapper.classList.remove('expanded');
+            readMoreBtn.style.display = 'inline-block';
+            readMoreBtn.textContent = 'read more';
+        } else {
+            readMoreBtn.style.display = 'none';
+            bioTextWrapper.classList.add('expanded');
+        }
+    }
+
+    checkOverflow();
+
+    readMoreBtn.addEventListener('click', function() {
+        if (bioTextWrapper.classList.contains('expanded')) {
+            bioTextWrapper.style.maxHeight = '100px';
+            bioTextWrapper.classList.remove('expanded');
+            readMoreBtn.textContent = 'read more';
+        } else {
+            bioTextWrapper.style.maxHeight = bioText.scrollHeight + 'px';
+            bioTextWrapper.classList.add('expanded');
+            readMoreBtn.textContent = 'read less';
+        }
+    });
+
+    window.addEventListener('resize', checkOverflow);
+});
+</script>
+</body>
+</html>
