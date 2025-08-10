@@ -221,18 +221,25 @@ app.get('/login', (req, res) => {
 app.get("/user/:id", async (req, res) => {
   try {
     const userId = req.params.id;
+    
+    // Get the specific user
     const user = await User.findById(userId);
 
+    // Get that user's posts (same structure as dashboard posts)
     const posts = await Post.find({ author: userId })
-      .populate("author") 
+      .populate("author")
       .sort({ createdAt: -1 });
 
-    res.render("bio", { user, posts });
+    res.render("bio", {
+      user,
+      posts
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
   }
 });
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
