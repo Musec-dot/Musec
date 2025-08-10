@@ -141,6 +141,8 @@ app.use('/requests', friendRoutes);
 app.get('/msg', (req, res) => {
   res.render('msg', {
     friends: req.user.friends,
+      me: req.user._id.toString()
+    
   });
 });
 
@@ -164,25 +166,34 @@ app.get('/', async (req, res) => {
 });
 
 // Chat
-app.get("/chat/:friendId", async (req, res) => {
+app.get("/messages/:friendId", async (req, res) => {
   const friendId = req.params.friendId;
+
+  // Mark unseen messages as seen
   await Message.updateMany(
     { from: friendId, to: req.user._id, seen: false },
     { $set: { seen: true } }
   );
 
+  // Fetch conversation
   const messages = await Message.find({
     $or: [
       { from: req.user._id, to: friendId },
       { from: friendId, to: req.user._id }
     ]
-  }).sort({ timestamp: 1 }).populate('from');
+  })
+    .sort({ timestamp: 1 })
+    .populate("from");
 
   const friend = await User.findById(friendId);
-  res.render("chat", {
-    friend,
-    messages,
-    me: req.user._id
+
+  res.json({
+    me: req.user._id.toString(),
+    friend: {
+      _id: friend._id,
+      username: friend.username
+    },
+    messages
   });
 });
 

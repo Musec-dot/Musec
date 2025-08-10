@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-   html,body {
+  html,body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   background-color: #0c0c0c;
@@ -140,7 +140,6 @@
   width: 50%;
   white-space: nowrap;
   margin-left: 3.75rem;
-  
 }
 
 .story-bar::-webkit-scrollbar {
@@ -445,7 +444,7 @@
   border: 0.0625rem solid #333;
   border-radius: 999px;
   padding: 0.875rem 1.25rem;
-  width: 8.75rem;
+  width: 18.75rem;
   max-width: 28.125rem;
   cursor: pointer;
   transition: background 0.3s;
@@ -612,8 +611,6 @@
 
 
 
-
-/* rishik pc */ 
 /* rishik chutiya pc */
 @media (max-width: 1900px) {
   .welcome-text .greet,
@@ -731,36 +728,44 @@
     padding-top: 2px;
   }
  .messages-btn{
- position: fixed;
-
-  bottom: 2%;
-  height: 30px;
-  left: 75.5%;
+  position: relative;
+width: 25vh;
+  bottom: 70px;
+  height: 40px;
+  left: 110px;
  }
-
   .messages-btn .left-content{
-    font-size: 90px;
+    margin-top: 4px;
+    font-size: 13px;
+    margin-right: 12px;
   }
   
- .story-bar{
-  overflow-y: hidden;
- }
+ 
  .messages-btn i{
-  position: relative;
+  font-size: 9px;
  }
  .messages-btn .avatars img{
-    width: 15px;
+    width: 25px;
     height: 25px;
  }
  .center-column{
-    width: 160%;
+    width: 180%;
     
     position: relative;
-    right: 125px;
- 
+    right: 140px;
     top: -15px;
  }
-
+ .post {
+    width: 100%;
+    position: relative;
+    right: 0px;
+    
+   
+  }
+  .post-container{
+   position: relative;
+  
+  }
   .post-header-info h4 {
     font-size: 13px;
   }
@@ -804,223 +809,67 @@
  
 }
 
-.messages-btn {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #111;
-  border: 0.0625rem solid #333;
-  border-radius: 999px;
-  padding: 0.875rem 1.25rem;
-  width: 15.7rem; /* reduced width */
-  max-width: 28rem; /* reduced max-width */
-  cursor: pointer;
-  transition: background 0.3s;
-  color: white;
-  font-family: 'Space Grotesk', sans-serif;
-  margin-top: 9vh;
-  margin-left: 1rem;
-  
-}
-
-
-.messages-btn:hover {
-  background-color: #1a1a1a;
-}
-
-.messages-btn .left-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
-.messages-btn i {
-  font-size: 1.625rem;
-  background-color: white;
-  color: black;
-  padding: 0.375rem;
-  border-radius: 50%;
-  margin-top: 0.1875rem;
-}
-
-.messages-btn .avatars {
-  display: flex;
-  align-items: center;
-  gap: -0.625rem;
-}
-
-.messages-btn .avatars img {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-left: -0.625rem;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.post {
-  background-color: #111;
-  border: 0.0625rem solid #333;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  box-sizing: border-box;
-  margin-top: 0;
-  margin-bottom: 1.25rem;
-  width: auto;
-
-}
-
-.post-container {
-  max-height: 100vh;
-  overflow-y: auto;
-  padding-right: 0.9375rem;
-  gap: 1.25rem;
-  padding-bottom: 15vh;
-}
-
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 0.9375rem;
-  margin-bottom: 1.25rem;
-}
-
-.post-avatar-pic {
-  width: 3.4375rem;
-  height: 3.4375rem;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.post-header-info h4 {
-  margin: 0;
-  font-size: 1.1544rem;
-}
-
-.post-header-info p {
-  margin: 0;
-  font-size: 0.8794rem;
-  color: #bbb;
-}
-
-.post-header-right {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-}
-
-.post-header-right i {
-  color: #bbb;
-  cursor: pointer;
-}
-
-.post-body p {
-  margin: 0 0 0.9375rem 0;
-  color: #ccc;
-  font-size: 1.125rem;
-}
-
-.post-image-placeholder {
-  width: 100%;
-  height: 31.25vh;
-  background-color: #222;
-  background-image: linear-gradient(45deg, #333 25%, transparent 25%),
-    linear-gradient(-45deg, #333 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #333 75%),
-    linear-gradient(-45deg, transparent 75%, #333 75%);
-  background-size: 1.25rem 1.25rem;
-  background-position: 0 0, 0 0.625rem, 0.625rem -0.625rem, 0.625rem 0;
-  border-radius: 0.5rem;
-}
-
-.post-footer {
-  margin-top: 1.25rem;
-  border-top: 0.0625rem solid #333;
-  padding-top: 0.9375rem;
-}
-
-.post-stats {
-  display: flex;
-  justify-content: space-between;
-  color: #bbb;
-  font-size: 0.875rem;
-  margin-bottom: 0.9375rem;
-}
-
-.post-actions {
-  display: flex;
-  justify-content: space-between;
-  color: #bbb;
-}
-
-.post-actions :hover {
-  color: #89aaff;
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.action-btn :hover {
-  color: #89aaff;
-}
-
-
-
-
-
-  .center {
+@media(max-width: 1700px) {
+   .center-column{
+    width: 180%;
     
-    align-items: flex-start;
-    gap: 2rem;
+    position: relative;
+    right: 140px;
+    top: -15px;
+ }
+   .post {
+    width: 80%;
+    position: relative;
+    right: 0px;
+    
+   
   }
-
-  .nav-icon i {
-    font-size: 1rem;
+  .post-container{
+   position: relative;
+  
   }
-
-  .nav-icon {
-    font-size: 0.75rem;
-  }
-
   .post-header-info h4 {
-    font-size: 1rem;
+    font-size: 13px;
+  }
+
+  .post-header-info p {
+    font-size: 10px;
+  }
+
+  .post-avatar-pic {
+    width: 40px;
+    height: 40px;
+  }
+
+  .post-header-right i {
+    font-size: 14px;
   }
 
   .post-body p {
-    font-size: 1rem;
+    font-size: 11px;
   }
+
+  .post-footer {
+    font-size: 11px;
+  }
+
+  .post-stats {
+    font-size: 9px;
+  }
+
+  .post-actions .action-btn {
+    font-size: 9px;
+  }
+
+  .post-actions i {
+    font-size: 12px;
+  }
+
+  .post-image-placeholder {
+    height: 200px;
+  }
+ 
+}
   </style>
 </head>
 <body>
