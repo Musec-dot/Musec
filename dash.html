@@ -1,1055 +1,1048 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Musec dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-     body {
-  font-family: 'Poppins', sans-serif;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musec Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/dash.css">
+  <style>
+    /* Place your additional styles here for custom layout and design */
+    @import url('https://fonts.cdnfonts.com/css/space-grotesk');
+html, body {
   margin: 0;
-  padding: 0;
-  background-color: #000;
-  color: #fff;
-  overflow: hidden; /* Prevent full-page scroll */
-}
-
-  .navbar {
-    display: flex;
-    align-items: center;
-    background-color: #111111;
-    padding: 10px 30px;
-    height: 70px;
-    border-bottom: 1px solid #222;
-  }
-
-  .left {
-    flex: 1;
-  }
-
-  .center {
-    display: flex;
-    gap: 70px;
-    margin-left: auto;
-    margin-right: 150px;
-  }
-
-  .nav-icon {
-    text-decoration: none;
-    color: #888;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  .nav-icon i {
-    font-size: 18px;
-    margin-bottom: 5px;
-  }
-
-  .nav-icon.active,
-  .nav-icon:hover {
-    color: #929BFF;
-  }
-
-  .right .avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-  }
-
-  .left .search {
-    background-color: #1a1a1a;
-    border: 0.1px solid #C0C0C0;
-    padding: 10px 15px 10px 35px;
-    border-radius: 25px;
-    color: white;
-    width: 400px;
-    outline: none;
-    transition: border 0.2s ease;
-  }
-
-  .left .search:focus {
-    border: 2px solid #929BFF;
-  }
-
-  .search-icon {
-    margin-top: 12px;
-    position: absolute;
-    left: 43px;
-    color: #888;
-    font-size: 14px;
-  }
-.search-input {
+  font-family: 'Space Grotesk', sans-serif;
+  background: #0c0c0c;
+  color: white;
   width: 100%;
-  padding: 3%;
-  border-radius: 6px;
-  border: none;
-  background-color: #2a2a2a;
-  color: #fff;
-}
-  .top-section-container {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    padding: 15px 30px;
-    background-color: #0c0c0c;
-    margin-top: 25px;
-    
-  }
-
-  .user-greeting {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin: 0;
-    flex-shrink: 0;
-  }
-
-  .profile-pic {
-    width: 85px;
-    height: 85px;
-    border-radius: 50%;
-  }
-
-  .welcome-text .greet {
-    font-size: 25.74px;
-    color: #b0b0b0;
-    margin: 0;
-    font-weight: 300;
-  }
-
-  .welcome-text .username {
-    font-size: 38.61px;
-    font-weight: 300;
-    color: white;
-    margin: 0;
-  }
-
- .story-bar {
-  height: 10vh;
-  display: flex;
-  align-items: center;
-  overflow-x: auto;
-  padding: 8px 0;
-  gap: 12px;
-}
-
-  .story-bar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .story {
-    min-width: 65px;
-    height: 65px;
-    border-radius: 50%;
-  
-    padding: 2px;
-    flex-shrink: 0;
-
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-
-  .story:hover {
-    transform: scale(1.05);
-  }
-
-  .story img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-.main-container {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  padding: 0;
   overflow: hidden;
 }
-  .center-column{
-    height: calc(100vh - 150px); /* perfect */
-  overflow-y: auto; /* good */
-    
-  }
 
-.left-column {
-  width: 23%;
-  padding: 2%;
-  background-color: #111;
-  overflow-y: auto;
+#zoom-wrapper { display: block; }
+.navbar {
+  display: flex;
+  align-items: center;
+  background-color: #111111;
+  padding: 0.625rem 1.875rem;
+  height: 8vh;
+  border-bottom: 1px solid #222;
 }
-  .center-column {
-  width: 52%;
-  padding: 2%;
-  height: 96vh;
-  overflow-y: auto;
+.left { flex: 1; }
+.center {
+  display: flex;
+  gap: 3vw;
+  margin-left: auto;
+  margin-right: 9.375rem;
 }
-  .right.main-co-column {
-    overflow-y: auto;
-    padding-right: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  /* Hide scrollbar for all columns */
-  .left-column::-webkit-scrollbar,
-  .center-column::-webkit-scrollbar,
-  .right-column::-webkit-scrollbar,
-  .studio-list-container::-webkit-scrollbar,
-  .post-container::-webkit-scrollbar,
-  .musician-list-container::-webkit-scrollbar {
-      display: none;
-  }
-  .left-column,
-  .center-column
- .right-column {
-  width: 23%;
-  padding: 2%;
-  background-color: #111;
-  overflow-y: auto;
+.nav-icon {
+  text-decoration: none;
+  color: #888;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  transition: color 0.18s;
 }
-  .studio-list-container,
-  .musician-list-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .create-post {
-  background: #1a1a1a;
+.nav-icon i {
+  font-size: 1.125rem;
+  margin-bottom: 0.3125rem;
+}
+.nav-icon.active,
+.nav-icon:hover {
+  color: #929BFF;
+}
+.right .avatar {
+  width: 2.8125rem;
+  height: 2.8125rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 50px; 
+  right: 0;
+  background-color: black;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 4%;
-  margin-bottom: 5%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1;
+  min-width: 150px;
 }
-@media (max-width: 1200px) {
-  .left-column, .right-column {
-    display: none;
-  }
-  .center-column {
-    width: 100%;
-  }
+.dropdown a {
+  display: block;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
 }
-  .post-input-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-
-  .post-avatar {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-  }
-
-  .post-input {
-    flex: 1;
-    background-color: #1c1c1c;
-    border: 1px solid #333;
-    padding: 14px 20px;
-    color: #ccc;
-    font-size: 16px;
-    border-radius: 40px;
-    outline: none;
-  }
-
-  .post-options {
-    display: flex;
-    justify-content: space-around;
-    color: #bbb;
-    font-size: 15px;
-  }
-
-  .post-options div {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-
-  .post-options i {
-    font-size: 16px;
-  }
-
-  .find-studio-card {
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 16px;
-    box-sizing: border-box;
-    color: white;
-    font-family: 'Space Grotesk', sans-serif;
-    width: 100%;
-  }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-    font-size: 18px;
-    margin-bottom: 8px;
-  }
-
-  .arrow {
-    font-size: 22px;
-    color: #bbb;
-  }
-
- .map iframe {
-  width: 100%;
-  height: 240px;
+.dropdown a:hover { background-color: #929BFF; }
+.left .search {
+  background-color: #1a1a1a;
+  border: 0.0063rem solid #C0C0C0;
+  padding: 0.625rem 0.9375rem 0.625rem 2.1875rem;
+  border-radius: 1.5625rem;
+  color: white;
+  width: 25rem;
+  outline: none;
+  transition: border 0.2s ease;
+}
+.left .search:focus { border: 0.125rem solid #929BFF; }
+.search-icon {
+  top: 1rem;
+  position: absolute;
+  left: 1rem;
+  color: #888;
+  font-size: 0.875rem;
+}
+.top-section-container {
+  display: flex;
+  align-items: center;
+  gap: 1.875rem;
+  padding: 0.9375rem 1.875rem;
+  background-color: #0c0c0c;
+  margin-top: 2.3148vh;
+}
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 0;
+  flex-shrink: 0;
+}
+.profile-pic {
+  width: 5.3125rem;
+  height: 5.3125rem;
+  border-radius: 50%;
+}
+.welcome-text .greet {
+  font-size: 1.6084rem;
+  color: #b0b0b0;
+  margin: 0;
+  font-weight: 300;
+}
+.welcome-text .username {
+  font-size: 2.4131rem;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+}
+.story-bar {
+  display: flex;
+  gap: 2.125rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  height: 9.2593vh;
+  flex-shrink: 1;
+  padding: 0;
   border: none;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  width: 50%;
+  white-space: nowrap;
+  margin-left: 3.85rem;
 }
-
-  .studio-list-container {
-  max-height: 25vh;
+.story-bar::-webkit-scrollbar { display: none; }
+.story {
+  min-width: 4.0625rem;
+  height: 4.0625rem;
+  border-radius: 50%;
+  padding: 0.125rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.story:hover { transform: scale(1.05); }
+.story img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.main-container {
+  display: grid;
+  grid-template-columns: 26.875rem 1fr 25rem;
+  gap: 1.875rem;
+  padding: 1.875rem;
+  height: 100vh;
+  overflow: hidden;
+}
+.center-column {
+  height: calc(100vh - 13.8889vh);
+  padding-right: 0.9375rem;
+}
+.left-column,
+.center-column,
+.right-column {
   overflow-y: auto;
+  padding-right: 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
-
- .studio {
-  background: #0c0c0c;
-  border: 1px solid #2a2a2a;
-  border-radius: 10px;
-  padding: 4%;
+.left-column::-webkit-scrollbar,
+.center-column::-webkit-scrollbar,
+.right-column::-webkit-scrollbar,
+.studio-list-container::-webkit-scrollbar,
+.post-container::-webkit-scrollbar,
+.musician-list-container::-webkit-scrollbar { display: none; }
+.left-column,
+.center-column,
+.right-column,
+.studio-list-container,
+.musician-list-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.create-post {
+  background-color: #111;
+  border: 1px solid #333;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-sizing: border-box;
+}
+.post-input-section {
+  display: flex;
+  align-items: center;
+  gap: 0.9375rem;
+  margin-bottom: 1.25rem;
+}
+.post-avatar {
+  width: 3.4375rem;
+  height: 3.4375rem;
+  border-radius: 50%;
+}
+.post-input {
+  flex: 1;
+  background-color: #1c1c1c;
+  border: 1px solid #333;
+  padding: 0.875rem 1.25rem;
+  color: #ccc;
+  font-size: 1rem;
+  border-radius: 2.5rem;
+  outline: none;
+}
+.post-options {
+  display: flex;
+  justify-content: space-around;
+  color: #bbb;
+  font-size: 0.9375rem;
+}
+.post-options div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.post-options i { font-size: 1rem; }
+.find-studio-card {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Space Grotesk', sans-serif;
+  width: 100%;
+}
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  color: #fff;
+  font-size: 12px;
+  margin-bottom: 0.5rem;
+}
+.arrow {
+  font-size: 1.375rem;
+  color: #bbb;
+}
+.map iframe {
+  width: 100%;
+  height: 22.2222vh;
+  border: none;
+  border-radius: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.studio-list-container {
+  max-height: 16.6667vh;
+  overflow-y: auto;
+}
+.studio {
+  background: #0c0c0c;
+  border: 1px solid #2a2a2a;
+  border-radius: 0.625rem;
+  padding: 0.875rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.studio-info h3 {
+  margin: 0;
+  font-size: 1.5225rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.studio-info p {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: #ccc;
+}
+.green { color: #4CAF50; }
+.red { color: #FF5722; }
+.available { color: #4CAF50; }
+.booked { color: #FF5722; }
+.book-btn {
+  background: none;
+  border: 1px solid #929BFF;
+  color: #929BFF;
+  padding: 0.375rem 1rem;
+  border-radius: 1.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.musician-card {
+  background-color: #111;
+  border: 0.0625rem solid #333;
+  border-radius: 0.625rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-top: 0;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.0625rem;
+  border-bottom: 0.0625rem solid #333;
+  padding-bottom: 0.625rem;
+  margin-bottom: 0.875rem;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.card-header i {
+  font-size: 1.25rem;
+  color: white;
+}
+.musician-list-container { max-height: 45vh; overflow-y: auto; }
+.musician {
+  display: flex;
+  align-items: center;
+  background-color: #1a1a1a;
+  border: 0.0625rem solid #333;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  gap: 0.75rem;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-bottom: 0.875rem;
+}
+.musician:last-child { margin-bottom: 0; }
+.musician .avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.musician .info h4 {
+  margin: 0;
+  font-size: 1.2981rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.musician .info p {
+  margin: 0;
+  font-size: 0.6875rem;
+  color: #bbb;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.connect-btn {
+  margin-left: auto;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  border: 0.0625rem solid #555;
+  background: none;
+  color: #89aaff;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.connect-btn:hover {
+  background-color: #222;
+  border-color: #89aaff;
+}
+.messages-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  border: 0.0625rem solid #333;
+  border-radius: 999px;
+  padding: 0.875rem 1.25rem;
+  width: 18.75rem;
+  max-width: 28.125rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  color: white;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-top: 9vh;
+  margin-left: 3.125rem;
+  position: relative;
+  top: -50px;
+}
+.messages-btn:hover { background-color: #1a1a1a; }
+.messages-btn .left-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.messages-btn i {
+  font-size: 1.625rem;
+  background-color: white;
+  color: black;
+  padding: 0.375rem;
+  border-radius: 50%;
+  margin-top: 0.1875rem;
+}
+.messages-btn .avatars {
+  display: flex;
+  align-items: center;
+  gap: -0.625rem;
+}
+.messages-btn .avatars img {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: -0.625rem;
+}
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 4.375rem);
+  overflow: hidden;
+}
+.post {
+  background-color: #111;
+  border: 0.0625rem solid #333;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  width: auto;
+}
+.post-container {
+  max-height: 100vh;
+  overflow-y: auto;
+  padding-right: 0.9375rem;
+  gap: 1.25rem;
+  padding-bottom: 15vh;
+}
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9375rem;
+  margin-bottom: 1.25rem;
+}
+.post-avatar-pic {
+  width: 3.4375rem;
+  height: 3.4375rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.post-header-info h4 { margin: 0; font-size: 1.1544rem; }
+.post-header-info p { margin: 0; font-size: 0.8794rem; color: #bbb; }
+.post-header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+.post-header-right i { color: #bbb; cursor: pointer; }
+.post-body p {
+  margin: 0 0 0.9375rem 0;
+  color: #ccc;
+  font-size: 1.125rem;
+}
+.post-image-placeholder {
+  width: 100%;
+  height: 31.25vh;
+  background-color: #222;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+.post-footer {
+  margin-top: 1.25rem;
+  border-top: 0.0625rem solid #333;
+  padding-top: 0.9375rem;
+}
+.post-stats {
+  display: flex;
+  justify-content: space-between;
+  color: #bbb;
+  font-size: 0.875rem;
+  margin-bottom: 0.9375rem;
+}
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  color: #bbb;
+}
+.post-actions :hover { color: #89aaff; }
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.post-image-placeholder-mobile  {
+
+  width: 100%;
+  height: 31.25vh;
+  background-color: #222;
+  object-fit: cover;
+  border-radius: 0.5rem;
 }
 
 
-  .studio-info h3 {
-    margin: 0;
-    font-size: 24.36px;
-    font-weight: 600;
-    font-family: 'Space Grotesk', sans-serif;
-  }
+.action-btn :hover { color: #89aaff; }
+@media(max-width:1745px){
+  html,body{ zoom: 93%; }
+}
+@media(max-width:1536px){
+  html,body{ zoom: 93% }
+}
+@media(max-width:1900px){
+  html,body{ zoom: 93% }
+}
+@media(max-width:1280px){
+  html,body{ zoom: 91%; }
+  .story-bar{ height: 100px;  width: 40%; }
+  .navbar{ height: 10vh; }
+}
+.explore-desktop { display: none !important; }
 
-  .studio-info p {
-    margin: 4px 0 0;
-    font-size: 13px;
-    color: #ccc;
-  }
-
-  .green {
-    color: #4CAF50;
-  }
-
-  .red {
-    color: #FF5722;
-  }
-
-  .available {
-    color: #4CAF50;
-  }
-
-  .booked {
-    color: #FF5722;
-  }
-
-  .book-btn {
-    background: none;
-    border: 1px solid #929BFF;
-    color: #929BFF;
-    padding: 6px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .musician-card {
-    background-color: #111;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    color: white;
-    font-family: 'Space Grotesk', sans-serif;
-    margin-top: 0;
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 17px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
-    margin-bottom: 14px;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-
-  .card-header i {
-    font-size: 20px;
-    color: white;
-  }
-
-  .musician-list-container {
-    max-height: 469px;
-    overflow-y: auto;
-  }
-
-  .musician {
-    display: flex;
-    align-items: center;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 12px;
-    gap: 12px;
-    font-family: 'Space Grotesk', sans-serif;
-    margin-bottom: 14px;
-  }
-
-  .musician:last-child {
-    margin-bottom: 0;
-  }
-
-  .musician .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .musician .info h4 {
-    margin: 0;
-    font-size: 20.77px;
-    font-weight: 600;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-
-  .musician .info p {
-    margin: 0;
-    font-size: 11px;
-    color: #bbb;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-
-  .connect-btn {
-    margin-left: auto;
-    padding: 6px 14px;
-    border-radius: 999px;
-    border: 1px solid #555;
-    background: none;
-    color: #89aaff;
-    font-size: 12px;
-    cursor: pointer;
-    transition: 0.3s ease;
-  }
-
-  .connect-btn:hover {
-    background-color: #222;
-    border-color: #89aaff;
-  }
-
+@media (max-width:576px) {
+  #zoom-wrapper,
+  .navbar,
+  .top-section-container,
+  .main-container,
+  .find-studio-card,
+  .musician-card,
   .messages-btn {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #111;
-    border: 1px solid #333;
-    border-radius: 999px;
-    padding: 14px 20px;
-    width: 300px;
-    max-width: 450px;
-    cursor: pointer;
-    transition: background 0.3s;
-    color: white;
-    font-family: 'Space Grotesk', sans-serif;
-    margin-top: 60px;
-    margin-left: 50px;
+    display: none !important;
   }
-
-  .messages-btn:hover {
-    background-color: #1a1a1a;
+  body {
+    background: linear-gradient(180deg, #0c0c0c 70%, #181818 100%) !important;
+    overflow-x: hidden !important;
   }
-
-  .messages-btn .left-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .messages-btn i {
-    font-size: 26px;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    border-radius: 50%;
-    margin-top: 3px;
-  }
-
-  .messages-btn .avatars {
-    display: flex;
-    align-items: center;
-    gap: -10px;
-  }
-
-  .messages-btn .avatars img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-left: -10px;
-  }
-
-  .page-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 70px);
-    overflow: hidden;
-  }
-
-  .post {
-    background-color: #111;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 20px;
-    box-sizing: border-box;
-    margin-top: 0px;
-    margin-bottom: 20px;
+  .explore-desktop { display: flex !important; }
+  .phone-dashboard {
+    display: block !important;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0c0c0c 70%, #181818 100%);
+    position: relative;
+    overflow-x: hidden;
+    margin: 0 auto;
     
   }
-  .post-container{
-    max-height: 100vh;
-    overflow-y: auto;
-    padding-right: 15px;
-    gap: 20px;
-    padding-bottom: 120px;
-  }
-  .post-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-
-  .post-avatar-pic {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .post-header-info h4 {
-    margin: 0;
-    font-size: 18.47px;
-  }
-
-  .post-header-info p {
-    margin: 0;
-    font-size: 14.07px;
-    color: #bbb;
-  }
-
-  .post-header-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .post-header-right i {
-    color: #bbb;
-    cursor: pointer;
-  }
-
-  .post-body p {
-    margin: 0 0 15px 0;
-    color: #ccc;
-    font-size: 18px;
-  }
-
-  .post-image-placeholder {
+  .mobile-header-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 250px;
-    background-color: #222;
-    background-image: linear-gradient(45deg, #333 25%, transparent 25%), linear-gradient(-45deg, #333 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #333 75%), linear-gradient(-45deg, transparent 75%, #333 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, 10px 0px;
-    border-radius: 8px;
+ 
+    z-index: 30;
+    background: #181818;
+    border-bottom: 1px solid #222;
+    padding-top: 0.4rem;
   }
-
-  .post-footer {
-    margin-top: 20px;
-    border-top: 1px solid #333;
-    padding-top: 15px;
+  .mobile-header {
+    padding: 1.1rem 0 0.4rem 0;
+    background: #181818;
+    border-bottom: 1px solid #222;
+    margin: 0 auto;
   }
-
-  .post-stats {
+  .welcome-row {
     display: flex;
     justify-content: space-between;
-    color: #bbb;
-    font-size: 14px;
-    margin-bottom: 15px;
-  }
+    align-items: flex-start;
+    padding: 1.2rem 1.2rem 0 1.2rem;
 
-  .post-actions {
+    margin: 0 auto;
+  }
+  .welcome-text {
     display: flex;
-    justify-content: space-between;
-    color: #bbb;
+    flex-direction: column;
+    margin-top: 0.4rem;
+  }
+  .greet {
+    font-size: 1.5rem;
+    color: #b0b0b0;
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+  .username {
+    font-size: 2.3rem;
+    font-family: 'Space Grotesk',sans-serif;
+    font-weight: 500;
+    margin: 0;
+    color: #fff;
+  }
+  .messenger-btn {
+    position: relative;
+    margin-top: 0.1rem;
+  }
+  .messenger-btn i {
+    font-size: 1.6rem;
+    color: #fff;
+    background: #181818;
+    border-radius: 50%;
+    padding: 0.11rem;
+    border: 2px solid #fff;
+  }
+  .notif-dot {
+    position: absolute;
+    top: 0.18rem; right: 0.18rem;
+    width: 0.55rem; height: 0.55rem;
+    background: #f00;
+    border-radius: 50%;
+    border: 2px solid #181818;
+    z-index: 2;
+  }
+  .story-bar-mobile {
+    width: 100%;
 
+    padding: 0.5rem 0.7rem 0.5rem 0.7rem;
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem;
+    scrollbar-width: none;
+    background: #181818;
+    margin: 0 auto;
   }
-  .post-actions :hover{
-    color: #89aaff;
+  .story-bar-mobile::-webkit-scrollbar { display: none; }
+
+  .story-mobile img {
+    width: 4rem; height: 4rem;
+    border-radius: 50%;
+    gap: 5rem;
+    object-fit: cover;
+    border: 2px solid #181818;
+    background: #181818;
   }
-  .action-btn {
+  .mobile-posts {
+    width: 100%;
+    max-width: 430px;
+    padding: 0.7rem 0.2rem 5.5rem 0.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 220px; 
+    height: calc(100vh - 5.5rem);
+    overflow-y: auto;
+  }
+  .post-mobile {
+    min-height: 60%;
+  
+    width: 101%;
+    max-width: none;
+    background: #181818;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    border: 1.5px solid #23234c;
+    display: flex;
+    flex-direction: column;
+   
+  }
+  .post-mobile-header {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0.7rem;
+    padding: 0.7rem 0.8rem 0.2rem 0.8rem;
+  }
+  .post-mobile-avatar {
+    width: 2.1rem; height: 2.1rem; border-radius: 50%; object-fit: cover;
+    margin-right: 0.2rem;
+    border: 2px solid #888; background: #222;
+  }
+  .post-mobile-userinfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 4px;
+
+  }
+
+  .post-mobile-name {
+    margin: 0; color: #eee; font-weight: 500; font-size: 1rem;
+    font-family: 'Space Grotesk',sans-serif;
+    line-height: 1.1;
+  }
+  .post-mobile-meta {
+    margin: 0; color: #bbb; font-size: 0.77rem; line-height: 1.1;
+  }
+  .post-more {
+    margin-left: auto;
+    color: #bbb;
+    font-size: 1.2rem;
     cursor: pointer;
-    font-size: 14px;
+  }
+  .post-mobile-body {
+    padding: 0 0.8rem 0.5rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .post-mobile-text {
+    margin: 0;
+    color: #ccc;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-left: 10px;
   }
 
-  .action-btn :hover{
-      color:#89aaff;
+  .stripes {
+    background-image: repeating-linear-gradient(
+      90deg,
+      #fff 0px,
+      #fff 7px,
+      #000 7px,
+      #000 14px
+    );
+    background-size: 14px 70px;
   }
-  
-    </style>
-  </head>
-  <body>
+  .post-mobile-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #23234c;
+    background: #181818;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+  .action-btn-mobile {
+    border: none;
+    background: none;
+    color: #bbb;
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 0.12rem 0.18rem;
+    border-radius: 0.3rem;
+    transition: color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+  }
+  .action-btn-mobile:hover,
+  .action-btn-mobile:focus,
+  .action-btn-mobile:active {
+    color: #929BFF;
+    background: #23234c;
+  }
+  .fab-create {
+    position: fixed;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    color: white;
+    border: 1px solid #333;
+    border-radius: 50%;
+    width: 3.1rem;
+    height: 3.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 2px 12px #222;
+    z-index: 40;
+    outline: none;
+    transition: transform 0.18s cubic-bezier(.4,2,.6,1);
+  }
+  .fab-create:hover,
+  .fab-create:focus {
+    transform: translateX(-50%) scale(1.15);
+    background: #222;
+  }
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    /* Removed max-width to allow full width */
+    background: #181818;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3.7rem;
+    border-top: 1px solid #23234c;
+    z-index: 35;
+    margin: 0 auto;
+    padding: 0;
+  }
+  .bottom-nav-item {
+    color: #aaa;
+    font-size: 1.45rem;
+    flex: 1 0 0;
+    text-align: center;
+    transition: color 0.18s;
+    padding: 0.15rem 0;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+  }
+  .bottom-nav-item.active,
+  .bottom-nav-item:hover,
+  .bottom-nav-item:focus {
+    color: #929BFF;
+  }
+  .bottom-nav-item-placeholder { flex: 1; }
+}
+  </style>
+</head>
 
-    <nav class="navbar">
-      <div class="left">
-        <div class="search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search" placeholder="Parin goat?">
+<body>
+<div id="zoom-wrapper">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg px-4 py-2">
+    <div class="left">
+      <div class="d-flex align-items-center position-relative">
+        <i class="fas fa-search search-icon me-2"></i>
+        <input type="text" class="form-control bg-dark border-0 text-white" style="border-radius:24px;max-width:320px;" placeholder="Search Musec...">
+      </div>
+    </div>
+    <div class="center d-flex gap-4 ms-auto me-5">
+      <a href="/" class="nav-icon active"><i class="fas fa-home"></i><span>Home</span></a>
+      <a href="#" class="nav-icon"><i class="fas fa-user-friends"></i><span>Network</span></a>
+      <a href="#" class="nav-icon"><i class="fas fa-comment-dots"></i><span>Messaging</span></a>
+      <a href="/requests" class="nav-icon"><i class="fas fa-bell"></i><span>Notifications</span></a>
+      <a href="#" class="nav-icon"><i class="fas fa-globe"></i><span>Explore</span></a>
+    </div>
+    <div class="right d-flex align-items-center position-relative">
+      <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" class="avatar" alt="User Avatar" id="avatar" />
+      <div class="dropdown position-absolute top-100 mt-2 bg-dark text-white p-2" id="dropdownMenu" style="display:none;right:0;">
+        <a href="/bio.html" class="dropdown-item text-white">My Profile</a>
+        <a href="/settings.html" class="dropdown-item text-white">Settings</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Top Section -->
+  <div class="top-section-container my-3 px-4">
+    <div class="user-greeting">
+      <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Profile" class="profile-pic" />
+      <div class="welcome-text">
+        <p class="greet mb-1">Welcome back!</p>
+        <h2 class="username" style="font-weight:300;font-size:2rem;"><%= locals.user?.username || "User" %></h2>
+      </div>
+    </div>
+    <div class="story-bar">
+      <a href="/go-live" class="story">
+        <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Story"><span class="text-primary" style="position:absolute;padding-left:10px;font-size:2rem;">+</span>
+      </a>
+      <% if (locals.liveStreams) { %>
+        <% locals.liveStreams.forEach(stream => { %>
+          <a href="/watch/<%= stream.streamId %>" class="story">
+            <img src="<%= stream.coverImg || '/images/avatar.png' %>" alt="Live Stream">
+          </a>
+        <% }); %>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Grid Main -->
+  <div class="main-container container-fluid">
+    <!-- Left Column -->
+    <div class="left-column">
+      <!-- Create Post -->
+      <div class="create-post">
+        <form action="/new" method="POST" enctype="multipart/form-data">
+          <div class="post-input-section d-flex align-items-center gap-3 mb-3">
+            <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" class="post-avatar" />
+            <input type="text" name="title" class="form-control bg-dark border-0 text-white post-input" style="border-radius:2rem" placeholder="Write a post" required>
+          </div>
+          <input type="file" name="media" id="mediaInput" accept="image/*,video/*,audio/*" style="display:none;">
+          <div class="post-options d-flex justify-content-between">
+            <label for="mediaInput" class="me-2"><i class="fas fa-video"></i> Video</label>
+            <label for="mediaInput" class="me-2"><i class="fas fa-image"></i> Photo</label>
+            <label for="mediaInput"><i class="fas fa-microphone"></i> Audio</label>
+          </div>
+          <button type="submit" style="display:none;">Post</button>
+        </form>
+      </div>
+      <!-- Studio Finder -->
+      <div class="find-studio-card">
+        <div class="header d-flex justify-content-between align-items-center mb-2">
+          <h5 class="mb-0">Find Studios Near You</h5>
+          <i class="fa-solid fa-arrow-right-long arrow"></i>
         </div>
-      </div>
-      <div class="center">
-        <a href="#" class="nav-icon active"><i class="fas fa-home"></i> <span>Home</span></a>
-        <a href="#" class="nav-icon"><i class="fas fa-user-friends"></i> <span>Network</span></a>
-        <a href="#" class="nav-icon"><i class="fas fa-comment-dots"></i> <span>Messaging</span></a>
-        <a href="#" class="nav-icon"><i class="fas fa-bell"></i> <span>Notifications</span></a>
-      </div>
-      <div class="right">
-        <img src="avatar.png" class="avatar" alt="User Avatar">
-      </div>
-
-    </nav>
-
-    <div class="top-section-container">
-      <div class="user-greeting">
-        <img src="avatar.png" alt="Profile" class="profile-pic" />
-        <div class="welcome-text">
-          <p class="greet">Welcome back!</p>
-          <h2 class="username">Pranav Kapur</h2>
+        <div class="map mb-3">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.705697184839!2d-86.80243218479373!3d33.52066028075121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88891be50dd9caa5%3A0x902d30dbce2c449b!2sBirmingham%2C%20AL%2C%20USA!5e0!3m2!1sen!2sin!4v1690379265984!5m2!1sen!2sin"
+              allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border-radius:8px;width:100%;height:160px;"></iframe>
         </div>
-      </div>
-      <div class="story-bar">
-        <div class="story"><img src="avatar.png" alt="Story 1"></div>
-        <div class="story"><img src="avatar.png" alt="Story 2"></div>
-        <div class="story"><img src="avatar.png" alt="Story 3"></div>
-        <div class="story"><img src="avatar.png" alt="Story 4"></div>
-        <div class="story"><img src="avatar.png" alt="Story 5"></div>
-        <div class="story"><img src="avatar.png" alt="Story 6"></div>
-        <div class="story"><img src="avatar.png" alt="Story 7"></div>
-        <div class="story"><img src="avatar.png" alt="Story 8"></div>
-        <div class="story"><img src="avatar.png" alt="Story 9"></div>
-        <div class="story"><img src="avatar.png" alt="Story 10"></div>
-        <div class="story"><img src="avatar.png" alt="Story 11"></div>
-        <div class="story"><img src="avatar.png" alt="Story 12"></div>
-        <div class="story"><img src="avatar.png" alt="Story 13"></div>
-        <div class="story"><img src="avatar.png" alt="Story 14"></div>
-        <div class="story"><img src="avatar.png" alt="Story 15"></div>
-
+        <div class="studio-list-container">
+          <% if (locals.studios) { %>
+            <% locals.studios.forEach(studio => { %>
+              <div class="studio d-flex justify-content-between align-items-center mb-2">
+                <div class="studio-info">
+                  <h6 class="mb-1"><%= studio.name %></h6>
+                  <p class="mb-0">
+                    <%= studio.distance %> km &nbsp; 
+                    <span class="<%= studio.rating >= 4.0 ? 'green' : 'red' %>">★ <%= studio.rating %></span> &nbsp; 
+                    <span class="<%= studio.status === 'Available' ? 'available' : 'booked' %>"><%= studio.status %></span>
+                  </p>
+                </div>
+                <button class="book-btn">BOOK</button>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="text-white-50">No studios found.</div>
+          <% } %>
+        </div>
       </div>
     </div>
 
-
-    <div class="main-container">
-
-      <div class="left-column">
-              <div class="create-post">
-          <div class="post-input-section">
-            <img src="avatar.png" class="post-avatar" />
-            <input type="text" class="post-input" placeholder="Write a post" />
-          </div>
-          <div class="post-options">
-            <div><i class="fas fa-video"></i> Video</div>
-            <div><i class="fas fa-image"></i> Photo</div>
-            <div><i class="fas fa-microphone"></i> Audio</div>
-          </div>
-        </div>
-        <div class="find-studio-card">
-          <div class="header">
-            <h2>Find Studios Near You</h2>
-            <i class="fa-solid fa-arrow-right-long arrow"></i>
-          </div>
-          <div class="map">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.705697184839!2d-86.80243218479373!3d33.52066028075121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88891be50dd9caa5%3A0x902d30dbce2c449b!2sBirmingham%2C%20AL%2C%20USA!5e0!3m2!1sen!2sin!4v1690379265984!5m2!1sen!2sin"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </div>
-          <div class="studio-list-container">
-            <div class="studio">
-              <div class="studio-info">
-                <h3>Musec studio</h3>
-                <p>3.5 km   <span class="green">★ 4.9</span>   <span class="available">Available</span></p>
+    <!-- Center Column: Posts Feed -->
+    <div class="center-column">
+      <div class="post-container">
+        <% if (locals.posts && locals.posts.length) { %>
+          <% locals.posts.forEach(post => { %>
+            <div class="post">
+              <!-- Post Header -->
+              <div class="post-header">
+                <a href="/user/<%= post.author?._id %>">
+                  <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" alt="<%= post.author?.username || 'User' %>" class="post-avatar-pic"/>
+                </a>
+                <div class="post-header-info">
+                  <h4><%= post.author?.username || 'User' %></h4>
+                  <p><%= post.author?.followersCount || 0 %> followers</p>
+                </div>
+                <div class="post-header-right">
+                  <i class="fas fa-ellipsis-h"></i>
+                  <% if (locals.user && locals.user._id && post.author && post.author._id !== locals.user._id) { %>
+                    <form action="/requests/send" method="POST" style="margin:0;">
+                      <input type="hidden" name="toId" value="<%= post.author._id %>">
+                      <button class="connect-btn" type="submit">Connect</button>
+                    </form>
+                  <% } %>
+                </div>
               </div>
-              <button class="book-btn">BOOK</button>
-            </div>
-            <div class="studio">
-              <div class="studio-info">
-                <h3>Musec studio</h3>
-                <p>3.5 km   <span class="red">★ 2.4</span>   <span class="booked">Booked</span></p>
+              <!-- Post Content -->
+              <div class="post-content mb-2">
+                <% if (post.title) { %><h5><%= post.title %></h5><% } %>
+                <% if (post.content && post.content.trim() !== "") { %>
+                  <p><%= post.content %></p>
+                <% } %>
+                <% if (post.fileUrl && post.fileType === 'image') { %>
+                  <img class="post-media" src="<%= post.fileUrl %>" alt="Post image" />
+                <% } else if (post.fileUrl && post.fileType === 'video') { %>
+                  <video class="post-media" controls>
+                    <source src="<%= post.fileUrl %>" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                <% } else if (post.fileUrl && post.fileType === 'audio') { %>
+                  <audio class="post-media" controls>
+                    <source src="<%= post.fileUrl %>" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                  </audio>
+                <% } %>
               </div>
-              <button class="book-btn">BOOK</button>
-            </div>
-            <div class="studio">
-              <div class="studio-info">
-                <h3>Another Studio Name</h3>
-                <p>5.2 km   <span class="green">★ 4.1</span>   <span class="available">Available</span></p>
+              <!-- Post Footer -->
+              <div class="post-footer mt-2">
+                <div class="post-stats d-flex justify-content-between text-secondary mb-2">
+                  <span><%= post.likes || 0 %> likes</span>
+                  <span><%= post.commentsCount || 0 %> comments</span>
+                </div>
+                <div class="post-actions">
+                  <div class="action-btn"><i class="fa-regular fa-thumbs-up"></i> react</div>
+                  <div class="action-btn"><i class="fa-regular fa-comment-dots"></i> comment</div>
+                  <div class="action-btn"><i class="fa-solid fa-share"></i> repost</div>
+                  <div class="action-btn"><i class="bi bi-send"></i> share</div>
+                </div>
               </div>
-              <button class="book-btn">BOOK</button>
             </div>
-            <div class="studio">
-              <div class="studio-info">
-                <h3>Cool Beats Studio</h3>
-                <p>1.1 km   <span class="green">★ 5.0</span>   <span class="available">Available</span></p>
-              </div>
-              <button class="book-btn">BOOK</button>
-            </div>
-          </div>
-        </div>
+          <% }); %>
+        <% } else { %>
+          <div class="text-white-50">No posts yet.</div>
+        <% } %>
       </div>
-
-      <div class="center-column">
-
-  <div class="post-container">
-        <div class="post">
-          <div class="post-header">
-            <img src="avatar.png" alt="Pranav Kapur" class="post-avatar-pic">
-            <div class="post-header-info">
-              <h4>Pranav Kapur</h4>
-              <p>100,000 followers</p>
-            </div>
-            <div class="post-header-right">
-              <i class="fas fa-ellipsis-h"></i>
-              <button class="connect-btn">Connect</button>
-            </div>
-          </div>
-          <div class="post-body">
-            <p>Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi</p>
-            <div class="post-image-placeholder"></div>
-          </div>
-          <div class="post-footer">
-            <div class="post-stats">
-              <span>5 likes</span>
-              <span>10 comments</span>
-            </div>
-            <div class="post-actions">
-              <div class="action-btn"><i class="fas fa-heart"></i> react</div>
-              <div class="action-btn"><i class="fas fa-comment"></i> comment</div>
-              <div class="action-btn"><i class="fas fa-retweet"></i> repost</div>
-              <div class="action-btn"><i class="fas fa-share"></i> share</div>
-            </div>
-          </div>
-        </div>
-        <div class="post">
-          <div class="post-header">
-            <img src="avatar.png" alt="Pranav Kapur" class="post-avatar-pic">
-            <div class="post-header-info">
-              <h4>Pranav Kapur</h4>
-              <p>100,000 followers</p>
-            </div>
-            <div class="post-header-right">
-              <i class="fas fa-ellipsis-h"></i>
-              <button class="connect-btn">Connect</button>
-            </div>
-          </div>
-          <div class="post-body">
-            <p>Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi</p>
-            <div class="post-image-placeholder"></div>
-          </div>
-          <div class="post-footer">
-            <div class="post-stats">
-              <span>5 likes</span>
-              <span>10 comments</span>
-            </div>
-            <div class="post-actions">
-              <div class="action-btn"><i class="fas fa-heart"></i> react</div>
-              <div class="action-btn"><i class="fas fa-comment"></i> comment</div>
-              <div class="action-btn"><i class="fas fa-retweet"></i> repost</div>
-              <div class="action-btn"><i class="fas fa-share"></i> share</div>
-            </div>
-          </div>
-        </div>
-              <div class="post">
-          <div class="post-header">
-            <img src="avatar.png" alt="Pranav Kapur" class="post-avatar-pic">
-            <div class="post-header-info">
-              <h4>Pranav Kapur</h4>
-              <p>100,000 followers</p>
-            </div>
-            <div class="post-header-right">
-              <i class="fas fa-ellipsis-h"></i>
-              <button class="connect-btn">Connect</button>
-            </div>
-          </div>
-          <div class="post-body">
-            <p>Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi</p>
-            <div class="post-image-placeholder"></div>
-          </div>
-          <div class="post-footer">
-            <div class="post-stats">
-              <span>5 likes</span>
-              <span>10 comments</span>
-            </div>
-            <div class="post-actions">
-              <div class="action-btn"><i class="fas fa-heart"></i> react</div>
-              <div class="action-btn"><i class="fas fa-comment"></i> comment</div>
-              <div class="action-btn"><i class="fas fa-retweet"></i> repost</div>
-              <div class="action-btn"><i class="fas fa-share"></i> share</div>
-            </div>
-          </div>
-        </div>
-              <div class="post">
-          <div class="post-header">
-            <img src="avatar.png" alt="Pranav Kapur" class="post-avatar-pic">
-            <div class="post-header-info">
-              <h4>Pranav Kapur</h4>
-              <p>100,000 followers</p>
-            </div>
-            <div class="post-header-right">
-              <i class="fas fa-ellipsis-h"></i>
-              <button class="connect-btn">Connect</button>
-            </div>
-          </div>
-          <div class="post-body">
-            <p>Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi</p>
-            <div class="post-image-placeholder"></div>
-          </div>
-          <div class="post-footer">
-            <div class="post-stats">
-              <span>5 likes</span>
-              <span>10 comments</span>
-            </div>
-            <div class="post-actions">
-              <div class="action-btn"><i class="fas fa-heart"></i> react</div>
-              <div class="action-btn"><i class="fas fa-comment"></i> comment</div>
-              <div class="action-btn"><i class="fas fa-retweet"></i> repost</div>
-              <div class="action-btn"><i class="fas fa-share"></i> share</div>
-            </div>
-          </div>
-        </div>
-              <div class="post">
-          <div class="post-header">
-            <img src="avatar.png" alt="Pranav Kapur" class="post-avatar-pic">
-            <div class="post-header-info">
-              <h4>Pranav Kapur</h4>
-              <p>100,000 followers</p>
-            </div>
-            <div class="post-header-right">
-              <i class="fas fa-ellipsis-h"></i>
-              <button class="connect-btn">Connect</button>
-            </div>
-          </div>
-          <div class="post-body">
-            <p>Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi</p>
-            <div class="post-image-placeholder"></div>
-          </div>
-          <div class="post-footer">
-            <div class="post-stats">
-              <span>5 likes</span>
-              <span>10 comments</span>
-            </div>
-            <div class="post-actions">
-              <div class="action-btn"><i class="fas fa-heart"></i> react</div>
-              <div class="action-btn"><i class="fas fa-comment"></i> comment</div>
-              <div class="action-btn"><i class="fas fa-retweet"></i> repost</div>
-              <div class="action-btn"><i class="fas fa-share"></i> share</div>
-            </div>
-          </div>
-        </div>
-        <div class="post">
-          <div class="post-header">
-            <img src="avatar.png" alt="Pranav Kapur" class="post-avatar-pic">
-            <div class="post-header-info">
-              <h4>Pranav Kapur</h4>
-              <p>100,000 followers</p>
-            </div>
-            <div class="post-header-right">
-              <i class="fas fa-ellipsis-h"></i>
-              <button class="connect-btn">Connect</button>
-            </div>
-          </div>
-          <div class="post-body">
-            <p>Kitlesel kaynak kullanımına Moov'dan dikkat çeken örnek: Kiralamada indirimle operasyon yönetimi</p>
-            <div class="post-image-placeholder"></div>
-          </div>
-          <div class="post-footer">
-            <div class="post-stats">
-              <span>5 likes</span>
-              <span>10 comments</span>
-            </div>
-            <div class="post-actions">
-              <div class="action-btn"><i class="fas fa-heart"></i> react</div>
-              <div class="action-btn"><i class="fas fa-comment"></i> comment</div>
-              <div class="action-btn"><i class="fas fa-retweet"></i> repost</div>
-              <div class="action-btn"><i class="fas fa-share"></i> share</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
-
-      <div class="right-column">
-        <div class="musician-card">
-          <div class="card-header">
-            <span>Connect With Musicians</span>
-            <i class="fas fa-arrow-right"></i>
-          </div>
-          <div class="musician-list-container">
-            <div class="musician-list">
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-
-              <div class="musician">
-                <img src="avatar.png" alt="avatar" class="avatar" />
-                <div class="info">
-                  <h4>Pranav Kapur</h4>
-                  <p>UI/UX designer</p>
-                </div>
-                <button class="connect-btn">Connect</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button class="messages-btn">
-          <div class="left-content">
-            <i class="fab fa-facebook-messenger"></i>
-            <span>Messages</span>
-          </div>
-          <div class="avatars">
-            <img src="avatar.png" alt="Avatar" />
-            <img src="avatar.png" alt="Avatar" />
-            <img src="avatar.png" alt="Avatar" />
-          </div>
-        </button>
-      </div>
-
     </div>
 
-  </body>
+    <!-- Right Column: Musicians & Messages -->
+    <div class="right-column">
+      <div class="musician-card">
+        <div class="card-header mb-2">
+          <span>Connect With Musicians</span>
+          <i class="fas fa-arrow-right"></i>
+        </div>
+        <div class="musician-list-container">
+          <div class="musician-list">
+            <% if (locals.allUsers && locals.allUsers.length) { %>
+              <% allUsers.forEach(user => { %>
+                <div class="musician">
+                  <img src="<%= user.profilePic || '/images/avatar.png' %>" alt="<%= user.username %>" class="avatar" />
+                  <div class="info">
+                    <h4 class="mb-1"><%= user.username %></h4>
+                    <p class="mb-0 text-secondary"><%= user.role || 'Musician' %></p>
+                  </div>
+                  <form action="/requests/send" method="POST" style="margin:0;">
+                    <input type="hidden" name="toId" value="<%= user._id %>">
+                    <button class="connect-btn" type="submit">Connect</button>
+                  </form>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="text-white-50">No users found.</div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <a href="/msg" class="messages-btn mt-4 text-decoration-none">
+        <i class="fab fa-facebook-messenger fs-3"></i>
+        <div class="left-content flex-grow-1"><span>Messages</span></div>
+        <div class="avatars d-flex">
+          <img src="/images/avatar.png" alt="Avatar"/>
+          <img src="/images/avatar.png" alt="Avatar"/>
+          <img src="/images/avatar.png" alt="Avatar"/>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
 
-  </html>
+<!-- User dropdown JS -->
+<script>
+  const avatar = document.getElementById('avatar');
+  const dropdown = document.getElementById('dropdownMenu');
+  if (avatar && dropdown) {
+      avatar.addEventListener('click', () => {
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+      });
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.right')) {
+          dropdown.style.display = 'none';
+        }
+      });
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

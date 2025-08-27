@@ -3,46 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Musec dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <title>Musec Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <link rel="stylesheet" href="/dash.css">
   <style>
-  html,body {
+    /* Place your additional styles here for custom layout and design */
+    @import url('https://fonts.cdnfonts.com/css/space-grotesk');
+html, body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #0c0c0c;
+  font-family: 'Space Grotesk', sans-serif;
+  background: #0c0c0c;
   color: white;
-  overflow: hidden;
   width: 100%;
   height: 100%;
   padding: 0;
+  overflow: hidden;
 }
 
-
+#zoom-wrapper { display: block; }
 .navbar {
   display: flex;
   align-items: center;
   background-color: #111111;
   padding: 0.625rem 1.875rem;
-  height: 6.4815vh;
+  height: 8vh;
   border-bottom: 1px solid #222;
 }
-
-.left {
-  flex: 1;
-}
-
+.left { flex: 1; }
 .center {
   display: flex;
-  gap: 6.4815vh;
+  gap: 3vw;
   margin-left: auto;
   margin-right: 9.375rem;
 }
-
 .nav-icon {
   text-decoration: none;
   color: #888;
@@ -50,24 +46,41 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  transition: color 0.18s;
 }
-
 .nav-icon i {
   font-size: 1.125rem;
   margin-bottom: 0.3125rem;
 }
-
 .nav-icon.active,
 .nav-icon:hover {
   color: #929BFF;
 }
-
 .right .avatar {
   width: 2.8125rem;
   height: 2.8125rem;
   border-radius: 50%;
+  cursor: pointer;
 }
-
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 50px; 
+  right: 0;
+  background-color: black;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1;
+  min-width: 150px;
+}
+.dropdown a {
+  display: block;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+}
+.dropdown a:hover { background-color: #929BFF; }
 .left .search {
   background-color: #1a1a1a;
   border: 0.0063rem solid #C0C0C0;
@@ -78,19 +91,14 @@
   outline: none;
   transition: border 0.2s ease;
 }
-
-.left .search:focus {
-  border: 0.125rem solid #929BFF;
-}
-
+.left .search:focus { border: 0.125rem solid #929BFF; }
 .search-icon {
-  margin-top: 1.1111vh;
+  top: 1rem;
   position: absolute;
-  left: 2.6875rem;
+  left: 1rem;
   color: #888;
   font-size: 0.875rem;
 }
-
 .top-section-container {
   display: flex;
   align-items: center;
@@ -99,7 +107,6 @@
   background-color: #0c0c0c;
   margin-top: 2.3148vh;
 }
-
 .user-greeting {
   display: flex;
   align-items: center;
@@ -107,27 +114,23 @@
   margin: 0;
   flex-shrink: 0;
 }
-
 .profile-pic {
   width: 5.3125rem;
   height: 5.3125rem;
   border-radius: 50%;
 }
-
 .welcome-text .greet {
   font-size: 1.6084rem;
   color: #b0b0b0;
   margin: 0;
   font-weight: 300;
 }
-
 .welcome-text .username {
   font-size: 2.4131rem;
-  font-weight: 300;
+  font-weight: 500;
   color: white;
   margin: 0;
 }
-
 .story-bar {
   display: flex;
   gap: 2.125rem;
@@ -139,13 +142,9 @@
   border: none;
   width: 50%;
   white-space: nowrap;
-  margin-left: 3.75rem;
+  margin-left: 3.85rem;
 }
-
-.story-bar::-webkit-scrollbar {
-  display: none;
-}
-
+.story-bar::-webkit-scrollbar { display: none; }
 .story {
   min-width: 4.0625rem;
   height: 4.0625rem;
@@ -155,18 +154,13 @@
   cursor: pointer;
   transition: transform 0.2s;
 }
-
-.story:hover {
-  transform: scale(1.05);
-}
-
+.story:hover { transform: scale(1.05); }
 .story img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
-
 .main-container {
   display: grid;
   grid-template-columns: 26.875rem 1fr 25rem;
@@ -175,12 +169,10 @@
   height: 100vh;
   overflow: hidden;
 }
-
 .center-column {
   height: calc(100vh - 13.8889vh);
   padding-right: 0.9375rem;
 }
-
 .left-column,
 .center-column,
 .right-column {
@@ -190,16 +182,12 @@
   flex-direction: column;
   gap: 1.25rem;
 }
-
 .left-column::-webkit-scrollbar,
 .center-column::-webkit-scrollbar,
 .right-column::-webkit-scrollbar,
 .studio-list-container::-webkit-scrollbar,
 .post-container::-webkit-scrollbar,
-.musician-list-container::-webkit-scrollbar {
-  display: none;
-}
-
+.musician-list-container::-webkit-scrollbar { display: none; }
 .left-column,
 .center-column,
 .right-column,
@@ -208,7 +196,6 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
 .create-post {
   background-color: #111;
   border: 1px solid #333;
@@ -216,20 +203,17 @@
   padding: 1.25rem;
   box-sizing: border-box;
 }
-
 .post-input-section {
   display: flex;
   align-items: center;
   gap: 0.9375rem;
   margin-bottom: 1.25rem;
 }
-
 .post-avatar {
   width: 3.4375rem;
   height: 3.4375rem;
   border-radius: 50%;
 }
-
 .post-input {
   flex: 1;
   background-color: #1c1c1c;
@@ -240,25 +224,19 @@
   border-radius: 2.5rem;
   outline: none;
 }
-
 .post-options {
   display: flex;
   justify-content: space-around;
   color: #bbb;
   font-size: 0.9375rem;
 }
-
 .post-options div {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
 }
-
-.post-options i {
-  font-size: 1rem;
-}
-
+.post-options i { font-size: 1rem; }
 .find-studio-card {
   background: #111;
   border: 1px solid #333;
@@ -269,21 +247,18 @@
   font-family: 'Space Grotesk', sans-serif;
   width: 100%;
 }
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: #fff;
-  font-size: 1.125rem;
+  font-size: 12px;
   margin-bottom: 0.5rem;
 }
-
 .arrow {
   font-size: 1.375rem;
   color: #bbb;
 }
-
 .map iframe {
   width: 100%;
   height: 22.2222vh;
@@ -291,12 +266,10 @@
   border-radius: 0.5rem;
   margin-bottom: 1.25rem;
 }
-
 .studio-list-container {
   max-height: 16.6667vh;
   overflow-y: auto;
 }
-
 .studio {
   background: #0c0c0c;
   border: 1px solid #2a2a2a;
@@ -307,36 +280,21 @@
   align-items: center;
   margin-bottom: 0.75rem;
 }
-
 .studio-info h3 {
   margin: 0;
   font-size: 1.5225rem;
   font-weight: 600;
   font-family: 'Space Grotesk', sans-serif;
 }
-
 .studio-info p {
   margin: 0.25rem 0 0;
   font-size: 0.8125rem;
   color: #ccc;
 }
-
-.green {
-  color: #4CAF50;
-}
-
-.red {
-  color: #FF5722;
-}
-
-.available {
-  color: #4CAF50;
-}
-
-.booked {
-  color: #FF5722;
-}
-
+.green { color: #4CAF50; }
+.red { color: #FF5722; }
+.available { color: #4CAF50; }
+.booked { color: #FF5722; }
 .book-btn {
   background: none;
   border: 1px solid #929BFF;
@@ -346,7 +304,6 @@
   cursor: pointer;
   font-size: 0.875rem;
 }
-
 .musician-card {
   background-color: #111;
   border: 0.0625rem solid #333;
@@ -357,10 +314,7 @@
   color: white;
   font-family: 'Space Grotesk', sans-serif;
   margin-top: 0;
-  
-  
 }
-
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -371,17 +325,11 @@
   margin-bottom: 0.875rem;
   font-family: 'Space Grotesk', sans-serif;
 }
-
 .card-header i {
   font-size: 1.25rem;
   color: white;
 }
-
-.musician-list-container {
-  max-height: 45vh;
-  overflow-y: auto;
-}
-
+.musician-list-container { max-height: 45vh; overflow-y: auto; }
 .musician {
   display: flex;
   align-items: center;
@@ -393,32 +341,25 @@
   font-family: 'Space Grotesk', sans-serif;
   margin-bottom: 0.875rem;
 }
-
-.musician:last-child {
-  margin-bottom: 0;
-}
-
+.musician:last-child { margin-bottom: 0; }
 .musician .avatar {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
   object-fit: cover;
 }
-
 .musician .info h4 {
   margin: 0;
   font-size: 1.2981rem;
   font-weight: 600;
   font-family: 'Space Grotesk', sans-serif;
 }
-
 .musician .info p {
   margin: 0;
   font-size: 0.6875rem;
   color: #bbb;
   font-family: 'Space Grotesk', sans-serif;
 }
-
 .connect-btn {
   margin-left: auto;
   padding: 0.375rem 0.875rem;
@@ -430,12 +371,10 @@
   cursor: pointer;
   transition: 0.3s ease;
 }
-
 .connect-btn:hover {
   background-color: #222;
   border-color: #89aaff;
 }
-
 .messages-btn {
   display: flex;
   justify-content: space-between;
@@ -452,12 +391,10 @@
   font-family: 'Space Grotesk', sans-serif;
   margin-top: 9vh;
   margin-left: 3.125rem;
+  position: relative;
+  top: -50px;
 }
-
-.messages-btn:hover {
-  background-color: #1a1a1a;
-}
-
+.messages-btn:hover { background-color: #1a1a1a; }
 .messages-btn .left-content {
   display: flex;
   align-items: center;
@@ -465,7 +402,6 @@
   font-size: 1.125rem;
   font-weight: 600;
 }
-
 .messages-btn i {
   font-size: 1.625rem;
   background-color: white;
@@ -474,13 +410,11 @@
   border-radius: 50%;
   margin-top: 0.1875rem;
 }
-
 .messages-btn .avatars {
   display: flex;
   align-items: center;
   gap: -0.625rem;
 }
-
 .messages-btn .avatars img {
   width: 2.25rem;
   height: 2.25rem;
@@ -488,14 +422,12 @@
   object-fit: cover;
   margin-left: -0.625rem;
 }
-
 .page-wrapper {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 4.375rem);
   overflow: hidden;
 }
-
 .post {
   background-color: #111;
   border: 0.0625rem solid #333;
@@ -505,9 +437,7 @@
   margin-top: 0;
   margin-bottom: 1.25rem;
   width: auto;
-
 }
-
 .post-container {
   max-height: 100vh;
   overflow-y: auto;
@@ -515,69 +445,44 @@
   gap: 1.25rem;
   padding-bottom: 15vh;
 }
-
 .post-header {
   display: flex;
   align-items: center;
   gap: 0.9375rem;
   margin-bottom: 1.25rem;
 }
-
 .post-avatar-pic {
   width: 3.4375rem;
   height: 3.4375rem;
   border-radius: 50%;
   object-fit: cover;
 }
-
-.post-header-info h4 {
-  margin: 0;
-  font-size: 1.1544rem;
-}
-
-.post-header-info p {
-  margin: 0;
-  font-size: 0.8794rem;
-  color: #bbb;
-}
-
+.post-header-info h4 { margin: 0; font-size: 1.1544rem; }
+.post-header-info p { margin: 0; font-size: 0.8794rem; color: #bbb; }
 .post-header-right {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 0.625rem;
 }
-
-.post-header-right i {
-  color: #bbb;
-  cursor: pointer;
-}
-
+.post-header-right i { color: #bbb; cursor: pointer; }
 .post-body p {
   margin: 0 0 0.9375rem 0;
   color: #ccc;
   font-size: 1.125rem;
 }
-
 .post-image-placeholder {
   width: 100%;
   height: 31.25vh;
   background-color: #222;
-  background-image: linear-gradient(45deg, #333 25%, transparent 25%),
-    linear-gradient(-45deg, #333 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #333 75%),
-    linear-gradient(-45deg, transparent 75%, #333 75%);
-  background-size: 1.25rem 1.25rem;
-  background-position: 0 0, 0 0.625rem, 0.625rem -0.625rem, 0.625rem 0;
+  object-fit: cover;
   border-radius: 0.5rem;
 }
-
 .post-footer {
   margin-top: 1.25rem;
   border-top: 0.0625rem solid #333;
   padding-top: 0.9375rem;
 }
-
 .post-stats {
   display: flex;
   justify-content: space-between;
@@ -585,17 +490,12 @@
   font-size: 0.875rem;
   margin-bottom: 0.9375rem;
 }
-
 .post-actions {
   display: flex;
   justify-content: space-between;
   color: #bbb;
 }
-
-.post-actions :hover {
-  color: #89aaff;
-}
-
+.post-actions :hover { color: #89aaff; }
 .action-btn {
   display: flex;
   align-items: center;
@@ -603,511 +503,546 @@
   cursor: pointer;
   font-size: 0.875rem;
 }
+.post-image-placeholder-mobile  {
 
-.action-btn :hover {
-  color: #89aaff;
+  width: 100%;
+  height: 31.25vh;
+  background-color: #222;
+  object-fit: cover;
+  border-radius: 0.5rem;
 }
 
 
+.action-btn :hover { color: #89aaff; }
+@media(max-width:1745px){
+  html,body{ zoom: 93%; }
+}
+@media(max-width:1536px){
+  html,body{ zoom: 93% }
+}
+@media(max-width:1900px){
+  html,body{ zoom: 93% }
+}
+@media(max-width:1280px){
+  html,body{ zoom: 91%; }
+  .story-bar{ height: 100px;  width: 40%; }
+  .navbar{ height: 10vh; }
+}
+.explore-desktop { display: none !important; }
 
-
-/* rishik chutiya pc */
-@media (max-width: 1900px) {
-  .welcome-text .greet,
-  .welcome-text .username {
-    font-size: 1.25rem;
-    text-align: left;
+@media (max-width:576px) {
+  #zoom-wrapper,
+  .navbar,
+  .top-section-container,
+  .main-container,
+  .find-studio-card,
+  .musician-card,
+  .messages-btn {
+    display: none !important;
   }
-  .profile-pic{
-    width: 60px;
-    height: 60px;
+  body {
+    background: linear-gradient(180deg, #0c0c0c 70%, #181818 100%) !important;
+    overflow-x: hidden !important;
   }
-
-  .story{
-    width: 60px;
-    height: 60px;
-   
-  }
-  .create-post{
-    width: 290px;
-    height: 130px;
-   position:absolute;
-   margin-top: -20px;
-  }
-  .post-avatar {
-    width: 40px;
-    height: 40px;
-  }
-  .post-input{
-    width: 2px;
-    height: 6px;
-    font-size: 11px;
-  }
-
-  .post-options{
-    width: 10px;
-    height: 10px;
-    margin-top: 10px;
-    gap: 50px;
-    font-size: 9px;
-    padding-top: 8px;
-  }
-  .find-studio-card{
-    width: 290px;
-    height: auto;
-    margin-top: 120px;
-  }
-  .header{
-    font-size: 10px;
-  }
-  .arrow{
-    font-size: 15px;
-  }
-  .map iframe{
-    height: 120px;
-  }
-  .studio{
-    gap: 0;
-  }
-  .studio-info h3{
-    font-size: 13px;
-  }
-  .studio-info p{
-    font-size: 9px;
-  }
-  .book-btn{
-    font-size: 9px;
-  }
-  .musician-card{
-    width: 290px;
-    height: auto;
-    margin-left: 110px;
-  }
-  .card-header{
-    font-size: 14px;
-  }
-  .card-header i{
-    font-size: 14px;
-  }
-  .musician .info h4{
-    font-size: 13px;
-  }
-  .musician .info p{
-    font-size: 10px;
-  }
-  .musician .avatar{
-    width: 35px;
-    height: 35px;
-  }
-  .connect-btn{
-    font-size: 10.5px;
-  }
-  .navbar{
-    height: 5vh;
-  }
-  .nav-icon{
-    font-size: 10px;
-        padding-top: 4px;
-  }
-  .nav-icon i{
-    font-size: 14px;
-        padding-top: 4px;
-  }
-  .right .avatar{
-    padding-top: 10px;
-    width: 30px;
-    height: 30px;
-  }
-  .left .search{
-    width: 250px;
-    height: 4px;
-    font-size: 11px;
-  }
-  .search-icon{
-    font-size: 8px;
-    padding-top: 2px;
-  }
- .messages-btn{
-  position: relative;
-width: 25vh;
-  bottom: 70px;
-  height: 40px;
-  left: 110px;
- }
-  .messages-btn .left-content{
-    margin-top: 4px;
-    font-size: 13px;
-    margin-right: 12px;
-  }
-  
- 
- .messages-btn i{
-  font-size: 9px;
- }
- .messages-btn .avatars img{
-    width: 25px;
-    height: 25px;
- }
- .center-column{
-    width: 180%;
-    
-    position: relative;
-    right: 140px;
-    top: -15px;
- }
- .post {
+  .explore-desktop { display: flex !important; }
+  .phone-dashboard {
+    display: block !important;
     width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0c0c0c 70%, #181818 100%);
     position: relative;
-    right: 0px;
+    overflow-x: hidden;
+    margin: 0 auto;
     
+  }
+  .mobile-header-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+ 
+    z-index: 30;
+    background: #181818;
+    border-bottom: 1px solid #222;
+    padding-top: 0.4rem;
+  }
+  .mobile-header {
+    padding: 1.1rem 0 0.4rem 0;
+    background: #181818;
+    border-bottom: 1px solid #222;
+    margin: 0 auto;
+  }
+  .welcome-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.2rem 1.2rem 0 1.2rem;
+
+    margin: 0 auto;
+  }
+  .welcome-text {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.4rem;
+  }
+  .greet {
+    font-size: 1.5rem;
+    color: #b0b0b0;
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+  .username {
+    font-size: 2.3rem;
+    font-family: 'Space Grotesk',sans-serif;
+    font-weight: 500;
+    margin: 0;
+    color: #fff;
+  }
+  .messenger-btn {
+    position: relative;
+    margin-top: 0.1rem;
+  }
+  .messenger-btn i {
+    font-size: 1.6rem;
+    color: #fff;
+    background: #181818;
+    border-radius: 50%;
+    padding: 0.11rem;
+    border: 2px solid #fff;
+  }
+  .notif-dot {
+    position: absolute;
+    top: 0.18rem; right: 0.18rem;
+    width: 0.55rem; height: 0.55rem;
+    background: #f00;
+    border-radius: 50%;
+    border: 2px solid #181818;
+    z-index: 2;
+  }
+  .story-bar-mobile {
+    width: 100%;
+
+    padding: 0.5rem 0.7rem 0.5rem 0.7rem;
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem;
+    scrollbar-width: none;
+    background: #181818;
+    margin: 0 auto;
+  }
+  .story-bar-mobile::-webkit-scrollbar { display: none; }
+
+  .story-mobile img {
+    width: 4rem; height: 4rem;
+    border-radius: 50%;
+    gap: 5rem;
+    object-fit: cover;
+    border: 2px solid #181818;
+    background: #181818;
+  }
+  .mobile-posts {
+    width: 100%;
+    max-width: 430px;
+    padding: 0.7rem 0.2rem 5.5rem 0.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 220px; 
+    height: calc(100vh - 5.5rem);
+    overflow-y: auto;
+  }
+  .post-mobile {
+    min-height: 60%;
+  
+    width: 101%;
+    max-width: none;
+    background: #181818;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    border: 1.5px solid #23234c;
+    display: flex;
+    flex-direction: column;
    
   }
-  .post-container{
-   position: relative;
-  
+  .post-mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 0.8rem 0.2rem 0.8rem;
   }
-  .post-header-info h4 {
-    font-size: 13px;
+  .post-mobile-avatar {
+    width: 2.1rem; height: 2.1rem; border-radius: 50%; object-fit: cover;
+    margin-right: 0.2rem;
+    border: 2px solid #888; background: #222;
+  }
+  .post-mobile-userinfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 4px;
+
   }
 
-  .post-header-info p {
-    font-size: 10px;
+  .post-mobile-name {
+    margin: 0; color: #eee; font-weight: 500; font-size: 1rem;
+    font-family: 'Space Grotesk',sans-serif;
+    line-height: 1.1;
+  }
+  .post-mobile-meta {
+    margin: 0; color: #bbb; font-size: 0.77rem; line-height: 1.1;
+  }
+  .post-more {
+    margin-left: auto;
+    color: #bbb;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .post-mobile-body {
+    padding: 0 0.8rem 0.5rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .post-mobile-text {
+    margin: 0;
+    color: #ccc;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-left: 10px;
   }
 
-  .post-avatar-pic {
-    width: 40px;
-    height: 40px;
+  .stripes {
+    background-image: repeating-linear-gradient(
+      90deg,
+      #fff 0px,
+      #fff 7px,
+      #000 7px,
+      #000 14px
+    );
+    background-size: 14px 70px;
   }
-
-  .post-header-right i {
-    font-size: 14px;
+  .post-mobile-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #23234c;
+    background: #181818;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
   }
-
-  .post-body p {
-    font-size: 11px;
+  .action-btn-mobile {
+    border: none;
+    background: none;
+    color: #bbb;
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 0.12rem 0.18rem;
+    border-radius: 0.3rem;
+    transition: color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
   }
-
-  .post-footer {
-    font-size: 11px;
+  .action-btn-mobile:hover,
+  .action-btn-mobile:focus,
+  .action-btn-mobile:active {
+    color: #929BFF;
+    background: #23234c;
   }
-
-  .post-stats {
-    font-size: 9px;
+  .fab-create {
+    position: fixed;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    color: white;
+    border: 1px solid #333;
+    border-radius: 50%;
+    width: 3.1rem;
+    height: 3.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 2px 12px #222;
+    z-index: 40;
+    outline: none;
+    transition: transform 0.18s cubic-bezier(.4,2,.6,1);
   }
-
-  .post-actions .action-btn {
-    font-size: 9px;
+  .fab-create:hover,
+  .fab-create:focus {
+    transform: translateX(-50%) scale(1.15);
+    background: #222;
   }
-
-  .post-actions i {
-    font-size: 12px;
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    /* Removed max-width to allow full width */
+    background: #181818;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3.7rem;
+    border-top: 1px solid #23234c;
+    z-index: 35;
+    margin: 0 auto;
+    padding: 0;
   }
-
-  .post-image-placeholder {
-    height: 200px;
+  .bottom-nav-item {
+    color: #aaa;
+    font-size: 1.45rem;
+    flex: 1 0 0;
+    text-align: center;
+    transition: color 0.18s;
+    padding: 0.15rem 0;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
   }
- 
-}
-
-@media(max-width: 1700px) {
-   .center-column{
-    width: 180%;
-    
-    position: relative;
-    right: 140px;
-    top: -15px;
- }
-   .post {
-    width: 80%;
-    position: relative;
-    right: 0px;
-    
-   
+  .bottom-nav-item.active,
+  .bottom-nav-item:hover,
+  .bottom-nav-item:focus {
+    color: #929BFF;
   }
-  .post-container{
-   position: relative;
-  
-  }
-  .post-header-info h4 {
-    font-size: 13px;
-  }
-
-  .post-header-info p {
-    font-size: 10px;
-  }
-
-  .post-avatar-pic {
-    width: 40px;
-    height: 40px;
-  }
-
-  .post-header-right i {
-    font-size: 14px;
-  }
-
-  .post-body p {
-    font-size: 11px;
-  }
-
-  .post-footer {
-    font-size: 11px;
-  }
-
-  .post-stats {
-    font-size: 9px;
-  }
-
-  .post-actions .action-btn {
-    font-size: 9px;
-  }
-
-  .post-actions i {
-    font-size: 12px;
-  }
-
-  .post-image-placeholder {
-    height: 200px;
-  }
- 
+  .bottom-nav-item-placeholder { flex: 1; }
 }
   </style>
 </head>
+
 <body>
-<div id=zoom-wrapper>
-  <nav class="navbar">
+<div id="zoom-wrapper">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg px-4 py-2">
     <div class="left">
-      <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" class="search" placeholder="Parin goat?">
+      <div class="d-flex align-items-center position-relative">
+        <i class="fas fa-search search-icon me-2"></i>
+        <input type="text" class="form-control bg-dark border-0 text-white" style="border-radius:24px;max-width:320px;" placeholder="Search Musec...">
       </div>
     </div>
-    <div class="center">
-      <a href="#" class="nav-icon active"><i class="fas fa-home"></i> <span>Home</span></a>
-      <a href="#" class="nav-icon"><i class="fas fa-user-friends"></i> <span>Network</span></a>
-      <a href="#" class="nav-icon"><i class="fas fa-comment-dots"></i> <span>Messaging</span></a>
-      <a href="/requests" class="nav-icon"><i class="fas fa-bell"></i> <span>Notifications</span></a>
+    <div class="center d-flex gap-4 ms-auto me-5">
+      <a href="/" class="nav-icon active"><i class="fas fa-home"></i><span>Home</span></a>
+      <a href="#" class="nav-icon"><i class="fas fa-user-friends"></i><span>Network</span></a>
+      <a href="#" class="nav-icon"><i class="fas fa-comment-dots"></i><span>Messaging</span></a>
+      <a href="/requests" class="nav-icon"><i class="fas fa-bell"></i><span>Notifications</span></a>
+      <a href="#" class="nav-icon"><i class="fas fa-globe"></i><span>Explore</span></a>
     </div>
-    <div class="right">
-      <img src="/images/avatar.png" class="avatar" alt="User Avatar">
+    <div class="right d-flex align-items-center position-relative">
+      <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" class="avatar" alt="User Avatar" id="avatar" />
+      <div class="dropdown position-absolute top-100 mt-2 bg-dark text-white p-2" id="dropdownMenu" style="display:none;right:0;">
+        <a href="/bio.html" class="dropdown-item text-white">My Profile</a>
+        <a href="/settings.html" class="dropdown-item text-white">Settings</a>
+      </div>
     </div>
-
   </nav>
 
-  <div class="top-section-container">
+  <!-- Top Section -->
+  <div class="top-section-container my-3 px-4">
     <div class="user-greeting">
-      <img src="avatar.png" alt="Profile" class="profile-pic" />
+      <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Profile" class="profile-pic" />
       <div class="welcome-text">
-        <p class="greet">Welcome back!</p>
-        <h2 class="username"><%= locals.name %></h2>
+        <p class="greet mb-1">Welcome back!</p>
+        <h2 class="username" style="font-weight:300;font-size:2rem;"><%= locals.user?.username || "User" %></h2>
       </div>
     </div>
-   <div class="story-bar">
-    <a href="/go-live" class="story hover:opacity-80 transition duration-200">
-   <img src="/images/avatar.png" alt="Story"><p style="position: fixed; top:80px; left:385px; color: #1a1a1a; font-size: 20px;">+</p>
-  </a>
-  <% liveStreams.forEach(s => { %>
-    <a href="/watch/<%= s.streamId %>" class="story hover:opacity-80 transition duration-200">
-      <img src="/images/avatar.png" alt="Story">
-    </a>
-  <% }) %>
-</div>
+    <div class="story-bar">
+      <a href="/go-live" class="story">
+        <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Story"><span class="text-primary" style="position:absolute;padding-left:10px;font-size:2rem;">+</span>
+      </a>
+      <% if (locals.liveStreams) { %>
+        <% locals.liveStreams.forEach(stream => { %>
+          <a href="/watch/<%= stream.streamId %>" class="story">
+            <img src="<%= stream.coverImg || '/images/avatar.png' %>" alt="Live Stream">
+          </a>
+        <% }); %>
+      <% } %>
+    </div>
   </div>
 
-
-  <div class="main-container">
-
+  <!-- Grid Main -->
+  <div class="main-container container-fluid">
+    <!-- Left Column -->
     <div class="left-column">
-            <div class="create-post">
-       <form action="/new" method="POST" enctype="multipart/form-data">
-  
-  
-  <div class="post-input-section">
-    <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" 
-         alt="<%= locals.user?.username || 'Your Profile Picture' %>" 
-         class="post-avatar" />
-    
-    <input type="text" name="title" class="post-input" placeholder="Write a post" required>
-  </div>
-
-  <!-- Hidden file input -->
-  <input type="file" name="media" id="mediaInput" accept="image/*,video/*,audio/*" style="display: none;">
-
-  <!-- Post Options -->
-  <div class="post-options">
-    <label for="mediaInput">
-      <i class="fas fa-video"></i> Video
-    </label>
-    <label for="mediaInput">
-      <i class="fas fa-image"></i> Photo
-    </label>
-    <label for="mediaInput">
-      <i class="fas fa-microphone"></i> Audio
-    </label>
-  </div>
-
-  <!-- Hidden submit -->
-  <button type="submit" style="display: none;">Post</button>
-</form>
-
+      <!-- Create Post -->
+      <div class="create-post">
+        <form action="/new" method="POST" enctype="multipart/form-data">
+          <div class="post-input-section d-flex align-items-center gap-3 mb-3">
+            <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" class="post-avatar" />
+            <input type="text" name="title" class="form-control bg-dark border-0 text-white post-input" style="border-radius:2rem" placeholder="Write a post" required>
+          </div>
+          <input type="file" name="media" id="mediaInput" accept="image/*,video/*,audio/*" style="display:none;">
+          <div class="post-options d-flex justify-content-between">
+            <label for="mediaInput" class="me-2"><i class="fas fa-video"></i> Video</label>
+            <label for="mediaInput" class="me-2"><i class="fas fa-image"></i> Photo</label>
+            <label for="mediaInput"><i class="fas fa-microphone"></i> Audio</label>
+          </div>
+          <button type="submit" style="display:none;">Post</button>
+        </form>
       </div>
+      <!-- Studio Finder -->
       <div class="find-studio-card">
-        <div class="header">
-          <h2>Find Studios Near You</h2>
+        <div class="header d-flex justify-content-between align-items-center mb-2">
+          <h5 class="mb-0">Find Studios Near You</h5>
           <i class="fa-solid fa-arrow-right-long arrow"></i>
         </div>
-        <div class="map">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.705697184839!2d-86.80243218479373!3d33.52066028075121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88891be50dd9caa5%3A0x902d30dbce2c449b!2sBirmingham%2C%20AL%2C%20USA!5e0!3m2!1sen!2sin!4v1690379265984!5m2!1sen!2sin"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <div class="map mb-3">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.705697184839!2d-86.80243218479373!3d33.52066028075121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88891be50dd9caa5%3A0x902d30dbce2c449b!2sBirmingham%2C%20AL%2C%20USA!5e0!3m2!1sen!2sin!4v1690379265984!5m2!1sen!2sin"
+              allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border-radius:8px;width:100%;height:160px;"></iframe>
         </div>
         <div class="studio-list-container">
-          <div class="studio">
-            <div class="studio-info">
-              <h3>Musec studio</h3>
-              <p>3.5 km   <span class="green">★ 4.9</span>   <span class="available">Available</span></p>
-            </div>
-            <button class="book-btn">BOOK</button>
-          </div>
-          <div class="studio">
-            <div class="studio-info">
-              <h3>Musec studio</h3>
-              <p>3.5 km   <span class="red">★ 2.4</span>   <span class="booked">Booked</span></p>
-            </div>
-            <button class="book-btn">BOOK</button>
-          </div>
-          <div class="studio">
-            <div class="studio-info">
-              <h3>Another Studio Name</h3>
-              <p>5.2 km   <span class="green">★ 4.1</span>   <span class="available">Available</span></p>
-            </div>
-            <button class="book-btn">BOOK</button>
-          </div>
-          <div class="studio">
-            <div class="studio-info">
-              <h3>Cool Beats Studio</h3>
-              <p>1.1 km   <span class="green">★ 5.0</span>   <span class="available">Available</span></p>
-            </div>
-            <button class="book-btn">BOOK</button>
-          </div>
+          <% if (locals.studios) { %>
+            <% locals.studios.forEach(studio => { %>
+              <div class="studio d-flex justify-content-between align-items-center mb-2">
+                <div class="studio-info">
+                  <h6 class="mb-1"><%= studio.name %></h6>
+                  <p class="mb-0">
+                    <%= studio.distance %> km &nbsp; 
+                    <span class="<%= studio.rating >= 4.0 ? 'green' : 'red' %>">★ <%= studio.rating %></span> &nbsp; 
+                    <span class="<%= studio.status === 'Available' ? 'available' : 'booked' %>"><%= studio.status %></span>
+                  </p>
+                </div>
+                <button class="book-btn">BOOK</button>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="text-white-50">No studios found.</div>
+          <% } %>
         </div>
       </div>
     </div>
 
+    <!-- Center Column: Posts Feed -->
     <div class="center-column">
-
-<div class="post-container">
-      <% posts.forEach(function(post) { %>
-  <div class="post">
-    <!-- Post Header -->
-    <div class="post-header">
-     <a href="/user/<%= post.author?._id %>">
-  <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" 
-       alt="<%= post.author?.username || 'User' %>" 
-       class="post-avatar-pic">
-</a>
-      <div class="post-header-info">
-        <h4><%= post.author?.username || 'User' %></h4>
-        <p><%= post.author?.followersCount || 0 %> followers</p>
+      <div class="post-container">
+        <% if (locals.posts && locals.posts.length) { %>
+          <% locals.posts.forEach(post => { %>
+            <div class="post">
+              <!-- Post Header -->
+              <div class="post-header">
+                <a href="/user/<%= post.author?._id %>">
+                  <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" alt="<%= post.author?.username || 'User' %>" class="post-avatar-pic"/>
+                </a>
+                <div class="post-header-info">
+                  <h4><%= post.author?.username || 'User' %></h4>
+                  <p><%= post.author?.followersCount || 0 %> followers</p>
+                </div>
+                <div class="post-header-right">
+                  <i class="fas fa-ellipsis-h"></i>
+                  <% if (locals.user && locals.user._id && post.author && post.author._id !== locals.user._id) { %>
+                    <form action="/requests/send" method="POST" style="margin:0;">
+                      <input type="hidden" name="toId" value="<%= post.author._id %>">
+                      <button class="connect-btn" type="submit">Connect</button>
+                    </form>
+                  <% } %>
+                </div>
+              </div>
+              <!-- Post Content -->
+              <div class="post-content mb-2">
+                <% if (post.title) { %><h5><%= post.title %></h5><% } %>
+                <% if (post.content && post.content.trim() !== "") { %>
+                  <p><%= post.content %></p>
+                <% } %>
+                <% if (post.fileUrl && post.fileType === 'image') { %>
+                  <img class="post-media" src="<%= post.fileUrl %>" alt="Post image" />
+                <% } else if (post.fileUrl && post.fileType === 'video') { %>
+                  <video class="post-media" controls>
+                    <source src="<%= post.fileUrl %>" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                <% } else if (post.fileUrl && post.fileType === 'audio') { %>
+                  <audio class="post-media" controls>
+                    <source src="<%= post.fileUrl %>" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                  </audio>
+                <% } %>
+              </div>
+              <!-- Post Footer -->
+              <div class="post-footer mt-2">
+                <div class="post-stats d-flex justify-content-between text-secondary mb-2">
+                  <span><%= post.likes || 0 %> likes</span>
+                  <span><%= post.commentsCount || 0 %> comments</span>
+                </div>
+                <div class="post-actions">
+                  <div class="action-btn"><i class="fa-regular fa-thumbs-up"></i> react</div>
+                  <div class="action-btn"><i class="fa-regular fa-comment-dots"></i> comment</div>
+                  <div class="action-btn"><i class="fa-solid fa-share"></i> repost</div>
+                  <div class="action-btn"><i class="bi bi-send"></i> share</div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="text-white-50">No posts yet.</div>
+        <% } %>
       </div>
-
-      <div class="post-header-right">
-        <i class="fas fa-ellipsis-h"></i>
-        <% if (locals.user && locals.user._id.toString() !== post.author?._id?.toString()) { %>
-        <form action="/requests/send" method="POST" style="margin: 0;">
-        <input type="hidden" name="toId" value="<%= post.author?._id %>">
-        <button class="connect-btn" type="submit">Connect</button>
-      </form>
-      <% } %>
-      </div>
     </div>
 
-    <!-- Post Content -->
-    <div class="post-content">
-      <h2><%= post.title %></h2>
-      <% if (post.content && post.content.trim() !== "") { %>
-        <p><%= post.content %></p>
-      <% } %>
-
-      <% if (post.fileUrl && post.fileType === 'image') { %>
-        <img class="post-media" src="<%= post.fileUrl %>" alt="Post image" />
-      <% } else if (post.fileUrl && post.fileType === 'video') { %>
-        <video class="post-media" controls>
-          <source src="<%= post.fileUrl %>" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      <% } else if (post.fileUrl && post.fileType === 'audio') { %>
-        <audio class="post-media" controls>
-          <source src="<%= post.fileUrl %>" type="audio/mpeg">
-          Your browser does not support the audio element.
-        </audio>
-      <% } %>
-    </div>
-  </div>
-<% }); %>
-    </div>
-</div>
+    <!-- Right Column: Musicians & Messages -->
     <div class="right-column">
       <div class="musician-card">
-        <div class="card-header">
+        <div class="card-header mb-2">
           <span>Connect With Musicians</span>
           <i class="fas fa-arrow-right"></i>
         </div>
         <div class="musician-list-container">
           <div class="musician-list">
-            <div class="musician">
-              <img src="/images/avatar.png" alt="avatar" class="avatar" />
-              <div class="info">
-                <h4>Pranav Kapur</h4>
-                <p>UI/UX designer</p>
-              </div>
-              
-              
-            </div>
-            <% if (locals.allUsers) { %>
-  <% allUsers.forEach(user => { %>
-    <div class="musician">
-      <img src="<%= user.profilePic || '/images/avatar.png' %>" 
-           alt="<%= user.username %>" 
-           class="avatar" />
-
-      <div class="info">
-        <h4><%= user.username %></h4>
-        <p><%= user.role || 'UI/UX designer' %></p>
-      </div>
-
-      <form action="/requests/send" method="POST" style="margin: 0;">
-        <input type="hidden" name="toId" value="<%= user._id %>">
-        <button class="connect-btn" type="submit">Connect</button>
-      </form>
-    </div>
-  <% }) %>
-<% } else { %>
-  <p class="text-white">No users found.</p>
-<% } %>
+            <% if (locals.allUsers && locals.allUsers.length) { %>
+              <% allUsers.forEach(user => { %>
+                <div class="musician">
+                  <img src="<%= user.profilePic || '/images/avatar.png' %>" alt="<%= user.username %>" class="avatar" />
+                  <div class="info">
+                    <h4 class="mb-1"><%= user.username %></h4>
+                    <p class="mb-0 text-secondary"><%= user.role || 'Musician' %></p>
+                  </div>
+                  <form action="/requests/send" method="POST" style="margin:0;">
+                    <input type="hidden" name="toId" value="<%= user._id %>">
+                    <button class="connect-btn" type="submit">Connect</button>
+                  </form>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="text-white-50">No users found.</div>
+            <% } %>
           </div>
         </div>
       </div>
-      <a href="/msg" class="messages-btn" style="text-decoration: none; color: inherit;">
-  <i class="fab fa-facebook-messenger"></i>
-  
-  <div class="left-content">
-    <span>Messages</span>
-  </div>
-
-  <div class="avatars">
-    <img src="/images/avatar.png" alt="Avatar" />
-    <img src="/images/avatar.png" alt="Avatar" />
-    <img src="/images/avatar.png" alt="Avatar" />
-  </div>
-</a>
-
+      <a href="/msg" class="messages-btn mt-4 text-decoration-none">
+        <i class="fab fa-facebook-messenger fs-3"></i>
+        <div class="left-content flex-grow-1"><span>Messages</span></div>
+        <div class="avatars d-flex">
+          <img src="/images/avatar.png" alt="Avatar"/>
+          <img src="/images/avatar.png" alt="Avatar"/>
+          <img src="/images/avatar.png" alt="Avatar"/>
+        </div>
+      </a>
     </div>
-
   </div>
 </div>
-</body>
 
+<!-- User dropdown JS -->
+<script>
+  const avatar = document.getElementById('avatar');
+  const dropdown = document.getElementById('dropdownMenu');
+  if (avatar && dropdown) {
+      avatar.addEventListener('click', () => {
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+      });
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.right')) {
+          dropdown.style.display = 'none';
+        }
+      });
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
