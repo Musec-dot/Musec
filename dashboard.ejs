@@ -1,1048 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Musec Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/dash.css">
-  <style>
-    /* Place your additional styles here for custom layout and design */
-    @import url('https://fonts.cdnfonts.com/css/space-grotesk');
-html, body {
-  margin: 0;
-  font-family: 'Space Grotesk', sans-serif;
-  background: #0c0c0c;
-  color: white;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  overflow: hidden;
-}
-
-#zoom-wrapper { display: block; }
-.navbar {
-  display: flex;
-  align-items: center;
-  background-color: #111111;
-  padding: 0.625rem 1.875rem;
-  height: 8vh;
-  border-bottom: 1px solid #222;
-}
-.left { flex: 1; }
-.center {
-  display: flex;
-  gap: 3vw;
-  margin-left: auto;
-  margin-right: 9.375rem;
-}
-.nav-icon {
-  text-decoration: none;
-  color: #888;
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  transition: color 0.18s;
-}
-.nav-icon i {
-  font-size: 1.125rem;
-  margin-bottom: 0.3125rem;
-}
-.nav-icon.active,
-.nav-icon:hover {
-  color: #929BFF;
-}
-.right .avatar {
-  width: 2.8125rem;
-  height: 2.8125rem;
-  border-radius: 50%;
-  cursor: pointer;
-}
-.dropdown {
-  display: none;
-  position: absolute;
-  top: 50px; 
-  right: 0;
-  background-color: black;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  z-index: 1;
-  min-width: 150px;
-}
-.dropdown a {
-  display: block;
-  padding: 10px;
-  color: white;
-  text-decoration: none;
-}
-.dropdown a:hover { background-color: #929BFF; }
-.left .search {
-  background-color: #1a1a1a;
-  border: 0.0063rem solid #C0C0C0;
-  padding: 0.625rem 0.9375rem 0.625rem 2.1875rem;
-  border-radius: 1.5625rem;
-  color: white;
-  width: 25rem;
-  outline: none;
-  transition: border 0.2s ease;
-}
-.left .search:focus { border: 0.125rem solid #929BFF; }
-.search-icon {
-  top: 1rem;
-  position: absolute;
-  left: 1rem;
-  color: #888;
-  font-size: 0.875rem;
-}
-.top-section-container {
-  display: flex;
-  align-items: center;
-  gap: 1.875rem;
-  padding: 0.9375rem 1.875rem;
-  background-color: #0c0c0c;
-  margin-top: 2.3148vh;
-}
-.user-greeting {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  margin: 0;
-  flex-shrink: 0;
-}
-.profile-pic {
-  width: 5.3125rem;
-  height: 5.3125rem;
-  border-radius: 50%;
-}
-.welcome-text .greet {
-  font-size: 1.6084rem;
-  color: #b0b0b0;
-  margin: 0;
-  font-weight: 300;
-}
-.welcome-text .username {
-  font-size: 2.4131rem;
-  font-weight: 500;
-  color: white;
-  margin: 0;
-}
-.story-bar {
-  display: flex;
-  gap: 2.125rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  height: 9.2593vh;
-  flex-shrink: 1;
-  padding: 0;
-  border: none;
-  width: 50%;
-  white-space: nowrap;
-  margin-left: 3.85rem;
-}
-.story-bar::-webkit-scrollbar { display: none; }
-.story {
-  min-width: 4.0625rem;
-  height: 4.0625rem;
-  border-radius: 50%;
-  padding: 0.125rem;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.story:hover { transform: scale(1.05); }
-.story img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.main-container {
-  display: grid;
-  grid-template-columns: 26.875rem 1fr 25rem;
-  gap: 1.875rem;
-  padding: 1.875rem;
-  height: 100vh;
-  overflow: hidden;
-}
-.center-column {
-  height: calc(100vh - 13.8889vh);
-  padding-right: 0.9375rem;
-}
-.left-column,
-.center-column,
-.right-column {
-  overflow-y: auto;
-  padding-right: 0.9375rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-.left-column::-webkit-scrollbar,
-.center-column::-webkit-scrollbar,
-.right-column::-webkit-scrollbar,
-.studio-list-container::-webkit-scrollbar,
-.post-container::-webkit-scrollbar,
-.musician-list-container::-webkit-scrollbar { display: none; }
-.left-column,
-.center-column,
-.right-column,
-.studio-list-container,
-.musician-list-container {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.create-post {
-  background-color: #111;
-  border: 1px solid #333;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  box-sizing: border-box;
-}
-.post-input-section {
-  display: flex;
-  align-items: center;
-  gap: 0.9375rem;
-  margin-bottom: 1.25rem;
-}
-.post-avatar {
-  width: 3.4375rem;
-  height: 3.4375rem;
-  border-radius: 50%;
-}
-.post-input {
-  flex: 1;
-  background-color: #1c1c1c;
-  border: 1px solid #333;
-  padding: 0.875rem 1.25rem;
-  color: #ccc;
-  font-size: 1rem;
-  border-radius: 2.5rem;
-  outline: none;
-}
-.post-options {
-  display: flex;
-  justify-content: space-around;
-  color: #bbb;
-  font-size: 0.9375rem;
-}
-.post-options div {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-.post-options i { font-size: 1rem; }
-.find-studio-card {
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  box-sizing: border-box;
-  color: white;
-  font-family: 'Space Grotesk', sans-serif;
-  width: 100%;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #fff;
-  font-size: 12px;
-  margin-bottom: 0.5rem;
-}
-.arrow {
-  font-size: 1.375rem;
-  color: #bbb;
-}
-.map iframe {
-  width: 100%;
-  height: 22.2222vh;
-  border: none;
-  border-radius: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-.studio-list-container {
-  max-height: 16.6667vh;
-  overflow-y: auto;
-}
-.studio {
-  background: #0c0c0c;
-  border: 1px solid #2a2a2a;
-  border-radius: 0.625rem;
-  padding: 0.875rem 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-.studio-info h3 {
-  margin: 0;
-  font-size: 1.5225rem;
-  font-weight: 600;
-  font-family: 'Space Grotesk', sans-serif;
-}
-.studio-info p {
-  margin: 0.25rem 0 0;
-  font-size: 0.8125rem;
-  color: #ccc;
-}
-.green { color: #4CAF50; }
-.red { color: #FF5722; }
-.available { color: #4CAF50; }
-.booked { color: #FF5722; }
-.book-btn {
-  background: none;
-  border: 1px solid #929BFF;
-  color: #929BFF;
-  padding: 0.375rem 1rem;
-  border-radius: 1.25rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-.musician-card {
-  background-color: #111;
-  border: 0.0625rem solid #333;
-  border-radius: 0.625rem;
-  padding: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-  color: white;
-  font-family: 'Space Grotesk', sans-serif;
-  margin-top: 0;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1.0625rem;
-  border-bottom: 0.0625rem solid #333;
-  padding-bottom: 0.625rem;
-  margin-bottom: 0.875rem;
-  font-family: 'Space Grotesk', sans-serif;
-}
-.card-header i {
-  font-size: 1.25rem;
-  color: white;
-}
-.musician-list-container { max-height: 45vh; overflow-y: auto; }
-.musician {
-  display: flex;
-  align-items: center;
-  background-color: #1a1a1a;
-  border: 0.0625rem solid #333;
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  gap: 0.75rem;
-  font-family: 'Space Grotesk', sans-serif;
-  margin-bottom: 0.875rem;
-}
-.musician:last-child { margin-bottom: 0; }
-.musician .avatar {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.musician .info h4 {
-  margin: 0;
-  font-size: 1.2981rem;
-  font-weight: 600;
-  font-family: 'Space Grotesk', sans-serif;
-}
-.musician .info p {
-  margin: 0;
-  font-size: 0.6875rem;
-  color: #bbb;
-  font-family: 'Space Grotesk', sans-serif;
-}
-.connect-btn {
-  margin-left: auto;
-  padding: 0.375rem 0.875rem;
-  border-radius: 999px;
-  border: 0.0625rem solid #555;
-  background: none;
-  color: #89aaff;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-.connect-btn:hover {
-  background-color: #222;
-  border-color: #89aaff;
-}
-.messages-btn {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #111;
-  border: 0.0625rem solid #333;
-  border-radius: 999px;
-  padding: 0.875rem 1.25rem;
-  width: 18.75rem;
-  max-width: 28.125rem;
-  cursor: pointer;
-  transition: background 0.3s;
-  color: white;
-  font-family: 'Space Grotesk', sans-serif;
-  margin-top: 9vh;
-  margin-left: 3.125rem;
-  position: relative;
-  top: -50px;
-}
-.messages-btn:hover { background-color: #1a1a1a; }
-.messages-btn .left-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-.messages-btn i {
-  font-size: 1.625rem;
-  background-color: white;
-  color: black;
-  padding: 0.375rem;
-  border-radius: 50%;
-  margin-top: 0.1875rem;
-}
-.messages-btn .avatars {
-  display: flex;
-  align-items: center;
-  gap: -0.625rem;
-}
-.messages-btn .avatars img {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-left: -0.625rem;
-}
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 4.375rem);
-  overflow: hidden;
-}
-.post {
-  background-color: #111;
-  border: 0.0625rem solid #333;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  box-sizing: border-box;
-  margin-top: 0;
-  margin-bottom: 1.25rem;
-  width: auto;
-}
-.post-container {
-  max-height: 100vh;
-  overflow-y: auto;
-  padding-right: 0.9375rem;
-  gap: 1.25rem;
-  padding-bottom: 15vh;
-}
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 0.9375rem;
-  margin-bottom: 1.25rem;
-}
-.post-avatar-pic {
-  width: 3.4375rem;
-  height: 3.4375rem;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.post-header-info h4 { margin: 0; font-size: 1.1544rem; }
-.post-header-info p { margin: 0; font-size: 0.8794rem; color: #bbb; }
-.post-header-right {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-}
-.post-header-right i { color: #bbb; cursor: pointer; }
-.post-body p {
-  margin: 0 0 0.9375rem 0;
-  color: #ccc;
-  font-size: 1.125rem;
-}
-.post-image-placeholder {
-  width: 100%;
-  height: 31.25vh;
-  background-color: #222;
-  object-fit: cover;
-  border-radius: 0.5rem;
-}
-.post-footer {
-  margin-top: 1.25rem;
-  border-top: 0.0625rem solid #333;
-  padding-top: 0.9375rem;
-}
-.post-stats {
-  display: flex;
-  justify-content: space-between;
-  color: #bbb;
-  font-size: 0.875rem;
-  margin-bottom: 0.9375rem;
-}
-.post-actions {
-  display: flex;
-  justify-content: space-between;
-  color: #bbb;
-}
-.post-actions :hover { color: #89aaff; }
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-.post-image-placeholder-mobile  {
-
-  width: 100%;
-  height: 31.25vh;
-  background-color: #222;
-  object-fit: cover;
-  border-radius: 0.5rem;
-}
-
-
-.action-btn :hover { color: #89aaff; }
-@media(max-width:1745px){
-  html,body{ zoom: 93%; }
-}
-@media(max-width:1536px){
-  html,body{ zoom: 93% }
-}
-@media(max-width:1900px){
-  html,body{ zoom: 93% }
-}
-@media(max-width:1280px){
-  html,body{ zoom: 91%; }
-  .story-bar{ height: 100px;  width: 40%; }
-  .navbar{ height: 10vh; }
-}
-.explore-desktop { display: none !important; }
-
-@media (max-width:576px) {
-  #zoom-wrapper,
-  .navbar,
-  .top-section-container,
-  .main-container,
-  .find-studio-card,
-  .musician-card,
-  .messages-btn {
-    display: none !important;
-  }
-  body {
-    background: linear-gradient(180deg, #0c0c0c 70%, #181818 100%) !important;
-    overflow-x: hidden !important;
-  }
-  .explore-desktop { display: flex !important; }
-  .phone-dashboard {
-    display: block !important;
-    width: 100%;
-    min-height: 100vh;
-    background: linear-gradient(180deg, #0c0c0c 70%, #181818 100%);
-    position: relative;
-    overflow-x: hidden;
-    margin: 0 auto;
-    
-  }
-  .mobile-header-sticky {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
- 
-    z-index: 30;
-    background: #181818;
-    border-bottom: 1px solid #222;
-    padding-top: 0.4rem;
-  }
-  .mobile-header {
-    padding: 1.1rem 0 0.4rem 0;
-    background: #181818;
-    border-bottom: 1px solid #222;
-    margin: 0 auto;
-  }
-  .welcome-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 1.2rem 1.2rem 0 1.2rem;
-
-    margin: 0 auto;
-  }
-  .welcome-text {
-    display: flex;
-    flex-direction: column;
-    margin-top: 0.4rem;
-  }
-  .greet {
-    font-size: 1.5rem;
-    color: #b0b0b0;
-    margin: 0;
-    font-weight: 300;
-    letter-spacing: 1px;
-  }
-  .username {
-    font-size: 2.3rem;
-    font-family: 'Space Grotesk',sans-serif;
-    font-weight: 500;
-    margin: 0;
-    color: #fff;
-  }
-  .messenger-btn {
-    position: relative;
-    margin-top: 0.1rem;
-  }
-  .messenger-btn i {
-    font-size: 1.6rem;
-    color: #fff;
-    background: #181818;
-    border-radius: 50%;
-    padding: 0.11rem;
-    border: 2px solid #fff;
-  }
-  .notif-dot {
-    position: absolute;
-    top: 0.18rem; right: 0.18rem;
-    width: 0.55rem; height: 0.55rem;
-    background: #f00;
-    border-radius: 50%;
-    border: 2px solid #181818;
-    z-index: 2;
-  }
-  .story-bar-mobile {
-    width: 100%;
-
-    padding: 0.5rem 0.7rem 0.5rem 0.7rem;
-    display: flex;
-    overflow-x: auto;
-    gap: 1.5rem;
-    scrollbar-width: none;
-    background: #181818;
-    margin: 0 auto;
-  }
-  .story-bar-mobile::-webkit-scrollbar { display: none; }
-
-  .story-mobile img {
-    width: 4rem; height: 4rem;
-    border-radius: 50%;
-    gap: 5rem;
-    object-fit: cover;
-    border: 2px solid #181818;
-    background: #181818;
-  }
-  .mobile-posts {
-    width: 100%;
-    max-width: 430px;
-    padding: 0.7rem 0.2rem 5.5rem 0.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-    align-items: center;
-    margin: 0 auto;
-    margin-top: 220px; 
-    height: calc(100vh - 5.5rem);
-    overflow-y: auto;
-  }
-  .post-mobile {
-    min-height: 60%;
-  
-    width: 101%;
-    max-width: none;
-    background: #181818;
-    border-radius: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    margin-bottom: 0.5rem;
-    overflow: hidden;
-    border: 1.5px solid #23234c;
-    display: flex;
-    flex-direction: column;
-   
-  }
-  .post-mobile-header {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.7rem 0.8rem 0.2rem 0.8rem;
-  }
-  .post-mobile-avatar {
-    width: 2.1rem; height: 2.1rem; border-radius: 50%; object-fit: cover;
-    margin-right: 0.2rem;
-    border: 2px solid #888; background: #222;
-  }
-  .post-mobile-userinfo {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: 4px;
-
-  }
-
-  .post-mobile-name {
-    margin: 0; color: #eee; font-weight: 500; font-size: 1rem;
-    font-family: 'Space Grotesk',sans-serif;
-    line-height: 1.1;
-  }
-  .post-mobile-meta {
-    margin: 0; color: #bbb; font-size: 0.77rem; line-height: 1.1;
-  }
-  .post-more {
-    margin-left: auto;
-    color: #bbb;
-    font-size: 1.2rem;
-    cursor: pointer;
-  }
-  .post-mobile-body {
-    padding: 0 0.8rem 0.5rem 0.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-  .post-mobile-text {
-    margin: 0;
-    color: #ccc;
-    font-size: 0.95rem;
-    font-weight: 400;
-    line-height: 1.4;
-    margin-left: 10px;
-  }
-
-  .stripes {
-    background-image: repeating-linear-gradient(
-      90deg,
-      #fff 0px,
-      #fff 7px,
-      #000 7px,
-      #000 14px
-    );
-    background-size: 14px 70px;
-  }
-  .post-mobile-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #23234c;
-    background: #181818;
-    padding: 0.25rem 0.6rem;
-    font-size: 0.95rem;
-    margin-bottom: 2px;
-  }
-  .action-btn-mobile {
-    border: none;
-    background: none;
-    color: #bbb;
-    font-size: 1.15rem;
-    cursor: pointer;
-    padding: 0.12rem 0.18rem;
-    border-radius: 0.3rem;
-    transition: color 0.2s, background 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.1rem;
-  }
-  .action-btn-mobile:hover,
-  .action-btn-mobile:focus,
-  .action-btn-mobile:active {
-    color: #929BFF;
-    background: #23234c;
-  }
-  .fab-create {
-    position: fixed;
-    bottom: 5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #111;
-    color: white;
-    border: 1px solid #333;
-    border-radius: 50%;
-    width: 3.1rem;
-    height: 3.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.6rem;
-    box-shadow: 0 2px 12px #222;
-    z-index: 40;
-    outline: none;
-    transition: transform 0.18s cubic-bezier(.4,2,.6,1);
-  }
-  .fab-create:hover,
-  .fab-create:focus {
-    transform: translateX(-50%) scale(1.15);
-    background: #222;
-  }
-  .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0;
-    width: 100%;
-    /* Removed max-width to allow full width */
-    background: #181818;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 3.7rem;
-    border-top: 1px solid #23234c;
-    z-index: 35;
-    margin: 0 auto;
-    padding: 0;
-  }
-  .bottom-nav-item {
-    color: #aaa;
-    font-size: 1.45rem;
-    flex: 1 0 0;
-    text-align: center;
-    transition: color 0.18s;
-    padding: 0.15rem 0;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 0;
-  }
-  .bottom-nav-item.active,
-  .bottom-nav-item:hover,
-  .bottom-nav-item:focus {
-    color: #929BFF;
-  }
-  .bottom-nav-item-placeholder { flex: 1; }
-}
-  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musec Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              background: '#050505',
+              card: '#121212',
+              cardHover: '#1A1A1A',
+              accent: '#FFCD9E', // The peach color
+              accentDark: '#E0AC7E',
+              secondary: '#262626',
+              muted: '#888888',
+              surface: '#1E1E1E',
+            },
+            boxShadow: {
+              'glow': '0 0 20px rgba(255, 205, 158, 0.1)',
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050505;
+        color: #ffffff;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #050505; }
+      ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #444; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      /* Audio Wave Animation */
+      .wave-bar {
+        animation: wave-anim 1s ease-in-out infinite;
+        border-radius: 999px;
+      }
+      @keyframes wave-anim {
+        0%, 100% { height: 30%; opacity: 0.5; }
+        50% { height: 100%; opacity: 1; }
+      }
+      
+      /* Dropdown styles */
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 50px; 
+        right: 0;
+        background-color: #121212;
+        border: 1px solid #333;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 1000;
+        min-width: 150px;
+      }
+      .dropdown a {
+        display: block;
+        padding: 10px;
+        color: white;
+        text-decoration: none;
+      }
+      .dropdown a:hover { background-color: #FFCD9E; color: #050505; }
+    </style>
+  <link rel="stylesheet" href="/index.css">
 </head>
-
-<body>
-<div id="zoom-wrapper">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg px-4 py-2">
-    <div class="left">
-      <div class="d-flex align-items-center position-relative">
-        <i class="fas fa-search search-icon me-2"></i>
-        <input type="text" class="form-control bg-dark border-0 text-white" style="border-radius:24px;max-width:320px;" placeholder="Search Musec...">
+  <body class="bg-background text-white font-sans selection:bg-accent selection:text-black">
+    
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 w-full px-8 py-5 bg-background/80 backdrop-blur-xl flex items-center justify-center border-b border-white/5">
+      <!-- Search -->
+      <div class="flex-1 max-w-[320px]">
+        <div class="relative group">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input 
+            type="text" 
+            placeholder="Search Musec..." 
+            class="w-full bg-surface text-sm text-white rounded-full py-3 pl-11 pr-4 focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all border border-transparent hover:border-white/5 placeholder:text-muted/60 font-medium"
+          />
+        </div>
       </div>
-    </div>
-    <div class="center d-flex gap-4 ms-auto me-5">
-      <a href="/" class="nav-icon active"><i class="fas fa-home"></i><span>Home</span></a>
-      <a href="#" class="nav-icon"><i class="fas fa-user-friends"></i><span>Network</span></a>
-      <a href="#" class="nav-icon"><i class="fas fa-comment-dots"></i><span>Messaging</span></a>
-      <a href="/requests" class="nav-icon"><i class="fas fa-bell"></i><span>Notifications</span></a>
-      <a href="#" class="nav-icon"><i class="fas fa-globe"></i><span>Explore</span></a>
-    </div>
-    <div class="right d-flex align-items-center position-relative">
-      <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" class="avatar" alt="User Avatar" id="avatar" />
-      <div class="dropdown position-absolute top-100 mt-2 bg-dark text-white p-2" id="dropdownMenu" style="display:none;right:0;">
-        <a href="/bio.html" class="dropdown-item text-white">My Profile</a>
-        <a href="/settings.html" class="dropdown-item text-white">Settings</a>
-      </div>
-    </div>
-  </nav>
 
-  <!-- Top Section -->
-  <div class="top-section-container my-3 px-4">
-    <div class="user-greeting">
-      <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Profile" class="profile-pic" />
-      <div class="welcome-text">
-        <p class="greet mb-1">Welcome back!</p>
-        <h2 class="username" style="font-weight:300;font-size:2rem;"><%= locals.user?.username || "User" %></h2>
-      </div>
-    </div>
-    <div class="story-bar">
-      <a href="/go-live" class="story">
-        <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Story"><span class="text-primary" style="position:absolute;padding-left:10px;font-size:2rem;">+</span>
-      </a>
-      <% if (locals.liveStreams) { %>
-        <% locals.liveStreams.forEach(stream => { %>
-          <a href="/watch/<%= stream.streamId %>" class="story">
-            <img src="<%= stream.coverImg || '/images/avatar.png' %>" alt="Live Stream">
-          </a>
-        <% }); %>
-      <% } %>
-    </div>
-  </div>
-
-  <!-- Grid Main -->
-  <div class="main-container container-fluid">
-    <!-- Left Column -->
-    <div class="left-column">
-      <!-- Create Post -->
-      <div class="create-post">
-        <form action="/new" method="POST" enctype="multipart/form-data">
-          <div class="post-input-section d-flex align-items-center gap-3 mb-3">
-            <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" class="post-avatar" />
-            <input type="text" name="title" class="form-control bg-dark border-0 text-white post-input" style="border-radius:2rem" placeholder="Write a post" required>
+      <!-- Navigation Links -->
+      <div class="flex items-center gap-14 mx-8">
+        <!-- Home (Active) -->
+        <a href="/" class="flex flex-col items-center gap-1.5 group text-accent transition-colors">
+          <div class="transition-transform duration-300 scale-110 drop-shadow-[0_0_8px_rgba(255,205,158,0.4)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           </div>
-          <input type="file" name="media" id="mediaInput" accept="image/*,video/*,audio/*" style="display:none;">
-          <div class="post-options d-flex justify-content-between">
-            <label for="mediaInput" class="me-2"><i class="fas fa-video"></i> Video</label>
-            <label for="mediaInput" class="me-2"><i class="fas fa-image"></i> Photo</label>
-            <label for="mediaInput"><i class="fas fa-microphone"></i> Audio</label>
-          </div>
-          <button type="submit" style="display:none;">Post</button>
-        </form>
-      </div>
-      <!-- Studio Finder -->
-      <div class="find-studio-card">
-        <div class="header d-flex justify-content-between align-items-center mb-2">
-          <h5 class="mb-0">Find Studios Near You</h5>
-          <i class="fa-solid fa-arrow-right-long arrow"></i>
-        </div>
-        <div class="map mb-3">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.705697184839!2d-86.80243218479373!3d33.52066028075121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88891be50dd9caa5%3A0x902d30dbce2c449b!2sBirmingham%2C%20AL%2C%20USA!5e0!3m2!1sen!2sin!4v1690379265984!5m2!1sen!2sin"
-              allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border-radius:8px;width:100%;height:160px;"></iframe>
-        </div>
-        <div class="studio-list-container">
-          <% if (locals.studios) { %>
-            <% locals.studios.forEach(studio => { %>
-              <div class="studio d-flex justify-content-between align-items-center mb-2">
-                <div class="studio-info">
-                  <h6 class="mb-1"><%= studio.name %></h6>
-                  <p class="mb-0">
-                    <%= studio.distance %> km &nbsp; 
-                    <span class="<%= studio.rating >= 4.0 ? 'green' : 'red' %>">★ <%= studio.rating %></span> &nbsp; 
-                    <span class="<%= studio.status === 'Available' ? 'available' : 'booked' %>"><%= studio.status %></span>
-                  </p>
-                </div>
-                <button class="book-btn">BOOK</button>
-              </div>
-            <% }); %>
-          <% } else { %>
-            <div class="text-white-50">No studios found.</div>
-          <% } %>
-        </div>
-      </div>
-    </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-100">Home</span>
+        </a>
 
-    <!-- Center Column: Posts Feed -->
-    <div class="center-column">
-      <div class="post-container">
-        <% if (locals.posts && locals.posts.length) { %>
-          <% locals.posts.forEach(post => { %>
-            <div class="post">
-              <!-- Post Header -->
-              <div class="post-header">
-                <a href="/user/<%= post.author?._id %>">
-                  <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" alt="<%= post.author?.username || 'User' %>" class="post-avatar-pic"/>
-                </a>
-                <div class="post-header-info">
-                  <h4><%= post.author?.username || 'User' %></h4>
-                  <p><%= post.author?.followersCount || 0 %> followers</p>
+        <!-- Network -->
+        <a href="#" class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Network</span>
+        </a>
+
+        <!-- Messaging -->
+        <a href="/msg" class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Messaging</span>
+        </a>
+
+        <!-- Notifications -->
+        <a href="/requests" class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Notifications</span>
+        </a>
+      </div>
+
+      <!-- Profile & Add -->
+      <div class="flex items-center gap-6">
+        <button class="w-10 h-10 rounded-full bg-surface flex items-center justify-center hover:bg-white hover:text-black transition-all group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-muted group-hover:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        
+        <div class="flex-shrink-0 cursor-pointer relative">
+          <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-b from-white/20 to-transparent" id="avatarContainer">
+            <img 
+              src="<%= locals.user?.profilePic || '/images/avatar.png' %>" 
+              alt="Profile" 
+              class="w-full h-full rounded-full object-cover border-2 border-background"
+              id="avatar"
+            />
+          </div>
+          <div class="absolute bottom-1 right-0 w-3 h-3 bg-[#4ADE80] rounded-full border-2 border-background shadow-sm"></div>
+          <div class="dropdown position-absolute top-100 mt-2 bg-dark text-white p-2" id="dropdownMenu" style="display:none;right:0;">
+            <a href="/bio.html" class="dropdown-item text-white">My Profile</a>
+            <a href="/settings.html" class="dropdown-item text-white">Settings</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <main class="max-w-[1800px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-20">
+      
+      <!-- Left Sidebar -->
+      <aside class="hidden lg:block lg:col-span-3 xl:col-span-3 sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto no-scrollbar">
+        <div class="flex flex-col gap-6 w-full">
+          <!-- Create Post -->
+          <div class="bg-card rounded-[32px] p-6 border border-white/5 relative overflow-hidden">
+             <!-- Subtle background glow -->
+             <div class="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <form action="/new" method="POST" enctype="multipart/form-data">
+              <div class="flex gap-4 mb-6 relative">
+                <div class="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-white/10 to-transparent flex-shrink-0">
+                   <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Me" class="w-full h-full rounded-full object-cover" />
                 </div>
-                <div class="post-header-right">
-                  <i class="fas fa-ellipsis-h"></i>
-                  <% if (locals.user && locals.user._id && post.author && post.author._id !== locals.user._id) { %>
-                    <form action="/requests/send" method="POST" style="margin:0;">
-                      <input type="hidden" name="toId" value="<%= post.author._id %>">
-                      <button class="connect-btn" type="submit">Connect</button>
-                    </form>
-                  <% } %>
+                <div class="flex-1 pt-2">
+                  <input
+                    type="text"
+                    name="title"
+                    placeholder="Write a post..."
+                    class="w-full bg-transparent text-lg text-white placeholder-muted border-none p-0 focus:outline-none focus:ring-0 font-light"
+                    required
+                  />
                 </div>
               </div>
-              <!-- Post Content -->
-              <div class="post-content mb-2">
-                <% if (post.title) { %><h5><%= post.title %></h5><% } %>
-                <% if (post.content && post.content.trim() !== "") { %>
-                  <p><%= post.content %></p>
-                <% } %>
-                <% if (post.fileUrl && post.fileType === 'image') { %>
-                  <img class="post-media" src="<%= post.fileUrl %>" alt="Post image" />
-                <% } else if (post.fileUrl && post.fileType === 'video') { %>
-                  <video class="post-media" controls>
-                    <source src="<%= post.fileUrl %>" type="video/mp4">
-                    Your browser does not support the video tag.
-                  </video>
-                <% } else if (post.fileUrl && post.fileType === 'audio') { %>
-                  <audio class="post-media" controls>
-                    <source src="<%= post.fileUrl %>" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                  </audio>
-                <% } %>
-              </div>
-              <!-- Post Footer -->
-              <div class="post-footer mt-2">
-                <div class="post-stats d-flex justify-content-between text-secondary mb-2">
-                  <span><%= post.likes || 0 %> likes</span>
-                  <span><%= post.commentsCount || 0 %> comments</span>
+              
+              <!-- Divider -->
+              <div class="h-px bg-white/5 w-full mb-5"></div>
+
+              <div class="flex items-center justify-between relative">
+                <div class="flex gap-3">
+                  <input type="file" name="media" id="mediaInput" accept="image/*,video/*,audio/*" style="display:none;">
+                  <label for="mediaInput" class="flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold transition-all bg-surface text-muted border border-white/5 hover:bg-[#2a2a2a] hover:text-white cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    Photo
+                  </label>
+                  <label for="mediaInput" class="flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold transition-all bg-surface text-muted border border-white/5 hover:bg-[#2a2a2a] hover:text-white cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    Video
+                  </label>
+                  <label for="mediaInput" class="flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold transition-all bg-surface text-muted border border-white/5 hover:bg-[#2a2a2a] hover:text-white cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                    Audio
+                  </label>
                 </div>
-                <div class="post-actions">
-                  <div class="action-btn"><i class="fa-regular fa-thumbs-up"></i> react</div>
-                  <div class="action-btn"><i class="fa-regular fa-comment-dots"></i> comment</div>
-                  <div class="action-btn"><i class="fa-solid fa-share"></i> repost</div>
-                  <div class="action-btn"><i class="bi bi-send"></i> share</div>
+                
+                <div class="flex gap-3">
+                  <button type="submit" class="w-10 h-10 rounded-full flex items-center justify-center border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:rotate-12 transition-transform" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Studio Map Widget -->
+          <div class="bg-card rounded-[32px] overflow-hidden p-5 shadow-2xl border border-white/5 relative group hover:border-white/10 transition-all">
+            <div class="relative w-full aspect-[4/3] bg-[#1f1f1f] rounded-2xl overflow-hidden mb-5">
+              <!-- Map Visuals -->
+              <div class="absolute inset-0 bg-cover bg-center opacity-60 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" style="background-image: url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-122.4194,37.7749,13,0/600x600?access_token=pk.eyJ1IjoiZGVtb21hcHMiLCJhIjoiY2xwZmRpZ21oMDBxZDJqbzh4Z2Z4Z2Z4In0.1');"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              
+              <!-- Map Pins -->
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+                <div class="relative">
+                  <div class="absolute -inset-2 bg-accent/20 rounded-full blur-md animate-pulse"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="relative w-8 h-8 text-accent drop-shadow-md" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 </div>
               </div>
             </div>
-          <% }); %>
-        <% } else { %>
-          <div class="text-white-50">No posts yet.</div>
-        <% } %>
-      </div>
-    </div>
 
-    <!-- Right Column: Musicians & Messages -->
-    <div class="right-column">
-      <div class="musician-card">
-        <div class="card-header mb-2">
-          <span>Connect With Musicians</span>
-          <i class="fas fa-arrow-right"></i>
-        </div>
-        <div class="musician-list-container">
-          <div class="musician-list">
-            <% if (locals.allUsers && locals.allUsers.length) { %>
-              <% allUsers.forEach(user => { %>
-                <div class="musician">
-                  <img src="<%= user.profilePic || '/images/avatar.png' %>" alt="<%= user.username %>" class="avatar" />
-                  <div class="info">
-                    <h4 class="mb-1"><%= user.username %></h4>
-                    <p class="mb-0 text-secondary"><%= user.role || 'Musician' %></p>
+            <% if (locals.studios && locals.studios.length > 0) { %>
+              <% locals.studios.slice(0, 1).forEach(studio => { %>
+                <div class="flex justify-between items-end mb-3">
+                  <div>
+                    <h2 class="text-xl font-bold text-white mb-1.5 tracking-tight"><%= studio.name %></h2>
+                    <div class="flex items-center gap-3 text-xs font-semibold">
+                      <span class="text-muted"><%= studio.distance %> km</span>
+                      <span class="flex items-center <%= studio.rating >= 4.0 ? 'text-[#4ADE80]' : 'text-red-500' %> gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 fill-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <%= studio.rating %>
+                      </span>
+                      <span class="<%= studio.status === 'Available' ? 'text-[#4ADE80] bg-[#4ADE80]/10 border-[#4ADE80]/20' : 'text-red-500 bg-red-500/10 border-red-500/20' %> px-2 py-0.5 rounded-full border"><%= studio.status %></span>
+                    </div>
                   </div>
-                  <form action="/requests/send" method="POST" style="margin:0;">
-                    <input type="hidden" name="toId" value="<%= user._id %>">
-                    <button class="connect-btn" type="submit">Connect</button>
-                  </form>
+                  <button class="bg-accent text-[#050505] font-bold py-2.5 px-6 rounded-xl hover:bg-white hover:scale-105 transition-all shadow-glow">
+                    BOOK
+                  </button>
                 </div>
               <% }); %>
             <% } else { %>
-              <div class="text-white-50">No users found.</div>
+              <div class="flex justify-between items-end mb-3">
+                <div>
+                  <h2 class="text-xl font-bold text-white mb-1.5 tracking-tight">Musec studio</h2>
+                  <div class="flex items-center gap-3 text-xs font-semibold">
+                    <span class="text-muted">2.2 km</span>
+                    <span class="flex items-center text-[#4ADE80] gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 fill-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 4.9
+                    </span>
+                    <span class="text-[#4ADE80] bg-[#4ADE80]/10 px-2 py-0.5 rounded-full border border-[#4ADE80]/20">Available</span>
+                  </div>
+                </div>
+                <button class="bg-accent text-[#050505] font-bold py-2.5 px-6 rounded-xl hover:bg-white hover:scale-105 transition-all shadow-glow">
+                  BOOK
+                </button>
+              </div>
+            <% } %>
+
+            <div class="mt-5 pt-4 border-t border-white/5 flex items-center justify-between group/link cursor-pointer">
+              <span class="text-sm font-medium text-muted group-hover/link:text-white transition-colors">Connect With Studios</span>
+              <div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center group-hover/link:bg-accent group-hover/link:text-black transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trending Genres -->
+          <div class="bg-card rounded-[32px] p-6 shadow-xl border border-white/5">
+            <h3 class="text-lg font-bold text-white mb-5">Trending Genres</h3>
+            <div class="flex flex-wrap gap-2.5">
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-surface text-muted border-white/5 hover:border-white/20 hover:text-white">Hip-Hop</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-surface text-muted border-white/5 hover:border-white/20 hover:text-white">R&B</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Electronic</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Rock</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Jazz</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Feed -->
+      <section class="col-span-1 lg:col-span-6 xl:col-span-6">
+        <div class="flex flex-col gap-8 w-full">
+          <!-- Welcome Section -->
+          <div class="bg-card rounded-[32px] p-6 border border-white/5 mb-4">
+            <div class="flex items-center gap-4">
+              <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Profile" class="w-16 h-16 rounded-full object-cover" />
+              <div>
+                <p class="text-muted text-sm mb-1">Welcome back!</p>
+                <h2 class="text-2xl font-bold text-white"><%= locals.user?.username || "User" %></h2>
+              </div>
+            </div>
+            <!-- Story Bar -->
+            <div class="flex gap-4 mt-4 overflow-x-auto no-scrollbar">
+              <a href="/go-live" class="flex-shrink-0 relative">
+                <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-br from-accent/50 to-transparent">
+                  <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Story" class="w-full h-full rounded-full object-cover" />
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full flex items-center justify-center text-[#050505] font-bold text-sm">+</div>
+              </a>
+              <% if (locals.liveStreams) { %>
+                <% locals.liveStreams.forEach(stream => { %>
+                  <a href="/watch/<%= stream.streamId %>" class="flex-shrink-0">
+                    <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-br from-white/20 to-transparent">
+                      <img src="<%= stream.coverImg || '/images/avatar.png' %>" alt="Live Stream" class="w-full h-full rounded-full object-cover" />
+                    </div>
+                  </a>
+                <% }); %>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Filter Tabs -->
+          <div class="flex gap-3 overflow-x-auto pb-1 scrollbar-hide items-center no-scrollbar">
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-accent text-[#050505] border-accent shadow-glow scale-105">All</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Hip-Hop</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">R&B</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Electronic</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Rock</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Jazz</button>
+          </div>
+
+          <!-- Posts Container -->
+          <div class="flex flex-col gap-6">
+            <% if (locals.posts && locals.posts.length) { %>
+              <% locals.posts.forEach(post => { %>
+                <div class="bg-card rounded-[32px] p-7 border border-white/5 hover:border-white/10 transition-all group">
+                  <!-- Header -->
+                  <div class="flex justify-between items-start mb-4">
+                    <div class="flex gap-4">
+                      <a href="/user/<%= post.author?._id %>" class="relative cursor-pointer">
+                         <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-white/20 to-transparent">
+                           <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" alt="<%= post.author?.username || 'User' %>" class="w-full h-full rounded-full object-cover" />
+                         </div>
+                      </a>
+                      <div class="flex flex-col justify-center">
+                        <h4 class="text-[15px] font-bold text-white leading-tight mb-0.5 hover:underline decoration-accent/50 underline-offset-4 cursor-pointer"><%= post.author?.username || 'User' %></h4>
+                        <span class="text-[11px] font-medium text-muted tracking-wide"><%= post.author?.followersCount || 0 %> followers</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button class="text-muted/50 hover:text-white transition-colors p-2 -mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                      </button>
+                      <% if (locals.user && locals.user._id && post.author && post.author._id !== locals.user._id) { %>
+                        <form action="/requests/send" method="POST" style="margin:0;">
+                          <input type="hidden" name="toId" value="<%= post.author._id %>">
+                          <button class="px-4 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white hover:bg-white hover:text-black hover:border-transparent transition-all tracking-wide" type="submit">Connect</button>
+                        </form>
+                      <% } %>
+                    </div>
+                  </div>
+
+                  <!-- Content -->
+                  <div class="mb-5">
+                    <% if (post.title) { %>
+                      <h5 class="text-lg font-bold text-white mb-2"><%= post.title %></h5>
+                    <% } %>
+                    <% if (post.content && post.content.trim() !== "") { %>
+                      <p class="text-[14px] text-gray-300 mb-5 leading-relaxed font-light"><%= post.content %></p>
+                    <% } %>
+                    
+                    <% if (post.fileUrl && post.fileType === 'image') { %>
+                      <div class="rounded-2xl overflow-hidden mb-5 border border-white/5 shadow-2xl">
+                        <img src="<%= post.fileUrl %>" alt="Post image" class="w-full h-auto object-cover hover:scale-[1.02] transition-transform duration-500" />
+                      </div>
+                    <% } else if (post.fileUrl && post.fileType === 'video') { %>
+                      <div class="rounded-2xl overflow-hidden mb-5 border border-white/5 shadow-2xl">
+                        <video class="w-full h-auto" controls>
+                          <source src="<%= post.fileUrl %>" type="video/mp4">
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    <% } else if (post.fileUrl && post.fileType === 'audio') { %>
+                      <div class="bg-[#181818] rounded-2xl p-4 mb-5 flex items-center gap-4 border border-white/5 shadow-inner relative overflow-hidden">
+                        <div class="absolute bottom-0 left-0 h-[2px] bg-white/5 w-full">
+                          <div class="h-full bg-accent w-1/3"></div>
+                        </div>
+                        <button class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-[#050505] hover:scale-105 hover:shadow-glow transition-all flex-shrink-0 z-10">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </button>
+                        <div class="flex-1 flex flex-col justify-center z-10">
+                          <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-white">Audio Track</span>
+                            <span class="text-[10px] text-muted font-mono">0:00</span>
+                          </div>
+                          <audio class="w-full" controls>
+                            <source src="<%= post.fileUrl %>" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                          </audio>
+                        </div>
+                      </div>
+                    <% } %>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="flex items-center gap-8 pt-2">
+                    <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                      <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                      </div>
+                      <span class="text-xs font-semibold"><%= post.likes || 0 %></span>
+                    </button>
+                    <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                      <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                      </div>
+                      <span class="text-xs font-semibold"><%= post.commentsCount || 0 %></span>
+                    </button>
+                    <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                      <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                      </div>
+                      <span class="text-xs font-semibold">Repost</span>
+                    </button>
+                    <div class="flex-1"></div>
+                    <button class="flex items-center gap-2 text-xs font-bold text-muted hover:text-white transition-colors bg-surface px-4 py-2 rounded-full hover:bg-white hover:text-black">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                      Share
+                    </button>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="bg-card rounded-[32px] p-7 border border-white/5 text-center">
+                <p class="text-muted">No posts yet.</p>
+              </div>
             <% } %>
           </div>
         </div>
-      </div>
-      <a href="/msg" class="messages-btn mt-4 text-decoration-none">
-        <i class="fab fa-facebook-messenger fs-3"></i>
-        <div class="left-content flex-grow-1"><span>Messages</span></div>
-        <div class="avatars d-flex">
-          <img src="/images/avatar.png" alt="Avatar"/>
-          <img src="/images/avatar.png" alt="Avatar"/>
-          <img src="/images/avatar.png" alt="Avatar"/>
-        </div>
-      </a>
-    </div>
-  </div>
-</div>
+      </section>
 
-<!-- User dropdown JS -->
-<script>
-  const avatar = document.getElementById('avatar');
-  const dropdown = document.getElementById('dropdownMenu');
-  if (avatar && dropdown) {
-      avatar.addEventListener('click', () => {
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-      });
-      document.addEventListener('click', (event) => {
-        if (!event.target.closest('.right')) {
-          dropdown.style.display = 'none';
-        }
-      });
-  }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <!-- Right Sidebar -->
+      <aside class="hidden lg:block lg:col-span-3 xl:col-span-3 sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto no-scrollbar">
+        <div class="flex flex-col gap-6 w-full">
+          <!-- Connect With Musicians -->
+          <div class="bg-card rounded-[32px] p-6 border border-white/5">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-white text-lg font-bold">Connect With Musicians</h3>
+              <button class="w-8 h-8 rounded-full bg-surface flex items-center justify-center hover:bg-white hover:text-black transition-all group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-muted group-hover:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-5">
+              <% if (locals.allUsers && locals.allUsers.length) { %>
+                <% locals.allUsers.forEach(user => { %>
+                  <div class="flex items-center justify-between group">
+                    <div class="flex items-center gap-3.5">
+                      <div class="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/5 group-hover:ring-accent/50 transition-all flex-shrink-0">
+                         <div class="absolute inset-0 bg-gradient-to-tr from-accent/20 to-transparent"></div>
+                         <img src="<%= user.profilePic || '/images/avatar.png' %>" alt="<%= user.username %>" class="w-full h-full object-cover" />
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-sm font-bold text-white group-hover:text-accent transition-colors"><%= user.username %></span>
+                        <span class="text-[10px] text-muted font-medium truncate max-w-[140px] leading-tight"><%= user.role || 'Musician' %></span>
+                      </div>
+                    </div>
+                    <form action="/requests/send" method="POST" style="margin:0;">
+                      <input type="hidden" name="toId" value="<%= user._id %>">
+                      <button class="px-4 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white hover:bg-white hover:text-black hover:border-transparent transition-all tracking-wide" type="submit">
+                        Connect
+                      </button>
+                    </form>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <div class="text-muted text-sm">No users found.</div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Messages Button -->
+          <a href="/msg" class="bg-card rounded-[32px] p-6 border border-white/5 hover:border-white/10 transition-all flex items-center gap-4 group">
+            <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-[#050505] flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="text-sm font-bold text-white mb-1">Messages</h4>
+              <p class="text-xs text-muted">Chat with your connections</p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-muted group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </aside>
+
+    </main>
+  <script>
+    // User dropdown JS
+    const avatar = document.getElementById('avatar');
+    const dropdown = document.getElementById('dropdownMenu');
+    const avatarContainer = document.getElementById('avatarContainer');
+    
+    if (avatarContainer && dropdown) {
+        avatarContainer.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        document.addEventListener('click', (event) => {
+          if (!event.target.closest('#avatarContainer') && !event.target.closest('.dropdown')) {
+            dropdown.style.display = 'none';
+          }
+        });
+    }
+  </script>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>

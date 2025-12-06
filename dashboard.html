@@ -1,0 +1,548 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musec Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              background: '#050505',
+              card: '#121212',
+              cardHover: '#1A1A1A',
+              accent: '#FFCD9E', // The peach color
+              accentDark: '#E0AC7E',
+              secondary: '#262626',
+              muted: '#888888',
+              surface: '#1E1E1E',
+            },
+            boxShadow: {
+              'glow': '0 0 20px rgba(255, 205, 158, 0.1)',
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050505;
+        color: #ffffff;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #050505; }
+      ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #444; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      /* Audio Wave Animation */
+      .wave-bar {
+        animation: wave-anim 1s ease-in-out infinite;
+        border-radius: 999px;
+      }
+      @keyframes wave-anim {
+        0%, 100% { height: 30%; opacity: 0.5; }
+        50% { height: 100%; opacity: 1; }
+      }
+    </style>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-background text-white font-sans selection:bg-accent selection:text-black">
+    
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 w-full px-8 py-5 bg-background/80 backdrop-blur-xl flex items-center justify-center border-b border-white/5">
+      <!-- Search -->
+      <div class="flex-1 max-w-[320px]">
+        <div class="relative group">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input 
+            type="text" 
+            placeholder="Parin goat?" 
+            class="w-full bg-surface text-sm text-white rounded-full py-3 pl-11 pr-4 focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all border border-transparent hover:border-white/5 placeholder:text-muted/60 font-medium"
+          />
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="flex items-center gap-14 mx-8">
+        <!-- Home (Active) -->
+        <button class="flex flex-col items-center gap-1.5 group text-accent transition-colors">
+          <div class="transition-transform duration-300 scale-110 drop-shadow-[0_0_8px_rgba(255,205,158,0.4)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-100">Home</span>
+        </button>
+
+        <!-- Network -->
+        <button class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Network</span>
+        </button>
+
+        <!-- Messaging -->
+        <button class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Messaging</span>
+        </button>
+
+        <!-- Notifications -->
+        <button class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Notifications</span>
+        </button>
+      </div>
+
+      <!-- Profile & Add -->
+      <div class="flex items-center gap-6">
+        <button class="w-10 h-10 rounded-full bg-surface flex items-center justify-center hover:bg-white hover:text-black transition-all group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-muted group-hover:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        
+        <div class="flex-shrink-0 cursor-pointer relative">
+          <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-b from-white/20 to-transparent">
+            <img 
+              src="https://picsum.photos/100/100?random=99" 
+              alt="Profile" 
+              class="w-full h-full rounded-full object-cover border-2 border-background"
+            />
+          </div>
+          <div class="absolute bottom-1 right-0 w-3 h-3 bg-[#4ADE80] rounded-full border-2 border-background shadow-sm"></div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <main class="max-w-[1800px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-20">
+      
+      <!-- Left Sidebar -->
+      <aside class="hidden lg:block lg:col-span-3 xl:col-span-3 sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto no-scrollbar">
+        <div class="flex flex-col gap-6 w-full">
+          <!-- Studio Map Widget -->
+          <div class="bg-card rounded-[32px] overflow-hidden p-5 shadow-2xl border border-white/5 relative group hover:border-white/10 transition-all">
+            <div class="relative w-full aspect-[4/3] bg-[#1f1f1f] rounded-2xl overflow-hidden mb-5">
+              <!-- Map Visuals -->
+              <div class="absolute inset-0 bg-cover bg-center opacity-60 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" style="background-image: url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-122.4194,37.7749,13,0/600x600?access_token=pk.eyJ1IjoiZGVtb21hcHMiLCJhIjoiY2xwZmRpZ21oMDBxZDJqbzh4Z2Z4Z2Z4In0.1');"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              
+              <!-- Map Pins -->
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+                <div class="relative">
+                  <div class="absolute -inset-2 bg-accent/20 rounded-full blur-md animate-pulse"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="relative w-8 h-8 text-accent drop-shadow-md" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+              </div>
+              <div class="absolute top-1/4 right-1/4 transform scale-75 opacity-70">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </div>
+              <div class="absolute bottom-1/3 left-1/4 transform scale-75 opacity-70">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </div>
+              
+              <!-- Floating Tag -->
+              <div class="absolute top-3 right-3">
+                 <span class="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-lg border border-white/10">
+                    Studio A
+                 </span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-end mb-3">
+              <div>
+                <h2 class="text-xl font-bold text-white mb-1.5 tracking-tight">Musec studio</h2>
+                <div class="flex items-center gap-3 text-xs font-semibold">
+                  <span class="text-muted">2.2 km</span>
+                  <span class="flex items-center text-[#4ADE80] gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 fill-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 4.9
+                  </span>
+                  <span class="text-[#4ADE80] bg-[#4ADE80]/10 px-2 py-0.5 rounded-full border border-[#4ADE80]/20">Available</span>
+                </div>
+              </div>
+              <button class="bg-accent text-[#050505] font-bold py-2.5 px-6 rounded-xl hover:bg-white hover:scale-105 transition-all shadow-glow">
+                BOOK
+              </button>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-white/5 flex items-center justify-between group/link cursor-pointer">
+              <span class="text-sm font-medium text-muted group-hover/link:text-white transition-colors">Connect With Studios</span>
+              <div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center group-hover/link:bg-accent group-hover/link:text-black transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trending Genres -->
+          <div class="bg-card rounded-[32px] p-6 shadow-xl border border-white/5">
+            <h3 class="text-lg font-bold text-white mb-5">Trending Genres</h3>
+            <div class="flex flex-wrap gap-2.5">
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-surface text-muted border-white/5 hover:border-white/20 hover:text-white">Hip-Hop</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-surface text-muted border-white/5 hover:border-white/20 hover:text-white">R&B</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Electronic</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Electronic</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Rock</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Jazz</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Jazz</span>
+              <span class="px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all hover:scale-105 border bg-[#181818] text-[#555] border-transparent hover:text-white hover:bg-surface">Hip-Hop</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Feed -->
+      <section class="col-span-1 lg:col-span-6 xl:col-span-6">
+        <div class="flex flex-col gap-8 w-full">
+          <!-- Create Post Widget -->
+          <div class="bg-card rounded-[32px] p-6 border border-white/5 relative overflow-hidden">
+             <!-- Subtle background glow -->
+             <div class="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="flex gap-4 mb-6 relative">
+              <div class="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-white/10 to-transparent flex-shrink-0">
+                 <img src="https://picsum.photos/100/100?random=99" alt="Me" class="w-full h-full rounded-full object-cover" />
+              </div>
+              <div class="flex-1 pt-2">
+                <input
+                  type="text"
+                  placeholder="Write a post..."
+                  class="w-full bg-transparent text-lg text-white placeholder-muted border-none p-0 focus:outline-none focus:ring-0 font-light"
+                />
+              </div>
+            </div>
+            
+            <!-- Divider -->
+            <div class="h-px bg-white/5 w-full mb-5"></div>
+
+            <div class="flex items-center justify-between relative">
+              <div class="flex gap-3">
+                <button class="flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold transition-all bg-accent text-[#050505]">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  Text
+                </button>
+                <button class="flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold transition-all bg-surface text-muted border border-white/5 hover:bg-[#2a2a2a] hover:text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  Photo
+                </button>
+                <button class="flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold transition-all bg-surface text-muted border border-white/5 hover:bg-[#2a2a2a] hover:text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                  Audio
+                </button>
+              </div>
+              
+              <div class="flex gap-3">
+                 <!-- Magic Button (non-functional visual) -->
+                 <button class="w-10 h-10 rounded-full flex items-center justify-center border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all group">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:rotate-12 transition-transform" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                 </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Tabs -->
+          <div class="flex gap-3 overflow-x-auto pb-1 scrollbar-hide items-center no-scrollbar">
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-accent text-[#050505] border-accent shadow-glow scale-105">All</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Hip-Hop</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">R&B</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Electronic</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Rock</button>
+            <button class="px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border bg-surface text-[#666] border-transparent hover:text-white hover:bg-[#2a2a2a]">Jazz</button>
+          </div>
+
+          <!-- Posts Container -->
+          <div class="flex flex-col gap-6">
+            
+            <!-- Post 1: Audio -->
+            <div class="bg-card rounded-[32px] p-7 border border-white/5 hover:border-white/10 transition-all group">
+              <!-- Header -->
+              <div class="flex justify-between items-start mb-4">
+                <div class="flex gap-4">
+                  <div class="relative cursor-pointer">
+                     <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-white/20 to-transparent">
+                       <img src="https://picsum.photos/100/100?random=1" alt="Marcus" class="w-full h-full rounded-full object-cover" />
+                     </div>
+                  </div>
+                  <div class="flex flex-col justify-center">
+                    <h4 class="text-[15px] font-bold text-white leading-tight mb-0.5 hover:underline decoration-accent/50 underline-offset-4 cursor-pointer">Marcus Chen</h4>
+                    <span class="text-[11px] font-medium text-muted tracking-wide">@marcusbeats • <span class="text-gray-600">2h ago</span></span>
+                  </div>
+                </div>
+                <button class="text-muted/50 hover:text-white transition-colors p-2 -mr-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                </button>
+              </div>
+
+              <!-- Content -->
+              <p class="text-[14px] text-gray-300 mb-5 leading-relaxed font-light">
+                Just dropped a new lo-fi beat! Perfect for late night studio sessions. Who wants to collab? 🎶
+              </p>
+
+              <!-- Audio Player -->
+              <div class="bg-[#181818] rounded-2xl p-4 mb-5 flex items-center gap-4 border border-white/5 shadow-inner relative overflow-hidden">
+                <!-- Progress bar background -->
+                <div class="absolute bottom-0 left-0 h-[2px] bg-white/5 w-full">
+                  <div class="h-full bg-accent w-1/3"></div>
+                </div>
+
+                <button class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-[#050505] hover:scale-105 hover:shadow-glow transition-all flex-shrink-0 z-10">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                
+                <div class="flex-1 flex flex-col justify-center z-10">
+                   <div class="flex justify-between items-center mb-1">
+                      <span class="text-xs font-bold text-white">Lo-Fi Dreams.wav</span>
+                      <span class="text-[10px] text-muted font-mono">2:34</span>
+                   </div>
+                   <!-- CSS Waveform -->
+                   <div class="flex items-center gap-[3px] h-8 w-full overflow-hidden opacity-90">
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.1s; height: 40%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.2s; height: 60%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.3s; height: 30%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.1s; height: 80%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.4s; height: 50%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.2s; height: 70%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.5s; height: 90%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.1s; height: 40%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.3s; height: 60%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.2s; height: 30%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.4s; height: 80%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.1s; height: 50%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.3s; height: 70%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.5s; height: 90%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.2s; height: 40%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.1s; height: 60%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.4s; height: 30%"></div>
+                      <div class="w-1 bg-accent wave-bar" style="animation-delay: 0.3s; height: 80%"></div>
+                      <div class="w-1 bg-surface" style="height: 50%"></div>
+                      <div class="w-1 bg-surface" style="height: 20%"></div>
+                      <div class="w-1 bg-surface" style="height: 30%"></div>
+                   </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-8 pt-2">
+                <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                  <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </div>
+                  <span class="text-xs font-semibold">24</span>
+                </button>
+                <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                  <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  </div>
+                  <span class="text-xs font-semibold">8</span>
+                </button>
+                <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                  <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                  </div>
+                  <span class="text-xs font-semibold">3</span>
+                </button>
+                <div class="flex-1"></div>
+                <button class="flex items-center gap-2 text-xs font-bold text-muted hover:text-white transition-colors bg-surface px-4 py-2 rounded-full hover:bg-white hover:text-black">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                  Share
+                </button>
+              </div>
+            </div>
+
+            <!-- Post 2: Image -->
+            <div class="bg-card rounded-[32px] p-7 border border-white/5 hover:border-white/10 transition-all group">
+              <!-- Header -->
+              <div class="flex justify-between items-start mb-4">
+                <div class="flex gap-4">
+                  <div class="relative cursor-pointer">
+                     <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-white/20 to-transparent">
+                       <img src="https://picsum.photos/100/100?random=2" alt="Sarah" class="w-full h-full rounded-full object-cover" />
+                     </div>
+                  </div>
+                  <div class="flex flex-col justify-center">
+                    <h4 class="text-[15px] font-bold text-white leading-tight mb-0.5 hover:underline decoration-accent/50 underline-offset-4 cursor-pointer">Sarah Johnson</h4>
+                    <span class="text-[11px] font-medium text-muted tracking-wide">@sarahsounds • <span class="text-gray-600">4h ago</span></span>
+                  </div>
+                </div>
+                <button class="text-muted/50 hover:text-white transition-colors p-2 -mr-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                </button>
+              </div>
+
+              <!-- Content -->
+              <p class="text-[14px] text-gray-300 mb-5 leading-relaxed font-light">
+                Pro tip: Always record your vocals with a pop filter and in a treated room. The difference is night and day! Here's my home setup 🎙️
+              </p>
+
+              <!-- Media -->
+              <div class="rounded-2xl overflow-hidden mb-5 border border-white/5 shadow-2xl">
+                <img src="https://picsum.photos/800/500?random=3" alt="Post content" class="w-full h-auto object-cover hover:scale-[1.02] transition-transform duration-500" />
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-8 pt-2">
+                <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                  <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </div>
+                  <span class="text-xs font-semibold">156</span>
+                </button>
+                <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                  <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  </div>
+                  <span class="text-xs font-semibold">32</span>
+                </button>
+                <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                  <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                  </div>
+                  <span class="text-xs font-semibold">14</span>
+                </button>
+                <div class="flex-1"></div>
+                <button class="flex items-center gap-2 text-xs font-bold text-muted hover:text-white transition-colors bg-surface px-4 py-2 rounded-full hover:bg-white hover:text-black">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                  Share
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Sidebar -->
+      <aside class="hidden lg:block lg:col-span-3 xl:col-span-3 sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto no-scrollbar">
+        <div class="flex flex-col gap-6 w-full">
+          <!-- Connect With Musicians -->
+          <div class="bg-card rounded-[32px] p-6 border border-white/5">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-white text-lg font-bold">Connect With Musicians</h3>
+              <button class="w-8 h-8 rounded-full bg-surface flex items-center justify-center hover:bg-white hover:text-black transition-all group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-muted group-hover:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-5">
+              <!-- Musician 1 -->
+              <div class="flex items-center justify-between group">
+                <div class="flex items-center gap-3.5">
+                  <div class="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/5 group-hover:ring-accent/50 transition-all flex-shrink-0">
+                     <div class="absolute inset-0 bg-gradient-to-tr from-accent/20 to-transparent"></div>
+                     <img src="https://picsum.photos/100/100?random=10" alt="Pranav" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-bold text-white group-hover:text-accent transition-colors">Pranav Kapur</span>
+                    <span class="text-[10px] text-muted font-medium truncate max-w-[140px] leading-tight">Graphic Designer | Dholak lover</span>
+                  </div>
+                </div>
+                <button class="px-4 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white hover:bg-white hover:text-black hover:border-transparent transition-all tracking-wide">
+                  Connect
+                </button>
+              </div>
+
+               <!-- Musician 2 -->
+              <div class="flex items-center justify-between group">
+                <div class="flex items-center gap-3.5">
+                  <div class="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/5 group-hover:ring-accent/50 transition-all flex-shrink-0">
+                     <div class="absolute inset-0 bg-gradient-to-tr from-accent/20 to-transparent"></div>
+                     <img src="https://picsum.photos/100/100?random=11" alt="Pranav" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-bold text-white group-hover:text-accent transition-colors">Pranav Kapur</span>
+                    <span class="text-[10px] text-muted font-medium truncate max-w-[140px] leading-tight">Graphic Designer | Dholak lover</span>
+                  </div>
+                </div>
+                <button class="px-4 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white hover:bg-white hover:text-black hover:border-transparent transition-all tracking-wide">
+                  Connect
+                </button>
+              </div>
+              
+              <!-- Musician 3 -->
+              <div class="flex items-center justify-between group">
+                <div class="flex items-center gap-3.5">
+                  <div class="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/5 group-hover:ring-accent/50 transition-all flex-shrink-0">
+                     <div class="absolute inset-0 bg-gradient-to-tr from-accent/20 to-transparent"></div>
+                     <img src="https://picsum.photos/100/100?random=12" alt="Pranav" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-bold text-white group-hover:text-accent transition-colors">Pranav Kapur</span>
+                    <span class="text-[10px] text-muted font-medium truncate max-w-[140px] leading-tight">Graphic Designer | Dholak lover</span>
+                  </div>
+                </div>
+                <button class="px-4 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white hover:bg-white hover:text-black hover:border-transparent transition-all tracking-wide">
+                  Connect
+                </button>
+              </div>
+
+               <!-- Musician 4 -->
+              <div class="flex items-center justify-between group">
+                <div class="flex items-center gap-3.5">
+                  <div class="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/5 group-hover:ring-accent/50 transition-all flex-shrink-0">
+                     <div class="absolute inset-0 bg-gradient-to-tr from-accent/20 to-transparent"></div>
+                     <img src="https://picsum.photos/100/100?random=13" alt="Pranav" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-bold text-white group-hover:text-accent transition-colors">Pranav Kapur</span>
+                    <span class="text-[10px] text-muted font-medium truncate max-w-[140px] leading-tight">Graphic Designer | Dholak lover</span>
+                  </div>
+                </div>
+                <button class="px-4 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white hover:bg-white hover:text-black hover:border-transparent transition-all tracking-wide">
+                  Connect
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trending Collabs -->
+          <div class="bg-card rounded-[32px] p-6 border border-white/5">
+             <div class="flex justify-between items-center mb-6">
+              <h3 class="text-white text-lg font-bold">Trending Collabs</h3>
+              <button class="w-8 h-8 rounded-full bg-surface flex items-center justify-center hover:bg-white hover:text-black transition-all group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-muted group-hover:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <div class="bg-surface rounded-2xl p-4 border border-white/5 hover:border-accent/30 transition-colors cursor-pointer group">
+                <div class="mb-2">
+                   <h4 class="text-sm font-bold text-accent mb-0.5 group-hover:underline decoration-accent/50 underline-offset-4">Lo-Fi Hip Hop Project</h4>
+                   <p class="text-[11px] text-gray-400 font-medium">Looking for jazz guitarist</p>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                  <img src="https://picsum.photos/100/100?random=1" alt="author" class="w-4 h-4 rounded-full grayscale group-hover:grayscale-0 transition-all" />
+                  <span class="text-[10px] text-muted font-mono">@marcusbeats</span>
+                </div>
+              </div>
+              
+              <div class="bg-surface rounded-2xl p-4 border border-white/5 hover:border-accent/30 transition-colors cursor-pointer group">
+                <div class="mb-2">
+                   <h4 class="text-sm font-bold text-accent mb-0.5 group-hover:underline decoration-accent/50 underline-offset-4">Lo-Fi Hip Hop Project</h4>
+                   <p class="text-[11px] text-gray-400 font-medium">Looking for jazz guitarist</p>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                  <img src="https://picsum.photos/100/100?random=1" alt="author" class="w-4 h-4 rounded-full grayscale group-hover:grayscale-0 transition-all" />
+                  <span class="text-[10px] text-muted font-mono">@bandlab_user</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </main>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

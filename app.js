@@ -146,7 +146,7 @@ app.get('/msg', (req, res) => {
   });
 });
 
-app.get('/', async (req, res) => {
+async function renderDashboard(req, res) {
   if (!req.user) return res.render('home');
 
   const liveStreams = await LiveStream.find({ isLive: true }).populate('streamer');
@@ -163,7 +163,10 @@ app.get('/', async (req, res) => {
     posts,
     hasUnreadMessages: unreadMessages.length > 0
   });
-});
+}
+
+app.get('/', renderDashboard);
+app.get('/dashboard', renderDashboard);
 
 // Chat
 app.get("/messages/:friendId", async (req, res) => {
