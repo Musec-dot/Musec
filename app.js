@@ -168,6 +168,26 @@ async function renderDashboard(req, res) {
 app.get('/', renderDashboard);
 app.get('/dashboard', renderDashboard);
 
+// Explore Musicians
+app.get('/explore-musicians', async (req, res) => {
+  if (!req.user) return res.redirect('/');
+  const allUsers = await User.find({});
+  res.render('explore-musicians', {
+    allUsers,
+    user: req.user
+  });
+});
+
+// Live Streams
+app.get('/live-streams', async (req, res) => {
+  if (!req.user) return res.redirect('/');
+  const liveStreams = await LiveStream.find({ isLive: true }).populate('streamer');
+  res.render('live-streams', {
+    liveStreams,
+    user: req.user
+  });
+});
+
 // Chat
 app.get("/messages/:friendId", async (req, res) => {
   const friendId = req.params.friendId;

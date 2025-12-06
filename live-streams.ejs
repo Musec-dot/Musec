@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Streams - Musec</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              background: '#050505',
+              card: '#121212',
+              cardHover: '#1A1A1A',
+              accent: '#FFCD9E',
+              accentDark: '#E0AC7E',
+              secondary: '#262626',
+              muted: '#888888',
+              surface: '#1E1E1E',
+            },
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050505;
+        color: #ffffff;
+      }
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    </style>
+  </head>
+  <body class="bg-background text-white font-sans min-h-screen">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 w-full px-8 py-5 bg-background/80 backdrop-blur-xl flex items-center justify-between border-b border-white/5">
+      <div class="flex items-center gap-4">
+        <a href="/dashboard" class="text-white text-lg font-bold">Musec</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/dashboard" class="text-sm text-muted hover:text-white transition-colors">Back to Dashboard</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">Live Streams</h1>
+        <p class="text-muted">Watch musicians streaming live</p>
+      </div>
+
+      <% if (locals.liveStreams && locals.liveStreams.length > 0) { %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <% liveStreams.forEach(stream => { %>
+            <a href="/watch/<%= stream.streamId %>" class="group">
+              <div class="bg-card rounded-2xl overflow-hidden border border-white/5 hover:border-accent/50 transition-all">
+                <!-- Stream Thumbnail -->
+                <div class="relative w-full aspect-video bg-surface overflow-hidden">
+                  <div class="absolute inset-0 bg-gradient-to-tr from-red-500/20 via-transparent to-transparent"></div>
+                  <div class="absolute top-3 left-3 flex items-center gap-2">
+                    <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <span class="text-xs font-bold text-white bg-red-500/80 backdrop-blur-sm px-2 py-1 rounded-full">LIVE</span>
+                  </div>
+                  <% if (stream.streamer.profilePic) { %>
+                    <img 
+                      src="<%= stream.streamer.profilePic %>" 
+                      alt="<%= stream.streamer.username %>" 
+                      class="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    />
+                  <% } else { %>
+                    <div class="w-full h-full flex items-center justify-center">
+                      <div class="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center">
+                        <span class="text-2xl font-bold text-accent"><%= stream.streamer.username.charAt(0).toUpperCase() %></span>
+                      </div>
+                    </div>
+                  <% } %>
+                  <!-- Play Overlay -->
+                  <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white ml-1" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Stream Info -->
+                <div class="p-4">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/5 flex-shrink-0">
+                      <img 
+                        src="<%= stream.streamer.profilePic || '/images/avatar.png' %>" 
+                        alt="<%= stream.streamer.username %>" 
+                        class="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-white font-bold text-sm truncate group-hover:text-accent transition-colors">
+                        <%= stream.streamer.username %>
+                      </h3>
+                      <p class="text-[10px] text-muted truncate">Live Stream</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs text-muted">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Streaming now</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <!-- No Live Streams -->
+        <div class="flex flex-col items-center justify-center py-20">
+          <div class="w-24 h-24 rounded-full bg-surface flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">No one is live</h2>
+          <p class="text-muted text-center max-w-md">
+            There are no live streams at the moment. Check back later to watch musicians streaming live!
+          </p>
+        </div>
+      <% } %>
+    </main>
+  </body>
+</html>
+
