@@ -296,10 +296,46 @@
       // ICE helper
       const newPC = id => {
         const pc = new RTCPeerConnection({
-          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { 
+              urls: 'turn:openrelay.metered.ca:80',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
+            },
+            { 
+              urls: 'turn:openrelay.metered.ca:443',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
+            },
+            { 
+              urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
+            }
+          ],
+          iceCandidatePoolSize: 10
         });
         stream.getTracks().forEach(t => pc.addTrack(t, stream));
-        pc.onicecandidate = e => e.candidate && socket.emit('candidate', id, e.candidate);
+        pc.onicecandidate = e => {
+          if (e.candidate) {
+            console.log('Sending ICE candidate to watcher:', id);
+            socket.emit('candidate', id, e.candidate);
+          } else {
+            console.log('ICE gathering completed for watcher:', id);
+          }
+        };
+        pc.oniceconnectionstatechange = () => {
+          console.log('ICE connection state for watcher', id, ':', pc.iceConnectionState);
+          if (pc.iceConnectionState === 'failed') {
+            console.log('ICE failed for watcher:', id, '- attempting restart');
+            if (pc.restartIce) {
+              pc.restartIce();
+            }
+          }
+        };
         return pc;
       };
 
@@ -308,9 +344,21 @@
         viewerCount++;
         updateViewerCount();
         const pc = peers[id] = newPC(id);
-        pc.createOffer()
-          .then(d => pc.setLocalDescription(d))
-          .then(() => socket.emit('offer', id, pc.localDescription));
+        pc.createOffer({
+          offerToReceiveAudio: false,
+          offerToReceiveVideo: false
+        })
+          .then(d => {
+            console.log('Created offer for watcher:', id);
+            return pc.setLocalDescription(d);
+          })
+          .then(() => {
+            console.log('Sending offer to watcher:', id);
+            socket.emit('offer', id, pc.localDescription);
+          })
+          .catch(err => {
+            console.error('Error creating offer for watcher', id, ':', err);
+          });
       });
 
       socket.on('answer', (id, desc) => peers[id]?.setRemoteDescription(desc));

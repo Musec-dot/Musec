@@ -204,6 +204,7 @@
       let pc;
       let broadcasterId = null;
       let streamStartTime = Date.now();
+      let iceCandidateQueue = [];
 
       // Update loading text
       function updateLoadingText(text, debug = '') {
@@ -255,7 +256,27 @@
         
         try {
           pc = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              { urls: 'stun:stun1.l.google.com:19302' },
+              { urls: 'stun:stun2.l.google.com:19302' },
+              { 
+                urls: 'turn:openrelay.metered.ca:80',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+              },
+              { 
+                urls: 'turn:openrelay.metered.ca:443',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+              },
+              { 
+                urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+              }
+            ],
+            iceCandidatePoolSize: 10
           });
 
           pc.ontrack = (e) => {
@@ -282,8 +303,17 @@
 
           pc.onicecandidate = (e) => {
             if (e.candidate && broadcasterId) {
-              console.log('Sending ICE candidate to broadcaster');
+              console.log('Sending ICE candidate to broadcaster:', e.candidate.candidate);
               socket.emit('candidate', broadcasterId, e.candidate);
+            } else if (!e.candidate) {
+              console.log('ICE gathering completed');
+            }
+          };
+
+          pc.onicegatheringstatechange = () => {
+            console.log('ICE gathering state:', pc.iceGatheringState);
+            if (pc.iceGatheringState === 'complete') {
+              console.log('All ICE candidates gathered');
             }
           };
 
@@ -307,7 +337,24 @@
             console.log('ICE connection state:', pc.iceConnectionState);
             if (pc.iceConnectionState === 'failed') {
               loadingIndicator.style.display = 'flex';
-              loadingIndicator.querySelector('p').textContent = 'Connection failed. Please check your network.';
+              updateLoadingText('Connection failed', 'Trying to reconnect...');
+              // Try to restart ICE
+              setTimeout(() => {
+                if (pc && pc.restartIce) {
+                  console.log('Restarting ICE...');
+                  pc.restartIce();
+                } else if (pc) {
+                  // Fallback: create new connection
+                  console.log('Creating new connection...');
+                  requestStream();
+                }
+              }, 2000);
+            } else if (pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') {
+              console.log('ICE connection established');
+              loadingIndicator.style.display = 'none';
+            } else if (pc.iceConnectionState === 'disconnected') {
+              console.log('ICE disconnected, attempting to reconnect...');
+              updateLoadingText('Connection lost', 'Attempting to reconnect...');
             }
           };
 
@@ -315,6 +362,17 @@
           updateLoadingText('Negotiating connection...', 'Setting up peer connection...');
           await pc.setRemoteDescription(new RTCSessionDescription(desc));
           console.log('Remote description set, creating answer...');
+          
+          // Add any queued ICE candidates
+          while (iceCandidateQueue.length > 0) {
+            const candidate = iceCandidateQueue.shift();
+            try {
+              await pc.addIceCandidate(new RTCIceCandidate(candidate));
+              console.log('Added queued ICE candidate');
+            } catch (err) {
+              console.error('Error adding queued ICE candidate:', err);
+            }
+          }
           
           updateLoadingText('Creating answer...', 'Establishing connection...');
           const answer = await pc.createAnswer({
@@ -342,9 +400,14 @@
         if (pc && pc.remoteDescription) {
           pc.addIceCandidate(new RTCIceCandidate(candidate))
             .then(() => console.log('Added ICE candidate'))
-            .catch(err => console.error('Error adding ICE candidate:', err));
+            .catch(err => {
+              console.error('Error adding ICE candidate:', err);
+              // Queue it if there's an error (might be a timing issue)
+              iceCandidateQueue.push(candidate);
+            });
         } else {
-          console.warn('Received ICE candidate but no peer connection or remote description yet');
+          console.warn('Received ICE candidate but no peer connection or remote description yet - queueing');
+          iceCandidateQueue.push(candidate);
         }
       });
 
