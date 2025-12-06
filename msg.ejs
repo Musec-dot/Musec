@@ -1,622 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Messages</title>
-  <script src="/socket.io/socket.io.js"></script>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    font-family: 'Montserrat', sans-serif;
-    color: #fff;
-    overflow: hidden;
-}
-
-.chat-main {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100%;
-    background-color: #0b0b0b;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #111;
-    border-bottom: 1px solid #353535;
-    flex-shrink: 0;
-}
-
-.search-bar .search-icon {
-    font-size: 0.65rem;
-    transform: translateY(1px);
-}
-
-.sidebar-search .search-icon {
-    width: 0.7rem !important;
-    height: 0.7rem !important;
-    transform: translateY(-1px);
-    margin-right: 1rem;
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    background-color: #0f0f0f;
-    border: 0.6px solid #828282;
-    border-radius: 15.9px;
-    padding: 0.5rem 1rem;
-}
-
-.create-chat-icon {
-    font-size: 1.2rem;
-    color: #929bff;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.create-chat-icon:hover {
-    color: white;
-}
-
-.search-icon {
-    width: 0.75rem;
-    height: 0.75rem;
-    margin-right: 0.5rem;
-}
-
-.search-input {
-    background: none;
-    border: none;
-    color: #828282;
-    font-size: 0.829rem;
-    outline: none;
-}
-
-.nav-links {
-    display: flex;
-    gap: 2rem;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transform: translateX(400px);
-}
-
-.nav-item.active .nav-icon,
-.nav-item.active .nav-text {
-    color: #929bff;
-}
-
-.nav-icon,
-.nav-text {
-    color: white;
-    transition: color 0.3s ease;
-}
-
-.nav-item:not(.active):hover .nav-icon,
-.nav-item:not(.active):hover .nav-text {
-    color: #929bff;
-}
-
-.nav-icon {
-    display: block;
-    font-size: 1.2rem;
-    margin-bottom: 0.40rem;
-}
-
-.nav-text {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-align: center;
-    line-height: 1;
-}
-
-.nav-text.active {
-    color: #929bff;
-}
-
-.profile-image {
-    width: 2.313rem;
-    height: 2.313rem;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.main-content {
-    display: flex;
-    flex-grow: 1;
-    height: calc(100vh - 70px);
-}
-
-.sidebar {
-    width: 24rem;
-    background-color: #0e0f0f;
-    border-right: 1px solid #353535;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin-top: 1rem;
-}
-
-.chat-list {
-    flex-grow: 1;
-    overflow-y: auto;
-}
-
-.chat-list::-webkit-scrollbar {
-    width: 0px
-}
-
-.chat-list::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 3px;
-}
-
-.chat-list::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-}
-
-.sidebar-search {
-    display: flex;
-    align-items: center;
-    background-color: #0b0b0b;
-    border: 0.4px solid #828282;
-    border-radius: 34px;
-    padding: 0.5rem 1rem;
-    flex-grow: 1;
-    margin-right: 1rem;
-}
-
-.sidebar-search-input {
-    background: none;
-    border: none;
-    color: #828282;
-    outline: none;
-}
-
-.edit-icon {
-    width: 1.375rem;
-    height: 1.375rem;
-    object-fit: cover;
-}
-
-.chat-list {
-    margin-top: 1rem;
-    overflow-y: auto;
-}
-
-.chat-item {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    border-radius: 18px;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-    background-color: #0b0b0b;
-    transition: background-color 0.2s ease;
-}
-
-.chat-item:hover {
-    background-color: #151515;
-}
-
-.active-chat {
-    background-color: #151515;
-    border: 1px solid #565656;
-}
-
-.chat-image {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 1rem;
-}
-
-.chat-info {
-    flex-grow: 1;
-}
-
-.chat-name {
-    font-size: 1.25rem;
-    font-weight: 500;
-}
-
-.chat-designation {
-    font-size: 0.75rem;
-    color: #929bff;
-}
-
-.chat-date {
-    font-size: 0.625rem;
-    color: #929bff;
-}
-
-.chat-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: #0e0f0f;
-    padding: 1rem;
-}
-
-.chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid #353535;
-    flex-shrink: 0;
-}
-
-.chat-user-name {
-    font-size: 1.25rem;
-    font-weight: 500;
-}
-
-.chat-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.chat-action-icon {
-    width: 1.75rem;
-    height: 1.75rem;
-    cursor: pointer;
-}
-
-.chat-messages {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 1rem 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.send-button {
-    background-color: #0e0f0f;
-    border: none;
-    padding: 0.4rem 0.6rem;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.send-button i {
-    color: white;
-    font-size: 0.9rem;
-}
-
-.send-button:hover {
-    background-color: #7c88ff;
-}
-
-.message {
-    display: flex;
-    align-items: flex-end;
-    gap: 0.5rem;
-}
-
-.message-avatar {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-}
-
-.message-bubble {
-    padding: 1rem;
-    border-radius: 12px;
-}
-
-.received-message .message-bubble {
-    background-color: #151515;
-    border: 0.4px solid #949494;
-}
-
-.sent-message {
-    justify-content: flex-end;
-}
-
-.sent-message .message-bubble {
-    background-color: #007bff;
-    color: white;
-}
-
-.chat-input-area {
-    display: flex;
-    align-items: center;
-    background-color: #151515;
-    border: 0.4px solid #949494;
-    border-radius: 24px;
-    padding: 0.5rem 1rem;
-    flex-shrink: 0;
-    margin-top: auto;
-}
-
-.input-icon {
-    width: 1.4rem;
-    height: 1.4rem;
-    cursor: pointer;
-    margin-right: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.chat-input {
-    background: none;
-    border: none;
-    flex-grow: 1;
-    color: #949494;
-    outline: none;
-}
-
-.profile-sidebar {
-    width: 20rem;
-    background-color: #0e0f0f;
-    border-left: 1px solid #353535;
-    flex-shrink: 0;
-}
-
-@media (max-width: 1900px) {
-    .sidebar {
-        width: 19rem;
-    }
-    .profile-sidebar {
-        width: 15rem;
-    }
-    .nav-links {
-        gap: 1.5rem;
-        margin-right: 20rem;
-    }
-    .chat-container {
-        padding: 0.8rem;
-    }
-}
-
-  </style>
-</head>
-<body>
-  <div class="chat-main">
-    <!-- Header -->
-    <header class="header">
-      <div class="search-bar">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" class="search-input" placeholder="Parin goat?">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musician Collab Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+            background: '#050505',
+              card: '#121212',
+              cardHover: '#1A1A1A',
+              accent: '#FFCD9E', // The peach color
+              accentDark: '#E0AC7E',
+              secondary: '#262626',
+              muted: '#888888',
+              surface: '#1E1E1E',
+              gray: {
+                750: '#2d3748',
+                850: '#1a202c',
+                950: '#0d1117',
+              },
+              orange: {
+                450: '#FF7A45', // Custom orange from screenshot
+                550: '#FF7A45',
+              },
+              boxShadow: {
+              'glow': '0 0 20px rgba(255, 205, 158, 0.1)',
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      /* Custom scrollbar for dark theme */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #000;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+      body {
+        background-color: #000;
+        color: #fff;
+        overflow: hidden; /* Prevent body scroll */
+      }
+    </style>
+  </head>
+  <body class="flex flex-col h-screen w-screen bg-black font-sans text-white overflow-hidden">
+    
+    <!-- HEADER -->
+    <nav class="sticky top-0 z-50 w-full px-8 py-5 bg-background/80 backdrop-blur-xl flex items-center justify-center border-b border-white/5">
+      <!-- Search -->
+      <div class="flex-1 max-w-[320px]">
+        <div class="relative group">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input 
+            type="text" 
+            placeholder="Search Musec..." 
+            class="w-full bg-surface text-sm text-white rounded-full py-3 pl-11 pr-4 focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all border border-transparent hover:border-white/5 placeholder:text-muted/60 font-medium"
+          />
+        </div>
       </div>
-      <nav class="nav-links">
-        <div class="nav-item active">
-          <i class="fas fa-home nav-icon"></i>
-          <div class="nav-text">Home</div>
-        </div>
-        <div class="nav-item">
-          <i class="fas fa-user-friends nav-icon"></i>
-          <div class="nav-text">Network</div>
-        </div>
-        <div class="nav-item">
-          <i class="fas fa-comment-dots nav-icon"></i>
-          <div class="nav-text">Messaging</div>
-        </div>
-        <div class="nav-item">
-          <i class="fas fa-bell nav-icon"></i>
-          <div class="nav-text">Notifications</div>
-        </div>
-      </nav>
-      <img class="profile-image" alt="" src="/images/avatar.png">
-    </header>
 
-    <main class="main-content">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="sidebar-header">
-          <div class="sidebar-search">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="sidebar-search-input" placeholder="Search...">
+      <!-- Navigation Links -->
+      <div class="flex items-center gap-14 mx-8">
+        <!-- Home -->
+        <a href="/" class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           </div>
-          <i class="fas fa-plus create-chat-icon" title="Create New Chat"></i>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Home</span>
+        </a>
+
+        <!-- Network -->
+        <a href="#" class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Network</span>
+        </a>
+
+        <!-- Messaging (Active) -->
+        <a href="/msg" class="flex flex-col items-center gap-1.5 group text-accent transition-colors">
+          <div class="transition-transform duration-300 scale-110 drop-shadow-[0_0_8px_rgba(255,205,158,0.4)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-100">Messaging</span>
+        </a>
+
+        <!-- Notifications -->
+        <a href="/requests" class="flex flex-col items-center gap-1.5 group text-muted hover:text-white transition-colors">
+          <div class="transition-transform duration-300 group-hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider uppercase opacity-80">Notifications</span>
+        </a>
+      </div>
+
+      <!-- Profile & Add -->
+      <div class="flex items-center gap-6">
+        <button class="w-10 h-10 rounded-full bg-surface flex items-center justify-center hover:bg-white hover:text-black transition-all group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-muted group-hover:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        
+        <div class="flex-shrink-0 cursor-pointer relative">
+          <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-b from-white/20 to-transparent">
+            <img 
+              src="<%= typeof user !== 'undefined' && user && user.profilePic ? user.profilePic : '/images/avatar.png' %>" 
+              alt="Profile" 
+              class="w-full h-full rounded-full object-cover border-2 border-background"
+            />
+          </div>
+          <div class="absolute bottom-1 right-0 w-3 h-3 bg-[#4ADE80] rounded-full border-2 border-background shadow-sm"></div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT LAYOUT -->
+    <div class="flex-1 flex overflow-hidden">
+      
+      <!-- SIDEBAR -->
+      <aside class="w-80 flex-shrink-0 bg-black border-r border-gray-900 flex flex-col h-full">
+        <div class="p-5">
+          <h2 class="text-xl font-bold text-white mb-4">Your Chats</h2>
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4"></i>
+            <input 
+              type="text" 
+              id="sidebarSearch"
+              placeholder="Search for musicians or studios..." 
+              class="w-full bg-[#111] text-gray-300 text-xs rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-gray-800 placeholder-gray-600"
+            />
+          </div>
         </div>
 
-        <div class="chat-list">
-          <% friends.forEach(friend => { %>
-            <div 
-              class="chat-item friend-item"
-              data-friend-id="<%= friend._id %>"
-              data-friend-username="<%= friend.username %>"
-            >
-              <img class="chat-image" alt="" src="/images/avatar.png">
-              <div class="chat-info">
-                <div class="chat-name"><%= friend.username %></div>
-                <div class="chat-designation">Friend</div>
+        <div class="flex-1 overflow-y-auto px-3">
+          <div class="mb-6">
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-2">Active Chats</h3>
+            
+            <% if (friends && friends.length > 0) { %>
+              <% friends.forEach((friend, index) => { %>
+                <div 
+                  class="friend-item flex items-center p-3 rounded-xl cursor-pointer transition-colors mb-1 <%= index === 0 ? 'bg-[#1e1e1e] relative' : 'hover:bg-[#111]' %>"
+                  data-friend-id="<%= friend._id %>"
+                  data-friend-username="<%= friend.username || friend.name || 'User' %>"
+                  data-friend-profile-pic="<%= friend.profilePic || '/images/avatar.png' %>"
+                >
+                  <div class="relative">
+                    <img 
+                      src="<%= friend.profilePic || '/images/avatar.png' %>" 
+                      alt="<%= friend.username || friend.name || 'User' %>" 
+                      class="w-10 h-10 rounded-full object-cover" 
+                    />
+                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-black rounded-full"></span>
+                  </div>
+                  <div class="ml-3 flex-1 overflow-hidden">
+                    <div class="flex justify-between items-baseline">
+                      <h3 class="text-sm font-semibold truncate text-white">
+                          <%= friend.username || friend.name || 'User' %>
+                      </h3>
+                      <span class="text-[10px] text-gray-500 ml-2 whitespace-nowrap chat-time"></span>
+                    </div>
+                    <p class="text-xs truncate mt-0.5 text-gray-500 chat-preview">
+                      Click to start chatting
+                    </p>
+                  </div>
+                  <% if (index === 0) { %>
+                    <!-- Active Indicator -->
+                    <div class="absolute left-0 w-1 h-8 bg-orange-500 rounded-r-full top-1/2 -translate-y-1/2"></div>
+                  <% } %>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="text-gray-500 text-sm px-2 py-4 text-center">
+                No friends yet. Connect with musicians to start chatting!
               </div>
-              <div class="chat-date"></div>
-            </div>
-          <% }) %>
+            <% } %>
+          </div>
         </div>
-      </div>
+      </aside>
 
-      <!-- Chat Container -->
-      <div class="chat-container">
-        <div class="chat-header">
-          <div id="chatHeader" class="chat-user-name">Select a friend to chat</div>
-          <div class="chat-actions">
-            <i class="fas fa-video chat-action-icon"></i>
-            <i class="fas fa-ellipsis-h chat-action-icon"></i>
+      <!-- CHAT WINDOW -->
+      <main class="flex-1 flex flex-col relative bg-black">
+        
+        <!-- Chat Header -->
+        <div class="h-20 border-b border-gray-900 px-8 flex items-center justify-between shrink-0 bg-black z-10" id="chatHeader">
+          <div class="flex items-center">
+            <div class="relative">
+              <img id="chatHeaderAvatar" src="/images/avatar.png" alt="User" class="w-10 h-10 rounded-full object-cover" />
+              <span id="chatHeaderStatus" class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-black rounded-full"></span>
+            </div>
+            <div class="ml-4">
+              <h2 id="chatHeaderName" class="text-white font-semibold text-base">Select a friend to chat</h2>
+              <p id="chatHeaderStatusText" class="text-gray-500 text-xs font-medium">Offline</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-3">
+            <button class="p-2.5 rounded-full bg-[#1c1c1c] text-gray-400 hover:text-white hover:bg-[#2a2a2a] transition-colors">
+              <i data-lucide="phone" class="w-4 h-4"></i>
+            </button>
+            <button class="p-2.5 rounded-full bg-[#1c1c1c] text-gray-400 hover:text-white hover:bg-[#2a2a2a] transition-colors">
+              <i data-lucide="video" class="w-4 h-4"></i>
+            </button>
           </div>
         </div>
 
-        <!-- Messages -->
-        <div id="chatBox" class="chat-messages"></div>
-
-        <!-- Input -->
-        <form id="chatForm" class="chat-input-area hidden">
-          <i class="far fa-smile input-icon"></i>
-          <i class="fas fa-paperclip input-icon"></i>
-          <input type="text" id="msgInput" class="chat-input" placeholder="Type message">
-          <i class="fas fa-microphone input-icon"></i>
-          <button class="send-button" title="Send">
-            <i class="fas fa-paper-plane"></i>
-          </button>
-        </form>
-      </div>
-
-      <!-- Profile Sidebar -->
-      <div class="profile-sidebar">
-        <div class="profile-info" style="padding: 1rem; text-align: center;">
-          <img src="/images/avatar.png" alt="Profile Picture" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 0.5rem;">
-          <h3 style="margin: 0; color: white;">User Name</h3>
-          <p style="color: #929bff; font-size: 0.9rem; margin: 0;">UI/UX Designer</p>
+        <!-- Messages Area -->
+        <div class="flex-1 overflow-y-auto p-8 pb-24" id="chatBox">
+          <div class="flex items-center justify-center h-full text-gray-500 text-sm">
+            Select a friend from the sidebar to start chatting
+          </div>
         </div>
 
-        <div class="profile-actions" style="margin-top: 1rem; padding: 0 1rem;">
-          <button style="width: 100%; padding: 0.5rem; background-color: #929bff; border: none; border-radius: 6px; color: black; cursor: pointer; font-weight: 200;">
-            Edit Profile
-          </button>
-          <button style="width: 100%; padding: 0.5rem; margin-top: 0.5rem; background-color: #151515; border: 1px solid #353535; border-radius: 6px; color: white; cursor: pointer;">
-            Settings
-          </button>
+        <!-- Input Area -->
+        <div class="absolute bottom-6 left-0 right-0 px-8 flex justify-center hidden" id="chatInputArea">
+          <form 
+            id="chatForm"
+            class="w-full max-w-3xl bg-[#131313] border border-gray-800/60 rounded-full h-14 flex items-center px-2 shadow-2xl relative"
+          >
+            <div class="flex items-center space-x-1 pl-2">
+              <button type="button" class="p-2 text-gray-500 hover:text-gray-300 transition-colors">
+                <i data-lucide="mic" class="w-5 h-5"></i>
+              </button>
+              <button type="button" class="p-2 text-gray-500 hover:text-gray-300 transition-colors">
+                 <i data-lucide="paperclip" class="w-5 h-5"></i>
+              </button>
+               <button type="button" class="p-2 text-gray-500 hover:text-gray-300 transition-colors">
+                 <i data-lucide="image" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <input
+              type="text"
+              id="msgInput"
+              placeholder="Send a message..."
+              class="flex-1 bg-transparent border-none text-gray-200 text-sm placeholder-gray-500 focus:ring-0 px-4 h-full focus:outline-none"
+            />
+
+            <button 
+              type="submit" 
+              class="w-10 h-10 rounded-full flex items-center justify-center mr-1 transition-all bg-[#ffebdca0] hover:bg-[#ffebdc]"
+            >
+              <i data-lucide="send" class="w-4 h-4 text-black fill-current"></i>
+            </button>
+          </form>
         </div>
-      </div>
-    </main>
-  </div>
+      </main>
+    </div>
+    
+    <script>
+      // Initialize Icons
+      lucide.createIcons();
 
-  <script>
-    const socket = io();
-    let currentFriendId = null;
-    let myId = "<%= me %>";
+      // Socket.IO and Chat Functionality
+      const socket = io();
+      let currentFriendId = null;
+      let myId = "<%= me %>";
 
-    const chatBox = document.getElementById("chatBox");
-    const chatHeader = document.getElementById("chatHeader");
-    const chatForm = document.getElementById("chatForm");
-    const msgInput = document.getElementById("msgInput");
+      const chatBox = document.getElementById("chatBox");
+      const chatHeader = document.getElementById("chatHeader");
+      const chatHeaderName = document.getElementById("chatHeaderName");
+      const chatHeaderAvatar = document.getElementById("chatHeaderAvatar");
+      const chatHeaderStatus = document.getElementById("chatHeaderStatus");
+      const chatHeaderStatusText = document.getElementById("chatHeaderStatusText");
+      const chatForm = document.getElementById("chatForm");
+      const chatInputArea = document.getElementById("chatInputArea");
+      const msgInput = document.getElementById("msgInput");
 
-    async function loadChat(friendId, friendName) {
-      currentFriendId = friendId;
-      chatHeader.textContent = `Chat with ${friendName}`;
-      chatForm.classList.remove("hidden");
+      async function loadChat(friendId, friendName, friendProfilePic) {
+        currentFriendId = friendId;
+        chatHeaderName.textContent = friendName;
+        chatHeaderAvatar.src = friendProfilePic || '/images/avatar.png';
+        chatHeaderStatus.className = "absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-black rounded-full";
+        chatHeaderStatusText.textContent = "Now Online";
+        chatHeaderStatusText.className = "text-green-500 text-xs font-medium";
+        chatInputArea.classList.remove("hidden");
 
-      const res = await fetch(`/messages/${friendId}`);
-      const data = await res.json();
+        try {
+          const res = await fetch(`/messages/${friendId}`);
+          const data = await res.json();
 
-      myId = data.me;
-      chatBox.innerHTML = "";
-      data.messages.forEach(msg => {
+          myId = data.me;
+          chatBox.innerHTML = "";
+          
+          if (data.messages && data.messages.length > 0) {
+            data.messages.forEach(msg => {
+              const isMine = msg.from._id === myId || (typeof msg.from === 'string' && msg.from === myId);
+              const div = document.createElement("div");
+              div.className = isMine ? "flex justify-end mb-6" : "flex justify-start mb-6";
+
+              if (!isMine) {
+                const avatar = document.createElement("img");
+                avatar.src = friendProfilePic || '/images/avatar.png';
+                avatar.alt = "Sender";
+                avatar.className = "w-8 h-8 rounded-full mr-3 mt-1";
+                div.appendChild(avatar);
+              }
+
+              const messageContainer = document.createElement("div");
+              messageContainer.className = `flex flex-col items-${isMine ? 'end' : 'start'} max-w-[70%]`;
+
+              const bubble = document.createElement("div");
+              bubble.className = isMine 
+                ? "bg-orange-450 text-white p-4 rounded-2xl rounded-tr-sm text-sm leading-relaxed shadow-sm"
+                : "bg-[#1e1e1e] text-gray-200 p-4 rounded-2xl rounded-tl-sm text-sm leading-relaxed shadow-md border border-gray-800/50";
+              
+              bubble.textContent = msg.content || msg.text || '';
+              messageContainer.appendChild(bubble);
+
+              const timeSpan = document.createElement("span");
+              const msgTime = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : 'Now';
+              timeSpan.className = `text-[10px] text-gray-500 mt-1 ${isMine ? 'mr-1' : 'ml-1'}`;
+              timeSpan.textContent = msgTime;
+              messageContainer.appendChild(timeSpan);
+
+              div.appendChild(messageContainer);
+
+              if (isMine) {
+                const avatar = document.createElement("img");
+                avatar.src = "<%= typeof user !== 'undefined' && user && user.profilePic ? user.profilePic : '/images/avatar.png' %>";
+                avatar.alt = "Me";
+                avatar.className = "w-8 h-8 rounded-full ml-3 mt-1";
+                div.appendChild(avatar);
+              }
+
+              chatBox.appendChild(div);
+            });
+          } else {
+            chatBox.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500 text-sm">No messages yet. Start the conversation!</div>';
+          }
+
+          chatBox.scrollTop = chatBox.scrollHeight;
+          socket.emit("joinRoom", { userId: myId, friendId: currentFriendId });
+        } catch (error) {
+          console.error('Error loading chat:', error);
+          chatBox.innerHTML = '<div class="flex items-center justify-center h-full text-red-500 text-sm">Error loading messages</div>';
+        }
+      }
+
+      // Friend item click handlers
+      document.querySelectorAll(".friend-item").forEach(item => {
+        item.addEventListener("click", () => {
+          // Remove active state from all items
+          document.querySelectorAll(".friend-item").forEach(f => {
+            f.classList.remove("bg-[#1e1e1e]", "relative");
+            f.classList.add("hover:bg-[#111]");
+            const indicator = f.querySelector(".absolute.left-0");
+            if (indicator) indicator.remove();
+          });
+
+          // Add active state to clicked item
+          item.classList.add("bg-[#1e1e1e]", "relative");
+          item.classList.remove("hover:bg-[#111]");
+          const activeIndicator = document.createElement("div");
+          activeIndicator.className = "absolute left-0 w-1 h-8 bg-orange-500 rounded-r-full top-1/2 -translate-y-1/2";
+          item.appendChild(activeIndicator);
+
+          const friendId = item.dataset.friendId;
+          const friendName = item.dataset.friendUsername;
+          const friendProfilePic = item.dataset.friendProfilePic || '/images/avatar.png';
+          loadChat(friendId, friendName, friendProfilePic);
+        });
+      });
+
+      // Message form submission
+      chatForm.addEventListener("submit", e => {
+        e.preventDefault();
+        const content = msgInput.value.trim();
+        if (!content || !currentFriendId) return;
+
+        socket.emit("sendMessage", { from: myId, to: currentFriendId, content });
+        msgInput.value = "";
+      });
+
+      // Real-time message receiving
+      socket.on("newMessage", msg => {
+        if (!currentFriendId) return;
+        const isFromCurrentChat = (msg.from === myId && msg.to === currentFriendId) || 
+                                   (msg.from === currentFriendId && msg.to === myId);
+        if (!isFromCurrentChat) return;
+
+        const isMine = msg.from === myId;
         const div = document.createElement("div");
-        div.className = (msg.from._id === myId) ? "message sent-message" : "message received-message";
+        div.className = isMine ? "flex justify-end mb-6" : "flex justify-start mb-6";
 
-        if (msg.from._id !== myId) {
+        if (!isMine) {
+          const friendItem = document.querySelector(`[data-friend-id="${currentFriendId}"]`);
+          const friendProfilePic = friendItem ? (friendItem.dataset.friendProfilePic || '/images/avatar.png') : '/images/avatar.png';
           const avatar = document.createElement("img");
-          avatar.className = "message-avatar";
-          avatar.src = "/images/avatar.png";
+          avatar.src = friendProfilePic;
+          avatar.alt = "Sender";
+          avatar.className = "w-8 h-8 rounded-full mr-3 mt-1";
           div.appendChild(avatar);
         }
 
+        const messageContainer = document.createElement("div");
+        messageContainer.className = `flex flex-col items-${isMine ? 'end' : 'start'} max-w-[70%]`;
+
         const bubble = document.createElement("div");
-        bubble.className = "message-bubble";
-        const text = document.createElement("div");
-        text.className = "message-text";
-        text.textContent = msg.content;
-        bubble.appendChild(text);
+        bubble.className = isMine 
+          ? "bg-orange-450 text-white p-4 rounded-2xl rounded-tr-sm text-sm leading-relaxed shadow-sm"
+          : "bg-[#1e1e1e] text-gray-200 p-4 rounded-2xl rounded-tl-sm text-sm leading-relaxed shadow-md border border-gray-800/50";
+        
+        bubble.textContent = msg.content || msg.text || '';
+        messageContainer.appendChild(bubble);
 
-        div.appendChild(bubble);
+        const timeSpan = document.createElement("span");
+        timeSpan.className = `text-[10px] text-gray-500 mt-1 ${isMine ? 'mr-1' : 'ml-1'}`;
+        timeSpan.textContent = 'Now';
+        messageContainer.appendChild(timeSpan);
 
-        if (msg.from._id === myId) {
+        div.appendChild(messageContainer);
+
+        if (isMine) {
           const avatar = document.createElement("img");
-          avatar.className = "message-avatar";
-          avatar.src = "/images/avatar.png";
+          avatar.src = "<%= typeof user !== 'undefined' && user && user.profilePic ? user.profilePic : '/images/avatar.png' %>";
+          avatar.alt = "Me";
+          avatar.className = "w-8 h-8 rounded-full ml-3 mt-1";
           div.appendChild(avatar);
         }
 
         chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
       });
 
-      chatBox.scrollTop = chatBox.scrollHeight;
-      socket.emit("joinRoom", { userId: myId, friendId: currentFriendId });
-    }
-
-    document.querySelectorAll(".friend-item").forEach(item => {
-      item.addEventListener("click", () => {
-        loadChat(item.dataset.friendId, item.dataset.friendUsername);
-      });
-    });
-
-    chatForm.addEventListener("submit", e => {
-      e.preventDefault();
-      const content = msgInput.value.trim();
-      if (!content || !currentFriendId) return;
-
-      socket.emit("sendMessage", { from: myId, to: currentFriendId, content });
-      msgInput.value = "";
-    });
-
-    socket.on("newMessage", msg => {
-      if (msg.from !== myId && msg.from !== currentFriendId) return;
-
-      const isMine = msg.from === myId;
-      const div = document.createElement("div");
-      div.className = isMine ? "message sent-message" : "message received-message";
-
-      if (!isMine) {
-        const avatar = document.createElement("img");
-        avatar.className = "message-avatar";
-        avatar.src = "/images/avatar.png";
-        div.appendChild(avatar);
+      // Check for open parameter in URL
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("open")) {
+        const friendId = params.get("open");
+        const item = document.querySelector(`.friend-item[data-friend-id="${friendId}"]`);
+        if (item) {
+          const friendName = item.dataset.friendUsername;
+          const friendProfilePic = item.dataset.friendProfilePic || '/images/avatar.png';
+          loadChat(friendId, friendName, friendProfilePic);
+        }
       }
-
-      const bubble = document.createElement("div");
-      bubble.className = "message-bubble";
-      const text = document.createElement("div");
-      text.className = "message-text";
-      text.textContent = msg.content;
-      bubble.appendChild(text);
-
-      div.appendChild(bubble);
-
-      if (isMine) {
-        const avatar = document.createElement("img");
-        avatar.className = "message-avatar";
-        avatar.src = "/images/avatar.png";
-        div.appendChild(avatar);
-      }
-
-      chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    });
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("open")) {
-      const friendId = params.get("open");
-      const item = document.querySelector(`.friend-item[data-friend-id="${friendId}"]`);
-      if (item) {
-        loadChat(item.dataset.friendId, item.dataset.friendUsername);
-      }
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>

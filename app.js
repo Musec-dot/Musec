@@ -139,10 +139,11 @@ app.post('/new', upload.single('media'), async (req, res) => {
 app.use('/requests', friendRoutes);
 
 app.get('/msg', (req, res) => {
+  if (!req.user) return res.redirect('/login');
   res.render('msg', {
     friends: req.user.friends,
-      me: req.user._id.toString()
-    
+    me: req.user._id.toString(),
+    user: req.user
   });
 });
 
@@ -378,7 +379,15 @@ io.on("connection", (socket) => {
 
   socket.on('watcher', ({ streamId }) => {
     const bId = streamBroadcasters[streamId];
-    if (bId) io.to(bId).emit('watcher', socket.id);
+    console.log('Watcher requesting stream:', streamId, 'Broadcaster ID:', bId, 'Watcher ID:', socket.id);
+    if (bId) {
+      socket.join(streamId); // Join the stream room for this watcher
+      io.to(bId).emit('watcher', socket.id); // Notify broadcaster about new watcher
+      console.log('Watcher', socket.id, 'joined stream', streamId, 'and notified broadcaster', bId);
+    } else {
+      console.log('No broadcaster found for stream:', streamId);
+      socket.emit('noBroadcaster', { streamId });
+    }
   });
 
   socket.on('offer', (id, desc) => io.to(id).emit('offer', socket.id, desc));

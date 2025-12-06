@@ -1,29 +1,478 @@
-<!DOCTYPE html><html class="bg-[#0f0f1b] text-white">
-<head><meta charset="utf-8"/><title>Watch Live</title>
-<script src="https://cdn.tailwindcss.com"></script><script src="/socket.io/socket.io.js"></script></head>
-<body class="flex flex-col items-center py-8 gap-6">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Watch Live - <%= stream.streamer.username %></title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #050505;
+        color: #ffffff;
+      }
+      /* Custom Scrollbar for Chat */
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      /* Animation Utilities */
+      .animate-bounce {
+        animation: bounce 1s infinite;
+      }
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(-25%);
+          animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+        }
+        50% {
+          transform: translateY(0);
+          animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+      }
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    </style>
+</head>
+  <body class="overflow-hidden">
+    
+    <!-- App Container -->
+    <div id="root" class="flex h-screen w-full bg-[#050505] overflow-hidden text-white font-sans selection:bg-orange-500/30">
+      
+      <!-- LEFT SIDEBAR: Live Chat -->
+      <div class="w-80 flex flex-col h-full border-r border-white/5 bg-[#09090b]">
+        <!-- Header -->
+        <div class="p-6 flex justify-between items-center border-b border-white/5">
+          <h2 class="text-gray-200 font-semibold text-lg">Live Chat</h2>
+          <div class="flex items-center gap-2 text-orange-500 bg-orange-500/10 px-3 py-1 rounded-full text-xs font-medium">
+            <i data-lucide="users" class="w-[14px] h-[14px]"></i>
+            <span id="viewer-count">0</span>
+          </div>
+        </div>
 
-<h2 class="text-2xl font-bold text-purple-400">🎬 Live with <%= stream.streamer.username %></h2>
-<video id="vid" autoplay playsinline controls class="w-[720px] h-[405px] rounded-lg bg-black shadow-lg"></video>
+        <!-- Messages Area -->
+        <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
+          <!-- Messages will be injected here by JS -->
+          <div class="text-center text-muted text-sm py-4">
+            Be the first to say something!
+          </div>
+        </div>
 
-<script>
-const socket=io(), video=document.getElementById('vid');
-const streamId="<%= stream.streamId %>";
-let pc;
+        <!-- Input Area -->
+        <div class="p-4 border-t border-white/5">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="chat-input"
+              placeholder="Send a message..." 
+              class="w-full bg-[#18181b] text-sm text-gray-200 rounded-full pl-4 pr-10 py-3 focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all placeholder-gray-600"
+            />
+            <button id="send-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-orange-500 hover:text-orange-400 transition-colors">
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
-socket.emit('watcher',{streamId});
+      <!-- MAIN STAGE -->
+      <div class="flex-1 relative flex flex-col h-full">
+        <!-- Glow Effect -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-orange-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+        
+        <div class="flex-1 p-8 flex flex-col items-center justify-center relative">
+          <!-- Video Container -->
+          <div class="relative w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10 group">
+            
+            <!-- Video Element -->
+            <video id="vid" autoplay playsinline controls class="w-full h-full object-cover"></video>
 
-socket.on('offer', async (id,desc)=>{
-  pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
-  pc.ontrack=e=>video.srcObject=e.streams[0];
-  pc.onicecandidate=e=>e.candidate&&socket.emit('candidate',id,e.candidate);
-  await pc.setRemoteDescription(desc);
-  const ans=await pc.createAnswer();
-  await pc.setLocalDescription(ans);
-  socket.emit('answer',id,pc.localDescription);
-});
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-20">
+              <div class="text-center">
+                <div class="w-16 h-16 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4"></div>
+                <p id="loading-text" class="text-white text-sm">Connecting to stream...</p>
+                <p id="debug-info" class="text-white/60 text-xs mt-2"></p>
+              </div>
+            </div>
 
-socket.on('candidate',(id,c)=>pc?.addIceCandidate(new RTCIceCandidate(c)));
-window.onbeforeunload=()=>{socket.close(); pc?.close();};
-</script>
-</body></html>
+            <!-- Background Image (fallback when no video) -->
+            <div id="fallback-bg" class="absolute inset-0">
+              <img 
+                src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=2670&auto=format&fit=crop" 
+                alt="Studio Session" 
+                class="w-full h-full object-cover opacity-80"
+              />
+              <!-- Gradient Overlay -->
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60"></div>
+            </div>
+
+            <!-- Top Bar Overlay -->
+            <div class="absolute top-0 left-0 right-0 p-6 flex justify-between items-start z-10">
+              <div class="flex items-center gap-4">
+                <div class="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg shadow-red-900/20 animate-pulse">
+                  <div class="w-2 h-2 bg-white rounded-full"></div>
+                  LIVE
+                </div>
+                <div class="bg-black/40 backdrop-blur-md text-gray-200 text-sm font-medium px-4 py-1.5 rounded-full border border-white/5">
+                  <%= stream.streamer.username %>'s Stream
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="bg-black/40 backdrop-blur-md text-gray-200 px-4 py-1.5 rounded-full border border-white/5 flex items-center gap-2 text-sm">
+                  <i data-lucide="eye" class="text-orange-500 w-4 h-4"></i>
+                  <span id="viewer-count-top">0</span>
+                </div>
+                <a href="/dashboard" class="bg-black/40 backdrop-blur-md text-gray-200 px-4 py-1.5 rounded-full border border-white/5 text-sm hover:bg-black/60 transition-all">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR: Streamer Info -->
+      <div class="w-80 flex flex-col h-full border-l border-white/5 bg-[#09090b] p-6 space-y-8">
+        <!-- Header -->
+        <div>
+          <h2 class="text-gray-200 font-semibold text-lg mb-2">Streamer</h2>
+          <div class="flex items-center gap-4 mb-6">
+            <div class="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-white/10">
+              <img 
+                src="<%= stream.streamer.profilePic || '/images/avatar.png' %>" 
+                alt="<%= stream.streamer.username %>" 
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg"><%= stream.streamer.username %></h3>
+              <p class="text-gray-400 text-sm"><%= stream.streamer.role || 'Musician' %></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stream Info -->
+        <div class="space-y-6">
+          <h3 class="text-gray-400 text-xs font-medium uppercase tracking-wider">Stream Info</h3>
+          
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <i data-lucide="hash" class="text-orange-500 w-4 h-4"></i>
+              <span class="text-sm text-gray-300">#LiveStream</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <i data-lucide="clock" class="text-orange-500 w-4 h-4"></i>
+              <span id="stream-duration" class="text-sm text-gray-300">Streaming now</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+      // EJS Template Data
+      const streamId = "<%= stream.streamId %>";
+      const socket = io();
+      const video = document.getElementById('vid');
+      const loadingIndicator = document.getElementById('loading-indicator');
+      const loadingText = document.getElementById('loading-text');
+      const debugInfo = document.getElementById('debug-info');
+      const fallbackBg = document.getElementById('fallback-bg');
+      let pc;
+      let broadcasterId = null;
+      let streamStartTime = Date.now();
+
+      // Update loading text
+      function updateLoadingText(text, debug = '') {
+        if (loadingText) loadingText.textContent = text;
+        if (debugInfo) debugInfo.textContent = debug;
+      }
+
+      // Request to watch the stream
+      function requestStream() {
+        console.log('Requesting stream:', streamId);
+        updateLoadingText('Searching for broadcaster...', `Attempt ${retryCount + 1}/${maxRetries}`);
+        socket.emit('watcher', { streamId });
+      }
+      
+      // Retry if broadcaster not available
+      let retryCount = 0;
+      const maxRetries = 10;
+      let offerReceived = false;
+      
+      // Initial request
+      updateLoadingText('Connecting to stream...', 'Initializing...');
+      requestStream();
+      
+      const retryInterval = setInterval(() => {
+        if (!offerReceived && retryCount < maxRetries) {
+          retryCount++;
+          console.log('Retrying connection to broadcaster...', retryCount);
+          requestStream();
+        } else if (retryCount >= maxRetries && !offerReceived) {
+          clearInterval(retryInterval);
+          updateLoadingText('Stream not available', 'The broadcaster may not be online.');
+          console.error('Failed to connect after', maxRetries, 'retries');
+        }
+      }, 2000);
+
+      // WebRTC connection handler
+      socket.on('offer', async (id, desc) => {
+        clearInterval(retryInterval);
+        offerReceived = true;
+        console.log('Received offer from broadcaster:', id, desc);
+        updateLoadingText('Received connection request...', 'Setting up video stream...');
+        
+        // Close existing connection if any
+        if (pc) {
+          pc.close();
+        }
+        
+        broadcasterId = id;
+        
+        try {
+          pc = new RTCPeerConnection({
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+          });
+
+          pc.ontrack = (e) => {
+            console.log('Received track from broadcaster:', e.streams);
+            if (e.streams && e.streams[0]) {
+              video.srcObject = e.streams[0];
+              loadingIndicator.style.display = 'none';
+              fallbackBg.style.display = 'none';
+              console.log('Video stream set successfully');
+            } else {
+              console.warn('No streams in track event');
+            }
+          };
+
+          // Also handle addstream for older browsers
+          pc.onaddstream = (e) => {
+            console.log('Received stream (legacy):', e.stream);
+            if (e.stream) {
+              video.srcObject = e.stream;
+              loadingIndicator.style.display = 'none';
+              fallbackBg.style.display = 'none';
+            }
+          };
+
+          pc.onicecandidate = (e) => {
+            if (e.candidate && broadcasterId) {
+              console.log('Sending ICE candidate to broadcaster');
+              socket.emit('candidate', broadcasterId, e.candidate);
+            }
+          };
+
+          pc.onconnectionstatechange = () => {
+            console.log('Connection state:', pc.connectionState);
+            if (pc.connectionState === 'connected') {
+              loadingIndicator.style.display = 'none';
+              fallbackBg.style.display = 'none';
+            } else if (pc.connectionState === 'failed') {
+              loadingIndicator.style.display = 'flex';
+              loadingIndicator.querySelector('p').textContent = 'Connection failed. Please refresh the page.';
+            } else if (pc.connectionState === 'disconnected') {
+              loadingIndicator.style.display = 'flex';
+              loadingIndicator.querySelector('p').textContent = 'Connection lost. Reconnecting...';
+              // Try to reconnect
+              setTimeout(() => requestStream(), 1000);
+            }
+          };
+
+          pc.oniceconnectionstatechange = () => {
+            console.log('ICE connection state:', pc.iceConnectionState);
+            if (pc.iceConnectionState === 'failed') {
+              loadingIndicator.style.display = 'flex';
+              loadingIndicator.querySelector('p').textContent = 'Connection failed. Please check your network.';
+            }
+          };
+
+          console.log('Setting remote description...');
+          updateLoadingText('Negotiating connection...', 'Setting up peer connection...');
+          await pc.setRemoteDescription(new RTCSessionDescription(desc));
+          console.log('Remote description set, creating answer...');
+          
+          updateLoadingText('Creating answer...', 'Establishing connection...');
+          const answer = await pc.createAnswer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+          });
+          
+          console.log('Answer created, setting local description...');
+          updateLoadingText('Finalizing connection...', 'Almost there...');
+          await pc.setLocalDescription(answer);
+          console.log('Local description set');
+          
+          console.log('Sending answer to broadcaster:', broadcasterId);
+          updateLoadingText('Waiting for video stream...', 'Connected, receiving stream...');
+          socket.emit('answer', broadcasterId, pc.localDescription);
+        } catch (err) {
+          console.error('Error setting up WebRTC:', err);
+          loadingIndicator.style.display = 'flex';
+          updateLoadingText('Error connecting to stream', err.message);
+        }
+      });
+
+      socket.on('candidate', (id, candidate) => {
+        console.log('Received ICE candidate from broadcaster:', id);
+        if (pc && pc.remoteDescription) {
+          pc.addIceCandidate(new RTCIceCandidate(candidate))
+            .then(() => console.log('Added ICE candidate'))
+            .catch(err => console.error('Error adding ICE candidate:', err));
+        } else {
+          console.warn('Received ICE candidate but no peer connection or remote description yet');
+        }
+      });
+
+      // Debug: Log socket connection
+      socket.on('connect', () => {
+        console.log('Socket connected:', socket.id);
+      });
+
+      socket.on('disconnect', () => {
+        console.log('Socket disconnected');
+        loadingIndicator.style.display = 'flex';
+        loadingIndicator.querySelector('p').textContent = 'Connection lost. Reconnecting...';
+      });
+
+      socket.on('connect_error', (error) => {
+        console.error('Socket connection error:', error);
+      });
+
+      // Handle case when broadcaster is not available
+      socket.on('noBroadcaster', ({ streamId }) => {
+        console.log('No broadcaster available for stream:', streamId);
+        updateLoadingText('No broadcaster online', 'Waiting for stream to start...');
+        if (retryCount >= maxRetries) {
+          updateLoadingText('Stream not available', 'Please wait for the broadcaster to start streaming.');
+        }
+      });
+
+      // Stream duration timer
+      function updateStreamDuration() {
+        const elapsed = Math.floor((Date.now() - streamStartTime) / 1000);
+        const hours = Math.floor(elapsed / 3600);
+        const minutes = Math.floor((elapsed % 3600) / 60);
+        const seconds = elapsed % 60;
+        
+        let durationText = '';
+        if (hours > 0) {
+          durationText = `${hours}h ${minutes}m`;
+        } else if (minutes > 0) {
+          durationText = `${minutes}m ${seconds}s`;
+        } else {
+          durationText = `${seconds}s`;
+        }
+        
+        document.getElementById('stream-duration').textContent = `Streaming for ${durationText}`;
+      }
+      setInterval(updateStreamDuration, 1000);
+
+      // Cleanup on page unload
+      window.onbeforeunload = () => {
+        socket.close();
+        if (pc) {
+          pc.close();
+        }
+      };
+
+      // Chat functionality
+      const chatInput = document.getElementById('chat-input');
+      const sendBtn = document.getElementById('send-btn');
+      const chatContainer = document.getElementById('chat-container');
+
+      function addMessage(user, message, role = 'user') {
+        // Remove "Be the first to say something!" if it exists
+        const firstMessage = chatContainer.querySelector('.text-center.text-muted');
+        if (firstMessage) {
+          firstMessage.remove();
+        }
+
+        let roleColorClass = 'text-gray-300';
+        let roleBadge = '';
+        
+        if (role === 'mod') {
+          roleColorClass = 'text-orange-400';
+          roleBadge = '<span class="text-[10px] bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded ml-2">MOD</span>';
+        } else if (role === 'vip') {
+          roleColorClass = 'text-purple-400';
+        }
+
+        const msgHtml = `
+          <div class="flex gap-3 items-start group">
+            <div class="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center ring-2 ring-transparent group-hover:ring-orange-500/50 transition-all">
+              <span class="text-xs font-semibold text-orange-400">${user.charAt(0).toUpperCase()}</span>
+            </div>
+            <div>
+              <div class="flex items-center mb-1">
+                <span class="text-sm font-semibold ${roleColorClass}">
+                  ${user}
+                </span>
+                ${roleBadge}
+              </div>
+              <p class="text-sm text-gray-400 leading-relaxed font-light">${message}</p>
+            </div>
+          </div>
+        `;
+        chatContainer.insertAdjacentHTML('beforeend', msgHtml);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message) {
+          addMessage('You', message);
+          socket.emit('chat-message', { streamId, user: 'You', message });
+          chatInput.value = '';
+        }
+      }
+
+      sendBtn.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendMessage();
+      });
+
+      // Listen for chat messages from others
+      socket.on('chat-message', (data) => {
+        addMessage(data.user, data.message);
+      });
+
+      // Initialize Icons
+      lucide.createIcons();
+
+      // Hide fallback on video load
+      video.addEventListener('loadedmetadata', () => {
+        fallbackBg.style.display = 'none';
+      });
+
+      video.addEventListener('error', (e) => {
+        console.error('Video error:', e);
+        loadingIndicator.querySelector('p').textContent = 'Error loading stream';
+      });
+    </script>
+  </body>
+</html>
