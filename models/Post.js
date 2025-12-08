@@ -6,6 +6,7 @@ const PostSchema = new mongoose.Schema({
   content: String,
   fileUrl: String,
   fileType: String, // 'image', 'video', 'audio', or null
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   createdAt: { type: Date, default: Date.now }
 });
 module.exports = mongoose.model('Post', PostSchema);

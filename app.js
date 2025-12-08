@@ -16,6 +16,7 @@ const friendRoutes = require('./routes/friendRoutes');
 const Message = require('./models/Message');
 const LiveStream = require('./liveStream');
 const Post = require('./models/Post');
+const Comment = require('./models/Comment');
 
 const app = express();
 const server = http.createServer(app);
@@ -138,6 +139,85 @@ app.post('/new', upload.single('media'), async (req, res) => {
 
 app.use('/requests', friendRoutes);
 
+// Like/Unlike Post
+app.post('/post/:postId/like', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+    
+    // Initialize likes array if it doesn't exist
+    if (!post.likes) {
+      post.likes = [];
+    }
+    
+    const userId = req.user._id;
+    const isLiked = post.likes.some(likeId => likeId.toString() === userId.toString());
+    
+    if (isLiked) {
+      post.likes = post.likes.filter(likeId => likeId.toString() !== userId.toString());
+    } else {
+      post.likes.push(userId);
+    }
+    
+    await post.save();
+    res.json({ 
+      success: true, 
+      likesCount: post.likes.length, 
+      isLiked: !isLiked 
+    });
+  } catch (err) {
+    console.error('Like error:', err);
+    res.status(500).json({ error: 'Failed to like post' });
+  }
+});
+
+// Add Comment
+app.post('/post/:postId/comment', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const { content } = req.body;
+    if (!content || !content.trim()) {
+      return res.status(400).json({ error: 'Comment content is required' });
+    }
+    
+    const post = await Post.findById(req.params.postId);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+    
+    const comment = await Comment.create({
+      post: req.params.postId,
+      author: req.user._id,
+      content: content.trim()
+    });
+    
+    const commentWithAuthor = await Comment.findById(comment._id).populate('author', 'username profilePic');
+    
+    res.json({ 
+      success: true, 
+      comment: commentWithAuthor 
+    });
+  } catch (err) {
+    console.error('Comment error:', err);
+    res.status(500).json({ error: 'Failed to add comment' });
+  }
+});
+
+// Get Comments for a Post
+app.get('/post/:postId/comments', async (req, res) => {
+  try {
+    const comments = await Comment.find({ post: req.params.postId })
+      .populate('author', 'username profilePic')
+      .sort({ createdAt: -1 });
+    
+    res.json({ comments });
+  } catch (err) {
+    console.error('Get comments error:', err);
+    res.status(500).json({ error: 'Failed to get comments' });
+  }
+});
+
 app.get('/msg', (req, res) => {
   if (!req.user) return res.redirect('/login');
   res.render('msg', {
@@ -154,6 +234,26 @@ async function renderDashboard(req, res) {
   const allUsers = await User.find({});
   const unreadMessages = await Message.find({ to: req.user._id, seen: false });
   const posts = await Post.find({}).populate('author').sort({ createdAt: -1 });
+  
+  // Get comments for all posts and check if user liked each post
+  const postsWithData = await Promise.all(posts.map(async (post) => {
+    const comments = await Comment.find({ post: post._id })
+      .populate('author', 'username profilePic')
+      .sort({ createdAt: -1 })
+      .limit(3); // Get latest 3 comments for preview
+    
+    const isLiked = post.likes && post.likes.length > 0 
+      ? post.likes.some(likeId => likeId.toString() === req.user._id.toString())
+      : false;
+    
+    return {
+      ...post.toObject(),
+      likes: post.likes || [],
+      commentsCount: await Comment.countDocuments({ post: post._id }),
+      recentComments: comments,
+      isLiked
+    };
+  }));
 
   res.render('dashboard', {
     name: req.user.username,
@@ -161,7 +261,7 @@ async function renderDashboard(req, res) {
     allUsers,
     liveStreams,
     user: req.user,
-    posts,
+    posts: postsWithData,
     hasUnreadMessages: unreadMessages.length > 0
   });
 }

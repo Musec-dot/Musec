@@ -377,17 +377,34 @@
 
                   <!-- Actions -->
                   <div class="flex items-center gap-8 pt-2">
-                    <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                    <button 
+                      onclick="toggleLike('<%= post._id %>', this)" 
+                      class="flex items-center gap-2.5 transition-colors group like-btn"
+                      data-post-id="<%= post._id %>"
+                    >
                       <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" 
+                            class="w-[18px] h-[18px] group-hover:scale-110 transition-transform <%= post.isLiked ? 'fill-accent text-accent' : 'text-muted/80' %>" 
+                            viewBox="0 0 24 24" 
+                            fill="<%= post.isLiked ? 'currentColor' : 'none' %>" 
+                            stroke="currentColor" 
+                            stroke-width="2" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                          </svg>
                       </div>
-                      <span class="text-xs font-semibold"><%= post.likes || 0 %></span>
+                      <span class="text-xs font-semibold like-count"><%= post.likes?.length || 0 %></span>
                     </button>
-                    <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
+                    <button 
+                      onclick="toggleComments('<%= post._id %>', this)" 
+                      class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group comment-btn"
+                      data-post-id="<%= post._id %>"
+                    >
                       <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                       </div>
-                      <span class="text-xs font-semibold"><%= post.commentsCount || 0 %></span>
+                      <span class="text-xs font-semibold comment-count"><%= post.commentsCount || 0 %></span>
                     </button>
                     <button class="flex items-center gap-2.5 text-muted/80 hover:text-accent transition-colors group">
                       <div class="p-2 -m-2 rounded-full group-hover:bg-accent/10 transition-colors">
@@ -400,6 +417,67 @@
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                       Share
                     </button>
+                  </div>
+
+                  <!-- Comments Section (Hidden by default) -->
+                  <div class="comments-section hidden mt-6 pt-6 border-t border-white/5" id="comments-<%= post._id %>">
+                    <!-- Comment Form -->
+                    <form class="comment-form mb-6" onsubmit="addComment(event, '<%= post._id %>')">
+                      <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                          <img src="<%= locals.user?.profilePic || '/images/avatar.png' %>" alt="Your profile" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="flex-1">
+                          <input 
+                            type="text" 
+                            placeholder="Write a comment..." 
+                            class="w-full bg-surface text-white text-sm rounded-full px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-accent/50 border border-white/5 placeholder:text-muted"
+                            required
+                            id="comment-input-<%= post._id %>"
+                          />
+                        </div>
+                        <button 
+                          type="submit"
+                          class="px-4 py-2.5 rounded-full bg-accent text-[#050505] text-sm font-bold hover:bg-accentDark transition-colors"
+                        >
+                          Post
+                        </button>
+                      </div>
+                    </form>
+
+                    <!-- Comments List -->
+                    <div class="comments-list" id="comments-list-<%= post._id %>">
+                      <% if (post.recentComments && post.recentComments.length > 0) { %>
+                        <% post.recentComments.forEach(comment => { %>
+                          <div class="flex gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                              <img src="<%= comment.author?.profilePic || '/images/avatar.png' %>" alt="<%= comment.author?.username %>" class="w-full h-full object-cover" />
+                            </div>
+                            <div class="flex-1">
+                              <div class="bg-surface rounded-2xl px-4 py-2.5">
+                                <div class="flex items-center gap-2 mb-1">
+                                  <span class="text-sm font-bold text-white"><%= comment.author?.username %></span>
+                                  <span class="text-[10px] text-muted"><%= new Date(comment.createdAt).toLocaleDateString() %></span>
+                                </div>
+                                <p class="text-sm text-gray-300"><%= comment.content %></p>
+                              </div>
+                            </div>
+                          </div>
+                        <% }); %>
+                      <% } else { %>
+                        <p class="text-muted text-sm text-center py-4">No comments yet. Be the first to comment!</p>
+                      <% } %>
+                    </div>
+
+                    <!-- Load More Comments Button -->
+                    <% if (post.commentsCount > 3) { %>
+                      <button 
+                        onclick="loadAllComments('<%= post._id %>')"
+                        class="text-sm text-accent hover:text-accentDark font-medium mt-2"
+                      >
+                        View all <%= post.commentsCount %> comments
+                      </button>
+                    <% } %>
                   </div>
                 </div>
               <% }); %>
@@ -499,6 +577,159 @@
             dropdown.style.display = 'none';
           }
         });
+    }
+
+    // Like/Unlike functionality
+    async function toggleLike(postId, button) {
+      try {
+        const response = await fetch(`/post/${postId}/like`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          const likeIcon = button.querySelector('svg');
+          const likeCount = button.querySelector('.like-count');
+          
+          // Update like count
+          likeCount.textContent = data.likesCount;
+          
+          // Toggle like state
+          if (data.isLiked) {
+            likeIcon.classList.add('fill-accent', 'text-accent');
+            likeIcon.classList.remove('text-muted/80');
+            likeIcon.setAttribute('fill', 'currentColor');
+          } else {
+            likeIcon.classList.remove('fill-accent', 'text-accent');
+            likeIcon.classList.add('text-muted/80');
+            likeIcon.setAttribute('fill', 'none');
+          }
+        }
+      } catch (error) {
+        console.error('Error toggling like:', error);
+      }
+    }
+
+    // Toggle comments section
+    function toggleComments(postId, button) {
+      const commentsSection = document.getElementById(`comments-${postId}`);
+      if (commentsSection) {
+        commentsSection.classList.toggle('hidden');
+        
+        // Load all comments if section is opened for the first time
+        if (!commentsSection.classList.contains('hidden') && !commentsSection.dataset.loaded) {
+          loadAllComments(postId);
+          commentsSection.dataset.loaded = 'true';
+        }
+      }
+    }
+
+    // Add comment
+    async function addComment(event, postId) {
+      event.preventDefault();
+      
+      const input = document.getElementById(`comment-input-${postId}`);
+      const content = input.value.trim();
+      
+      if (!content) return;
+
+      try {
+        const response = await fetch(`/post/${postId}/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          // Clear input
+          input.value = '';
+          
+          // Add comment to list
+          const commentsList = document.getElementById(`comments-list-${postId}`);
+          const commentDiv = document.createElement('div');
+          commentDiv.className = 'flex gap-3 mb-4';
+          commentDiv.innerHTML = `
+            <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+              <img src="${data.comment.author.profilePic || '/images/avatar.png'}" alt="${data.comment.author.username}" class="w-full h-full object-cover" />
+            </div>
+            <div class="flex-1">
+              <div class="bg-surface rounded-2xl px-4 py-2.5">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-sm font-bold text-white">${data.comment.author.username}</span>
+                  <span class="text-[10px] text-muted">Just now</span>
+                </div>
+                <p class="text-sm text-gray-300">${data.comment.content}</p>
+              </div>
+            </div>
+          `;
+          
+          // Remove "No comments" message if exists
+          const noCommentsMsg = commentsList.querySelector('p.text-center');
+          if (noCommentsMsg) {
+            noCommentsMsg.remove();
+          }
+          
+          commentsList.insertBefore(commentDiv, commentsList.firstChild);
+          
+          // Update comment count
+          const commentCount = document.querySelector(`[data-post-id="${postId}"].comment-btn .comment-count`);
+          if (commentCount) {
+            const currentCount = parseInt(commentCount.textContent) || 0;
+            commentCount.textContent = currentCount + 1;
+          }
+        }
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        alert('Failed to add comment. Please try again.');
+      }
+    }
+
+    // Load all comments
+    async function loadAllComments(postId) {
+      try {
+        const response = await fetch(`/post/${postId}/comments`);
+        const data = await response.json();
+        
+        if (data.comments) {
+          const commentsList = document.getElementById(`comments-list-${postId}`);
+          commentsList.innerHTML = '';
+          
+          if (data.comments.length === 0) {
+            commentsList.innerHTML = '<p class="text-muted text-sm text-center py-4">No comments yet. Be the first to comment!</p>';
+          } else {
+            data.comments.forEach(comment => {
+              const commentDiv = document.createElement('div');
+              commentDiv.className = 'flex gap-3 mb-4';
+              const date = new Date(comment.createdAt).toLocaleDateString();
+              commentDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                  <img src="${comment.author.profilePic || '/images/avatar.png'}" alt="${comment.author.username}" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1">
+                  <div class="bg-surface rounded-2xl px-4 py-2.5">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-bold text-white">${comment.author.username}</span>
+                      <span class="text-[10px] text-muted">${date}</span>
+                    </div>
+                    <p class="text-sm text-gray-300">${comment.content}</p>
+                  </div>
+                </div>
+              `;
+              commentsList.appendChild(commentDiv);
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading comments:', error);
+      }
     }
 
   </script>
