@@ -1,25 +1,44 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
-    />
-
-    <title>Stitch Design</title>
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musec - Find the perfect musician for your event</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              background: '#050505',
+              card: '#121212',
+              cardHover: '#1A1A1A',
+              accent: '#FFCD9E',
+              accentDark: '#E0AC7E',
+              secondary: '#262626',
+              muted: '#888888',
+              surface: '#1E1E1E',
+            },
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050505;
+        color: #ffffff;
+      }
+    </style>
   </head>
-  <body>
-    <div
-      class="relative flex size-full min-h-screen flex-col bg-[#161122] dark group/design-root overflow-x-hidden"
-      style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'
-    >
+  <body class="bg-background text-white font-sans min-h-screen">
+    <div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
       <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#2f2447] px-10 py-3">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 w-full px-8 py-5 bg-background/80 backdrop-blur-xl flex items-center justify-between border-b border-white/5">
           <div class="flex items-center gap-8">
             <div class="flex items-center gap-4 text-white">
               <div class="size-4">
@@ -35,15 +54,15 @@
               <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Musec</h2>
             </div>
             <div class="flex items-center gap-9">
-              <a class="text-white text-sm font-medium leading-normal" href="#">Explore</a>
-              <a class="text-white text-sm font-medium leading-normal" href="/signup-music">Become a Musician</a>
+              <a class="text-white text-sm font-medium leading-normal hover:text-accent transition-colors" href="/explore-musicians">Explore</a>
+              <a class="text-white text-sm font-medium leading-normal hover:text-accent transition-colors" href="/signup-music">Become a Musician</a>
             </div>
           </div>
           <div class="flex flex-1 justify-end gap-8">
             <label class="flex flex-col min-w-40 !h-10 max-w-64">
               <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
                 <div
-                  class="text-[#a393c8] flex border-none bg-[#2f2447] items-center justify-center pl-4 rounded-l-xl border-r-0"
+                  class="text-muted flex border-none bg-surface items-center justify-center pl-4 rounded-l-xl border-r-0"
                   data-icon="MagnifyingGlass"
                   data-size="24px"
                   data-weight="regular"
@@ -56,47 +75,52 @@
                 </div>
                 <input
                   placeholder="Search"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border-none bg-[#2f2447] focus:border-none h-full placeholder:text-[#a393c8] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border-none bg-surface focus:border-none h-full placeholder:text-muted px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
                   value=""
                 />
               </div>
             </label>
             <div class="flex gap-2">
-              <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#7847ea] text-white text-sm font-bold leading-normal tracking-[0.015em]"
+              <a
+                href="/login"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-accent text-[#050505] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-accentDark transition-colors"
               >
-                <span class="truncate"><a class="text-white text-sm font-medium leading-normal" href="/login">Login</a></span>
-              </button>
-              <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#2f2447] text-white text-sm font-bold leading-normal tracking-[0.015em]"
+                <span class="truncate">Login</span>
+              </a>
+              <a
+                href="/signup"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-surface text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-cardHover border border-white/5 transition-colors"
               >
-                <span class="truncate"><a class="text-white text-sm font-medium leading-normal" href="/signup">Sign Up</a></span>
-              </button>
+                <span class="truncate">Sign Up</span>
+              </a>
             </div>
           </div>
         </header>
-        <div class="px-40 flex flex-1 justify-center py-5">
+
+        <!-- Main Content -->
+        <div class="px-6 md:px-20 lg:px-40 flex flex-1 justify-center py-8">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <!-- Hero Section -->
             <div class="@container">
               <div class="@[480px]:p-4">
                 <div
-                  class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
-                  style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuASJE0wluajKUUj757tfjxd28Gqp2LGwEsFksXTymzDBEJVekasADqjRuZY8RlkVmnKtbpNCHYrmVhrR9uAraBUxgjvBvNBDkcy_kwttX1PcmwwhR-asULu1hW6ojqzvfrlz6n_w6nQRs-5b2h9zbK1S-QNb62-LxEQeGy519KRDnrR4DfGF4npZjfMxx8-24m4P8AhfNizOHB1b3jLdIfAqmHZsthwXmTGTyybTi6Sg9vFc7ipkTWU0IvwogFTUcP24KYzvhfnOC_o");'
+                  class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-2xl items-center justify-center p-4 rounded-xl border border-white/5 overflow-hidden relative"
+                  style='background-image: linear-gradient(rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuASJE0wluajKUUj757tfjxd28Gqp2LGwEsFksXTymzDBEJVekasADqjRuZY8RlkVmnKtbpNCHYrmVhrR9uAraBUxgjvBvNBDkcy_kwttX1PcmwwhR-asULu1hW6ojqzvfrlz6n_w6nQRs-5b2h9zbK1S-QNb62-LxEQeGy519KRDnrR4DfGF4npZjfMxx8-24m4P8AhfNizOHB1b3jLdIfAqmHZsthwXmTGTyybTi6Sg9vFc7ipkTWU0IvwogFTUcP24KYzvhfnOC_o");'
                 >
-                  <div class="flex flex-col gap-2 text-center">
+                  <div class="flex flex-col gap-2 text-center z-10">
                     <h1
                       class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]"
                     >
                       Find the perfect musician for your event
                     </h1>
-                    <h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
+                    <h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal text-muted">
                       Musec connects you with talented musicians for any occasion. Browse, book, and enjoy live music.
                     </h2>
                   </div>
-                  <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
+                  <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16 z-10">
                     <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
                       <div
-                        class="text-[#a393c8] flex border border-[#433465] bg-[#211a32] items-center justify-center pl-[15px] rounded-l-xl border-r-0"
+                        class="text-muted flex border border-white/5 bg-surface items-center justify-center pl-[15px] rounded-l-xl border-r-0"
                         data-icon="MagnifyingGlass"
                         data-size="20px"
                         data-weight="regular"
@@ -109,12 +133,12 @@
                       </div>
                       <input
                         placeholder="Search for musicians or genres"
-                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#433465] bg-[#211a32] focus:border-[#433465] h-full placeholder:text-[#a393c8] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
+                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-white/5 bg-surface focus:border-accent/50 h-full placeholder:text-muted px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
                         value=""
                       />
-                      <div class="flex items-center justify-center rounded-r-xl border-l-0 border border-[#433465] bg-[#211a32] pr-[7px]">
+                      <div class="flex items-center justify-center rounded-r-xl border-l-0 border border-white/5 bg-surface pr-[7px]">
                         <button
-                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#7847ea] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-accent text-[#050505] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] hover:bg-accentDark transition-colors"
                         >
                           <span class="truncate">Search</span>
                         </button>
@@ -124,115 +148,124 @@
                 </div>
               </div>
             </div>
-            <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Featured Musicians</h2>
-            <div class="flex overflow-y-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden">
+
+            <!-- Featured Musicians -->
+            <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8">Featured Musicians</h2>
+            <div class="flex overflow-y-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <div class="flex items-stretch p-4 gap-3">
                 <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
                   <div
-                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
+                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDEbWUXPXJgjUvAnN7qH5pO6QAd9DjddqnWvJf8kKw8EVpHbjSGmwmtP8ZZ86V0SquPrAesyplVFSFUif9FlutDRkQncSZxpMuOFlIMvgRIIGlCq88nCaDB6XQuXt6heV7oLwy4auzg1lKnTrEiE-BgVdWnGcgmBPkJ7OFea3WyCqOyPMhM2Zf30BpalmDfXcHoSLeKXIVI6wUOOxmpgeHCod8RGmmGOfsctMlCZbszEr7nDungpsf0AxfS1DEBaK-YSrWBYhQDXx1p");'
                   ></div>
                   <div>
                     <p class="text-white text-base font-medium leading-normal">Acoustic Guitarist</p>
-                    <p class="text-[#a393c8] text-sm font-normal leading-normal">Sarah, a versatile guitarist for any event</p>
+                    <p class="text-muted text-sm font-normal leading-normal">Sarah, a versatile guitarist for any event</p>
                   </div>
                 </div>
                 <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
                   <div
-                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
+                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDPbxo3GUgFfL67LYjFBlMdYyc-KMc_xnWaGBidLUSGlC4pALX83CGl3SPpXEaZOM-yQ5yKJC19orfHzouu2grRo_XeVmFAEIr0dMReL4MNUsKbyjsMd7LIUYmisKNsKliPdmx12dA5ehUpbUbfWu6LWR9G3ZSsKr9wyX2NZ_A9rKgb0GXF8bGM9lIYRxieFzVgxYe17ceypy4BPtZaK9S3OyVSAUijXSuf9cxJABWln349YUmYRZVGznVcDbdChhv-Vuknyu6vxAll");'
                   ></div>
                   <div>
                     <p class="text-white text-base font-medium leading-normal">Saxophone Player</p>
-                    <p class="text-[#a393c8] text-sm font-normal leading-normal">Ethan, a skilled saxophonist for jazz and more</p>
+                    <p class="text-muted text-sm font-normal leading-normal">Ethan, a skilled saxophonist for jazz and more</p>
                   </div>
                 </div>
                 <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
                   <div
-                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
+                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDogsjvIvRNLIMNiJYaQ6qrIElqVoSqk3DhEDHlW38opwxi86VVorlH7KIoDDytYsLJRg0HWJf_6iFIleYtKb3FAyzGL_KzXu56wH-SnChuvZNNUk_K7yLebQcek3v0StJCklRFUGc2CXNTzghxTJfhrA9rF-vQBZI7sm2jU06IL9KKiJ5Lf4DLcgyu7AutLe8zHr3ajgU8B1RQ4fTzXZGZoFaqLmehnPdcIbDUWs1nQc7nwCHgvXKdnzaI7Fn_Fhdd3l58LlvTRyne");'
                   ></div>
                   <div>
                     <p class="text-white text-base font-medium leading-normal">Live Band</p>
-                    <p class="text-[#a393c8] text-sm font-normal leading-normal">The Groove Collective, an energetic band for parties</p>
+                    <p class="text-muted text-sm font-normal leading-normal">The Groove Collective, an energetic band for parties</p>
                   </div>
                 </div>
                 <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
                   <div
-                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
+                    class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDFq6O-5npwnj9LfDzJhV0fM0pJ_1qoT8q_fLySi8gcfTcVHkjfcL0tz3WVMLWhleiBjoNYVHq7PS3AOpFOqIpSuiwWqQOxbQDFX2EesSw_Fw8egb3hXjEUwKEwISynRw5Q_oCognA8FBn3KMMyTNFRWGzJxbkYwTxOPYWnVNWvutr3ogVK6u0q6XJM3ImxjXIEASOWjSkzo6tFczEwLqHoTqlY9D_tzfrrToOwDhj_54LMVlOPZ7KZArCqnG6GZAOhmKvpqRCN4dDg");'
                   ></div>
                   <div>
                     <p class="text-white text-base font-medium leading-normal">Pianist</p>
-                    <p class="text-[#a393c8] text-sm font-normal leading-normal">David, a pianist for elegant events</p>
+                    <p class="text-muted text-sm font-normal leading-normal">David, a pianist for elegant events</p>
                   </div>
                 </div>
               </div>
             </div>
-            <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Popular Genres</h2>
+
+            <!-- Popular Genres -->
+            <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8">Popular Genres</h2>
             <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
               <div class="flex flex-col gap-3 pb-3">
                 <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                   style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMqU9TNSAZ7h4awRe5gmLmkh1yhI02kZIpfAGm12ycub8YfdMU96ZPbO0419gofbBdS9fBzLEGL-8AwfnD4ML0XkA9fQFuXxVOzSCdLg7oWQbXEqr7CeBDjAN65c9WnqG1PaYqhQP-NLz479KqlJnLMsNunHX1NEpXmEvwFydVY00nH7x0-WFSycbA7bWEq-Iao8ON-G9Ubjl-bapx_2UmddFJDTENiFRQm6wCp9-6cHlI1yTnsUkKPqEoyCyZNZaCJMCW-OCcGS6J");'
                 ></div>
                 <p class="text-white text-base font-medium leading-normal">Jazz</p>
               </div>
               <div class="flex flex-col gap-3 pb-3">
                 <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                   style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDw6nKePAu7AakR59XifQvd5FQNZihR0TjlHRnMQZHHFZTxqVb82-mOseSsAB0Kp1KbjZT5bfkFU6cPj_NXo6EID1NSj5evapfldsu8c_Sb-c4zrOBH1IdqQ5_cAvs3dYeWC3-pyJf9p6NARTmjgkhNjKFXD1kc8U_JFZ86Gvrxnq5I_HzEdb8TmOV50vIstV7BkZt3lt6_TPvQ7I9TREoGZigbSScVaI1GZx3s_4twedVWZE2AI5lA8xzefQw0hjtRpVv7LhKGBBb7");'
                 ></div>
                 <p class="text-white text-base font-medium leading-normal">Classical</p>
               </div>
               <div class="flex flex-col gap-3 pb-3">
                 <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                   style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDSx3lhq7MgSQFy1h4M-C8gFBoj2sGAZkan1wo75uJDGaGWviZHtQazMFVMwin6Dl3xvdwavljljw-tdU6o5J9Nsr1dlkosWdE6X6xSiADRGgUB4S2zCVPsj5aBFb33FcqBMSqaPZssY1TjPv_2ogdG2lrxS6ZOoodv5x3_3Fe2HUS4x3dx-bFn8hGYq7Ind5_8HvWT9XFKIgmqnzgIVoccoc4yVne2EwPfIVyFr1Gk8rICeogi74mNl4aPQ9AXukPjxyrdw1dJUKto");'
                 ></div>
                 <p class="text-white text-base font-medium leading-normal">Rock</p>
               </div>
               <div class="flex flex-col gap-3 pb-3">
                 <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl border border-white/5 overflow-hidden hover:border-accent/50 transition-all"
                   style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCux_N7SjEC0h1CdFlMn3GttSCOZGs4DfyCCe3dZcttbcMMM-4YbNcs6ATW0HoT-sEpdJwvF42ntbeBpCmCWKjXmmEVgXBLlwb20T5wVsxQyfouNcVfL4dTYQh8vXlJXrtH1hbdSjgdKbhXgskXy1mEiC8SZgfAVN5mhqjzsQSU3LX4TmPfVDOhui0XRX82WZhxZPFAw_iRrow1tUGXlWZd9yuec8MjFvjkU2YlZnYOTBz2QCbceEqayhDolMi8yHVu6qM6IuaYksqN");'
                 ></div>
                 <p class="text-white text-base font-medium leading-normal">Pop</p>
               </div>
             </div>
+
+            <!-- Join as Musician Section -->
             <div class="@container">
               <div class="flex flex-col justify-end gap-6 px-4 py-10 @[480px]:gap-8 @[480px]:px-10 @[480px]:py-20">
                 <div class="flex flex-col gap-2 text-center">
                   <h1
-                    class="text-white tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px]"
+                    class="text-white tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px] mx-auto"
                   >
                     Join Musec as a Musician
                   </h1>
-                  <p class="text-white text-base font-normal leading-normal max-w-[720px">Share your talent and connect with clients seeking live music.</p>
+                  <p class="text-white text-base font-normal leading-normal max-w-[720px] mx-auto text-muted">Share your talent and connect with clients seeking live music.</p>
                 </div>
                 <div class="flex flex-1 justify-center">
                   <div class="flex justify-center">
-                    <button
-                      class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#7847ea] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] grow"
+                    <a
+                      href="/signup-music"
+                      class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-accent text-[#050505] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] grow hover:bg-accentDark transition-colors"
                     >
                       <span class="truncate">Get Started</span>
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <footer class="flex justify-center">
+
+        <!-- Footer -->
+        <footer class="flex justify-center border-t border-white/5">
           <div class="flex max-w-[960px] flex-1 flex-col">
             <footer class="flex flex-col gap-6 px-5 py-10 text-center @container">
               <div class="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">
-                <a class="text-[#a393c8] text-base font-normal leading-normal min-w-40" href="#">About</a>
-                <a class="text-[#a393c8] text-base font-normal leading-normal min-w-40" href="#">Contact</a>
-                <a class="text-[#a393c8] text-base font-normal leading-normal min-w-40" href="#">Terms of Service</a>
-                <a class="text-[#a393c8] text-base font-normal leading-normal min-w-40" href="#">Privacy Policy</a>
+                <a class="text-muted text-base font-normal leading-normal min-w-40 hover:text-white transition-colors" href="#">About</a>
+                <a class="text-muted text-base font-normal leading-normal min-w-40 hover:text-white transition-colors" href="#">Contact</a>
+                <a class="text-muted text-base font-normal leading-normal min-w-40 hover:text-white transition-colors" href="#">Terms of Service</a>
+                <a class="text-muted text-base font-normal leading-normal min-w-40 hover:text-white transition-colors" href="#">Privacy Policy</a>
               </div>
-              <p class="text-[#a393c8] text-base font-normal leading-normal">© 2023 Musec. All rights reserved.</p>
+              <p class="text-muted text-base font-normal leading-normal">© 2023 Musec. All rights reserved.</p>
             </footer>
           </div>
         </footer>
