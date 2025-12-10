@@ -1,0 +1,38 @@
+<!-- Floating Navbar Component -->
+<div class="navbar-container">
+    <nav class="navbar">
+        <div class="search-container">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" placeholder="Parin goat?" class="search-input">
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="nav-item <%= (typeof activePage !== 'undefined' && activePage === 'home') ? 'active' : '' %>">
+                <div class="icon-wrapper"><i data-lucide="home" width="22" height="22"></i></div>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="/jobs" class="nav-item <%= (typeof activePage !== 'undefined' && activePage === 'jobs') ? 'active' : '' %>">
+                <div class="icon-wrapper"><i data-lucide="briefcase" width="22" height="22"></i></div>
+                <span class="nav-label">Jobs</span>
+            </a>
+            <a href="/explore-musicians" class="nav-item <%= (typeof activePage !== 'undefined' && activePage === 'network') ? 'active' : '' %>">
+                <div class="icon-wrapper"><i data-lucide="users" width="22" height="22"></i></div>
+                <span class="nav-label">Network</span>
+            </a>
+            <a href="/msg" class="nav-item <%= (typeof activePage !== 'undefined' && activePage === 'messaging') ? 'active' : '' %>">
+                <div class="icon-wrapper"><i data-lucide="message-square" width="22" height="22"></i></div>
+                <span class="nav-label">Messaging</span>
+            </a>
+            <a href="/requests" class="nav-item <%= (typeof activePage !== 'undefined' && activePage === 'notifications') ? 'active' : '' %>">
+                <div class="icon-wrapper"><i data-lucide="bell" width="22" height="22"></i></div>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <% if (locals.user && locals.user.profilePic) { %>
+                <a href="/user/<%= user._id %>" class="user-avatar" style="background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center;"></a>
+            <% } else { %>
+                <div class="user-avatar"></div>
+            <% } %>
+        </div>
+    </nav>
+</div>
+

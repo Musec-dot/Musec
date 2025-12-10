@@ -17,6 +17,8 @@ const Message = require('./models/Message');
 const LiveStream = require('./liveStream');
 const Post = require('./models/Post');
 const Comment = require('./models/Comment');
+const Job = require('./models/Job');
+const Application = require('./models/Application');
 
 const app = express();
 const server = http.createServer(app);
@@ -217,7 +219,147 @@ app.get('/post/:postId/comments', async (req, res) => {
     res.status(500).json({ error: 'Failed to get comments' });
   }
 });
+// Hirer Signup
+app.post('/signup-hirer', async (req, res) => {
+  try {
+    const { username, email, password, role } = req.body;
+    const user = new User({ username, email, password, role: role || 'hirer' });
+    await user.save();
+    const token = setUser(user);
+    res.cookie('uid', token, { httpOnly: true });
+    res.redirect('/post-job');
+  } catch (err) {
+    console.error(err);
+    res.render('home', { error: 'Signup failed. Email or username may already exist.' });
+  }
+});
 
+// Job Posting Routes
+app.get('/post-job', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'hirer') return res.redirect('/');
+  res.render('post-job');
+});
+
+app.post('/post-job', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'hirer') return res.redirect('/');
+  
+  try {
+    const { title, description, payment, location, genre, instrument } = req.body;
+    await Job.create({
+      title,
+      description,
+      payment,
+      location,
+      genre,
+      instrument,
+      hirer: req.user._id
+    });
+    res.redirect('/hirer/jobs');
+  } catch (err) {
+    console.error(err);
+    res.render('post-job', { error: 'Failed to post job' });
+  }
+});
+
+// View All Jobs (for musicians)
+app.get('/jobs', async (req, res) => {
+  // Redirect hirers to their jobs page
+  if (req.user && req.user.role === 'hirer') {
+    return res.redirect('/hirer/jobs');
+  }
+  
+  const jobs = await Job.find({ status: 'open' })
+    .populate('hirer', 'username')
+    .sort({ createdAt: -1 });
+  res.render('jobs', { jobs, user: req.user });
+});
+
+// Job Details
+app.get('/jobs/:id', async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id).populate('hirer', 'username');
+    if (!job) return res.status(404).send('Job not found');
+    res.render('job-details', { job, user: req.user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Application Form
+app.get('/form/:jobId', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  try {
+    const job = await Job.findById(req.params.jobId);
+    if (!job) return res.status(404).send('Job not found');
+    res.render('form', { job, user: req.user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Submit Application
+app.post('/apply/:jobId', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  
+  try {
+    const job = await Job.findById(req.params.jobId);
+    if (!job) return res.status(404).send('Job not found');
+    
+    // Check if already applied
+    const existing = await Application.findOne({ job: req.params.jobId, musician: req.user._id });
+    if (existing) {
+      return res.render('form', { job, user: req.user, error: 'You have already applied for this job' });
+    }
+    
+    await Application.create({
+      job: req.params.jobId,
+      musician: req.user._id,
+      ...req.body
+    });
+    
+    res.redirect('/jobs');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to submit application');
+  }
+});
+
+// Hirer's Jobs
+app.get('/hirer/jobs', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'hirer') return res.redirect('/');
+  
+  const jobs = await Job.find({ hirer: req.user._id }).sort({ createdAt: -1 });
+  res.render('hirer-jobs', { jobs, user: req.user });
+});
+
+// View Applications for a Job
+app.get('/applications/:jobId', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  
+  try {
+    const job = await Job.findById(req.params.jobId).populate('hirer', 'username');
+    if (!job) return res.status(404).send('Job not found');
+    
+    // Check if user is the hirer
+    if (job.hirer._id.toString() !== req.user._id.toString()) {
+      return res.status(403).send('Unauthorized');
+    }
+    
+    const applications = await Application.find({ job: req.params.jobId })
+      .populate('musician', 'username profilePic email')
+      .sort({ createdAt: -1 });
+    
+    res.render('applications', { job, applications, user: req.user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
 app.get('/msg', (req, res) => {
   if (!req.user) return res.redirect('/login');
   res.render('msg', {
@@ -226,7 +368,9 @@ app.get('/msg', (req, res) => {
     user: req.user
   });
 });
-
+app.get('/form',(req,res)=>{
+  res.render('form'); 
+})
 async function renderDashboard(req, res) {
   if (!req.user) return res.render('home');
 

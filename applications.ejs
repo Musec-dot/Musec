@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gig Applicant Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #000000;
+        color: #ffffff;
+      }
+      /* Custom scrollbar to match the dark theme */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #000;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #444;
+      }
+      /* Ensure icons align correctly */
+      .lucide {
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Floating Navbar -->
+    <div class="navbar-container" style="position: sticky; top: 0; z-index: 100; display: flex; justify-content: center; padding: 1.5rem 1rem 1rem 1rem; background-color: rgba(5, 5, 5, 0.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+        <nav style="background-color: #121212; border-radius: 9999px; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 64rem; border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);">
+            <div style="position: relative;">
+                <i data-lucide="search" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; width: 18px; height: 18px;"></i>
+                <input type="text" placeholder="Parin goat?" style="background-color: #1e1e1e; color: #d1d5db; font-size: 0.875rem; border-radius: 9999px; padding: 0.625rem 1rem 0.625rem 2.5rem; width: 16rem; border: none; outline: none; transition: all 0.2s;" onfocus="this.style.boxShadow='0 0 0 1px #4b5563'; this.style.backgroundColor='#252525';" onblur="this.style.boxShadow='none'; this.style.backgroundColor='#1e1e1e';">
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <a href="/" style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: #9ca3af; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#9ca3af'">
+                    <div style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i data-lucide="home" width="22" height="22"></i></div>
+                    <span style="font-size: 10px; font-weight: 500; letter-spacing: 0.025em;">Home</span>
+                </a>
+                <a href="/jobs" style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: #ffdec1; transition: color 0.2s; text-decoration: none;">
+                    <div style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i data-lucide="briefcase" width="22" height="22"></i></div>
+                    <span style="font-size: 10px; font-weight: 500; letter-spacing: 0.025em;">Jobs</span>
+                </a>
+                <a href="/explore-musicians" style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: #9ca3af; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#9ca3af'">
+                    <div style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i data-lucide="users" width="22" height="22"></i></div>
+                    <span style="font-size: 10px; font-weight: 500; letter-spacing: 0.025em;">Network</span>
+                </a>
+                <a href="/msg" style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: #9ca3af; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#9ca3af'">
+                    <div style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i data-lucide="message-square" width="22" height="22"></i></div>
+                    <span style="font-size: 10px; font-weight: 500; letter-spacing: 0.025em;">Messaging</span>
+                </a>
+                <a href="/requests" style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: #9ca3af; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#9ca3af'">
+                    <div style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i data-lucide="bell" width="22" height="22"></i></div>
+                    <span style="font-size: 10px; font-weight: 500; letter-spacing: 0.025em;">Notifications</span>
+                </a>
+                <% if (locals.user && locals.user.profilePic) { %>
+                    <a href="/user/<%= user._id %>" style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center; border: 2px solid #121212; cursor: pointer;"></a>
+                <% } else { %>
+                    <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: linear-gradient(135deg, #9ca3af, #4b5563); border: 2px solid #121212; cursor: pointer;"></div>
+                <% } %>
+            </div>
+        </nav>
+    </div>
+    <script>lucide.createIcons();</script>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
+        
+      <!-- Header Section -->
+      <div class="mb-10 mt-4">
+        <h1 class="text-4xl font-bold mb-1 text-white tracking-tight"><%= job ? job.title : 'Job Applications' %></h1>
+        <p class="text-gray-500 text-sm">see musicians who applied</p>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="flex flex-wrap items-center mb-8">
+        <!-- Genre Filter -->
+        <div class="flex items-center mr-6 mb-2 sm:mb-0">
+          <span class="text-white text-sm sm:text-base mr-3 font-normal text-gray-300">Genre:</span>
+          <button class="flex items-center bg-[#FFE4B5] hover:bg-[#ffdfa0] text-black text-xs sm:text-sm font-medium px-4 py-1.5 rounded-full transition-colors">
+            All Genres
+            <i data-lucide="chevron-down" class="ml-2 text-black/70" width="14" height="14"></i>
+          </button>
+        </div>
+
+        <!-- Instrument Filter -->
+        <div class="flex items-center mr-6 mb-2 sm:mb-0">
+          <span class="text-white text-sm sm:text-base mr-3 font-normal text-gray-300">Instrument:</span>
+          <button class="flex items-center bg-[#FFE4B5] hover:bg-[#ffdfa0] text-black text-xs sm:text-sm font-medium px-4 py-1.5 rounded-full transition-colors">
+            Guitar
+            <i data-lucide="chevron-down" class="ml-2 text-black/70" width="14" height="14"></i>
+          </button>
+        </div>
+
+        <!-- Location Filter -->
+        <div class="flex items-center mr-6 mb-2 sm:mb-0">
+          <span class="text-white text-sm sm:text-base mr-3 font-normal text-gray-300">Location:</span>
+          <button class="flex items-center bg-[#FFE4B5] hover:bg-[#ffdfa0] text-black text-xs sm:text-sm font-medium px-4 py-1.5 rounded-full transition-colors">
+            Anywhere
+            <i data-lucide="chevron-down" class="ml-2 text-black/70" width="14" height="14"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Applicant List Container -->
+      <div id="applicant-list" class="space-y-4">
+        <% if (applications && applications.length > 0) { %>
+          <% applications.forEach((application, index) => { %>
+            <% const isLast = index === applications.length - 1; %>
+            <% const opacityClass = isLast ? 'opacity-40' : 'opacity-100'; %>
+            <div class="group w-full bg-[#111111] hover:bg-[#161616] transition-colors duration-200 
+              rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between
+              border border-white/5 mb-4 relative overflow-hidden <%= opacityClass %>">
+              
+              <!-- Left Side: Avatar & Info -->
+              <div class="flex items-center w-full sm:w-auto mb-4 sm:mb-0">
+                <div class="relative">
+                  <div class="w-14 h-14 rounded-full p-[2px] bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 mr-4">
+                    <div class="w-full h-full rounded-full border-2 border-[#111111] overflow-hidden">
+                      <% if (application.musician && application.musician.profilePic) { %>
+                        <img src="<%= application.musician.profilePic %>" alt="<%= application.name || application.musician.username %>" class="w-full h-full object-cover" />
+                      <% } else { %>
+                        <img src="https://picsum.photos/seed/<%= index + 55 %>/200" alt="<%= application.name || application.musician.username %>" class="w-full h-full object-cover" />
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="text-left">
+                  <h3 class="text-white font-semibold text-lg"><%= application.name || application.musician.username %></h3>
+                  <p class="text-gray-400 text-xs sm:text-sm font-medium">
+                    <%= application.location || 'Location not specified' %> • <%= application.mainRole || 'Musician' %>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Right Side: Info & Actions -->
+              <div class="flex items-center space-x-4 sm:space-x-6 w-full sm:w-auto justify-between sm:justify-end">
+                <div class="flex items-center text-white/90">
+                  <i data-lucide="user" class="w-4 h-4 text-white mr-1.5"></i>
+                  <span class="text-sm font-medium"><%= application.musician ? application.musician.username : 'Musician' %></span>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                  <button class="bg-[#FFE4B5] hover:bg-[#ffdfa0] text-black font-semibold text-sm px-6 py-2.5 rounded-full transition-colors cursor-pointer">
+                    Select
+                  </button>
+                  <button onclick="showApplicationDetails('<%= application._id %>')" class="bg-transparent hover:bg-white/5 border border-white/20 text-white/90 text-sm px-5 py-2.5 rounded-full transition-colors cursor-pointer">
+                    More info
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Application Details Modal (hidden by default) -->
+            <div id="modal-<%= application._id %>" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+              <div class="bg-[#111] rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                  <h2 class="text-2xl font-bold text-white">Application Details</h2>
+                  <button onclick="closeModal('<%= application._id %>')" class="text-gray-400 hover:text-white">✕</button>
+                </div>
+                <div class="space-y-4 text-white">
+                  <div><strong>Name:</strong> <%= application.name || 'N/A' %></div>
+                  <div><strong>Age:</strong> <%= application.age || 'N/A' %></div>
+                  <div><strong>Location:</strong> <%= application.location || 'N/A' %></div>
+                  <div><strong>Contact:</strong> <%= application.contact || 'N/A' %></div>
+                  <div><strong>Portfolio:</strong> <%= application.portfolio || 'N/A' %></div>
+                  <div><strong>Main Role:</strong> <%= application.mainRole || 'N/A' %></div>
+                  <div><strong>Instruments:</strong> <%= application.instruments || 'N/A' %></div>
+                  <div><strong>Musical Style:</strong> <%= application.musicalStyle || 'N/A' %></div>
+                  <div><strong>Performing Duration:</strong> <%= application.performingDuration || 'N/A' %></div>
+                  <div><strong>Live Gigs Experience:</strong> <%= application.liveGigsExperience || 'N/A' %></div>
+                  <div><strong>Last Events:</strong> <%= application.lastEvents || 'N/A' %></div>
+                  <div><strong>Audience Size:</strong> <%= application.audienceSize || 'N/A' %></div>
+                  <div><strong>Performance Link:</strong> <%= application.performanceLink || 'N/A' %></div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="text-center py-12 text-gray-500">
+            <p>No applications yet for this job.</p>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- Bottom Fade Overlay -->
+      <div class="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-10"></div>
+    </main>
+
+    <script>
+      function showApplicationDetails(applicationId) {
+        document.getElementById('modal-' + applicationId).classList.remove('hidden');
+      }
+
+      function closeModal(applicationId) {
+        document.getElementById('modal-' + applicationId).classList.add('hidden');
+      }
+
+      // Close modal on outside click
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('bg-black/80')) {
+          e.target.classList.add('hidden');
+        }
+      });
+
+      // Initialize Lucide Icons
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

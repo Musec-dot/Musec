@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Form</title>
+    <style>
+      /* Reset & Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #050505; /* Deep dark background */
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+}
+
+/* The Main Box */
+.modal-container {
+    width: 90%;
+    max-width: 900px;
+    height: 85vh; /* Fixed height is crucial for scrolling */
+    background-color: #0a0a0a;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Clips corners */
+    border: 1px solid #1a1a1a;
+}
+
+/* Header Area */
+.modal-header {
+    padding: 20px 30px;
+    background-color: #0a0a0a;
+    z-index: 10;
+}
+
+.back-btn {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+}
+
+/* THE SCROLLABLE PART */
+.scroll-content {
+    padding: 0 40px 40px 40px;
+    overflow-y: auto; /* Enables vertical scrolling */
+    flex-grow: 1;
+    
+    /* Hide scrollbar for clean look (optional) */
+    scrollbar-width: thin; 
+    scrollbar-color: #333 #0a0a0a;
+}
+
+/* Webkit Scrollbar Styling (Chrome, Safari) */
+.scroll-content::-webkit-scrollbar {
+    width: 6px;
+}
+.scroll-content::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+.scroll-content::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 10px;
+}
+
+/* Typography & Layout */
+.form-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-family: 'Lora', serif; /* Serif font for headers */
+    color: #e6cea0; /* Goldish color from image */
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.grid-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 Columns */
+    gap: 40px;
+    margin-bottom: 25px;
+}
+
+/* Input Fields Styling */
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    color: #a0a0a0;
+    margin-bottom: 8px;
+}
+
+.input-group input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #d1d1d1;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    outline: none;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+.input-group input::placeholder {
+    color: #666;
+}
+
+.input-group input:focus {
+    border-bottom-color: #e6cea0;
+}
+
+/* Footer / Submit Button */
+.form-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.button-label {
+    color: #555;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.submit-btn {
+    background: linear-gradient(to right, #ff8c37, #ff6b00);
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.submit-btn:hover {
+    opacity: 0.9;
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 768px) {
+    .grid-row {
+        grid-template-columns: 1fr; /* Stack inputs on small screens */
+        gap: 20px;
+    }
+    .modal-container {
+        height: 100vh;
+        width: 100%;
+        border-radius: 0;
+    }
+}
+
+    </style>
+    <!-- Using Google Fonts to match the style -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Lora:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="modal-container">
+        
+        <!-- Fixed Header with Back Button -->
+        <div class="modal-header">
+            <a href="/jobs/<%= job ? job._id : '' %>" class="back-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
+            <% if (job) { %>
+                <h2 style="color: #e6cea0; margin: 0; font-size: 1.25rem;">Applying for: <%= job.title %></h2>
+            <% } %>
+        </div>
+
+        <!-- Scrollable Content Area -->
+        <div class="scroll-content">
+            <% if (locals.error) { %>
+                <div style="background: rgba(255, 107, 53, 0.1); border: 1px solid #ff6b35; color: #ff6b35; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (!job) { %>
+                <div style="text-align: center; padding: 2rem; color: #ff6b35;">
+                    <p>Job not found. Please go back to the jobs page.</p>
+                    <a href="/jobs" style="color: #ff6b35; text-decoration: underline;">Back to Jobs</a>
+                </div>
+            <% } else { %>
+            <form action="/apply/<%= job._id %>" method="POST">
+                <!-- Section: Basic Info -->
+                <section class="form-section">
+                    <h2 class="section-title">Basic Info</h2>
+                    <div class="grid-row">
+                        <div class="input-group">
+                            <label>Name *</label>
+                            <input type="text" name="name" required placeholder="Your full name">
+                        </div>
+                        <div class="input-group">
+                            <label>Age *</label>
+                            <input type="text" name="age" required placeholder="Your age">
+                        </div>
+                        <div class="input-group">
+                            <label>Location *</label>
+                            <input type="text" name="location" required placeholder="Your location">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="input-group">
+                            <label>Contact *</label>
+                            <input type="text" name="contact" required placeholder="Phone number or email">
+                        </div>
+                        <div class="input-group">
+                            <label>Portfolio</label>
+                            <input type="text" name="portfolio" placeholder="Link to your portfolio">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: About -->
+                <section class="form-section">
+                    <h2 class="section-title">About</h2>
+                    <div class="grid-row">
+                        <div class="input-group">
+                            <label>What's your main role? *</label>
+                            <input type="text" name="mainRole" required placeholder="e.g., Guitarist, Pianist">
+                        </div>
+                        <div class="input-group">
+                            <label>List all instruments you can play *</label>
+                            <input type="text" name="instruments" required placeholder="e.g., guitar, piano, drums">
+                        </div>
+                        <div class="input-group">
+                            <label>Describe your musical style *</label>
+                            <input type="text" name="musicalStyle" required placeholder="e.g., Rock, Jazz, Classical">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="input-group">
+                            <label>How long have you been performing for? *</label>
+                            <input type="text" name="performingDuration" required placeholder="e.g., 3 years">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: Experience -->
+                <section class="form-section">
+                    <h2 class="section-title">Experience</h2>
+                    <div class="grid-row">
+                        <div class="input-group">
+                            <label>Have you performed live gigs before? *</label>
+                            <input type="text" name="liveGigsExperience" required placeholder="Yes/No">
+                        </div>
+                        <div class="input-group">
+                            <label>If yes, list your last 3-5 events</label>
+                            <input type="text" name="lastEvents" placeholder="List your recent performances">
+                        </div>
+                        <div class="input-group">
+                            <label>What audience size are you most comfortable performing for?</label>
+                            <input type="text" name="audienceSize" placeholder="e.g., 50-100 people">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="input-group">
+                            <label>Attach Link to your best live performance clip</label>
+                            <input type="text" name="performanceLink" placeholder="YouTube, SoundCloud, etc.">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer Action -->
+                <div class="form-footer">
+                    <span class="button-label">Submit Application</span>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </div>
+            </form>
+            <% } %>
+
+        </div>
+    </div>
+
+</body>
+</html>
