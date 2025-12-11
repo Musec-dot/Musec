@@ -279,7 +279,10 @@ app.get('/jobs', async (req, res) => {
 // Job Details
 app.get('/jobs/:id', async (req, res) => {
   try {
-    const job = await Job.findById(req.params.id).populate('hirer', 'username');
+    const job = await Job.findById(req.params.id)
+      .populate('hirer', 'username')
+      .populate('selectedMusician', 'username')
+      .populate('selectedApplication');
     if (!job) return res.status(404).send('Job not found');
     res.render('job-details', { job, user: req.user });
   } catch (err) {
@@ -333,7 +336,9 @@ app.get('/hirer/jobs', async (req, res) => {
   if (!req.user) return res.redirect('/login');
   if (req.user.role !== 'hirer') return res.redirect('/');
   
-  const jobs = await Job.find({ hirer: req.user._id }).sort({ createdAt: -1 });
+  const jobs = await Job.find({ hirer: req.user._id })
+    .populate('selectedMusician', 'username')
+    .sort({ createdAt: -1 });
   res.render('hirer-jobs', { jobs, user: req.user });
 });
 
@@ -342,7 +347,7 @@ app.get('/applications/:jobId', async (req, res) => {
   if (!req.user) return res.redirect('/login');
   
   try {
-    const job = await Job.findById(req.params.jobId).populate('hirer', 'username');
+    const job = await Job.findById(req.params.jobId).populate('hirer', 'username').populate('selectedApplication').populate('selectedMusician', 'username');
     if (!job) return res.status(404).send('Job not found');
     
     // Check if user is the hirer
@@ -358,6 +363,52 @@ app.get('/applications/:jobId', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
+  }
+});
+
+// Select an Application
+app.post('/applications/:applicationId/select', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const application = await Application.findById(req.params.applicationId)
+      .populate('job');
+    
+    if (!application) return res.status(404).json({ error: 'Application not found' });
+    
+    const job = await Job.findById(application.job._id);
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    
+    // Check if user is the hirer
+    if (job.hirer.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    
+    // Check if job already has someone selected
+    if (job.selectedApplication || job.selectedMusician) {
+      return res.status(400).json({ error: 'This job already has a selected applicant' });
+    }
+    
+    // Update all other applications for this job to 'rejected'
+    await Application.updateMany(
+      { job: job._id, _id: { $ne: application._id } },
+      { status: 'rejected' }
+    );
+    
+    // Mark this application as selected
+    application.status = 'selected';
+    await application.save();
+    
+    // Update job with selected application and musician
+    job.selectedApplication = application._id;
+    job.selectedMusician = application.musician;
+    job.status = 'closed'; // Close the job
+    await job.save();
+    
+    res.json({ success: true, message: 'Application selected successfully' });
+  } catch (err) {
+    console.error('Select application error:', err);
+    res.status(500).json({ error: 'Failed to select application' });
   }
 });
 app.get('/msg', (req, res) => {

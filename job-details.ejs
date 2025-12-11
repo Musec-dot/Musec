@@ -292,8 +292,27 @@
                 <p><%= job.description %></p>
             </div>
 
+            <!-- Show if someone has been selected -->
+            <% if (job.selectedMusician || job.selectedApplication) { %>
+                <div class="job-section" style="background-color: #1a3a1a; padding: 1.5rem; border-radius: 12px; border: 2px solid #4caf50; margin-bottom: 2rem;">
+                    <h2 style="color: #4caf50; margin-bottom: 0.5rem;">✓ Position Filled</h2>
+                    <p style="color: #ccc; margin-bottom: 0.5rem;">
+                        This position has been filled. 
+                        <% if (job.selectedMusician) { %>
+                            <strong style="color: #4caf50;"><%= job.selectedMusician.username %></strong> has been selected for this job.
+                        <% } else { %>
+                            A musician has been selected for this job.
+                        <% } %>
+                    </p>
+                </div>
+            <% } %>
+
             <% if (user) { %>
-                <a href="/form/<%= job._id %>" class="apply-btn">Apply Now</a>
+                <% if (job.selectedMusician || job.selectedApplication) { %>
+                    <button class="apply-btn" style="background-color: #666; cursor: not-allowed;" disabled>Position Filled</button>
+                <% } else { %>
+                    <a href="/form/<%= job._id %>" class="apply-btn">Apply Now</a>
+                <% } %>
             <% } else { %>
                 <a href="/login" class="apply-btn">Login to Apply</a>
             <% } %>

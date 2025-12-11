@@ -9,7 +9,9 @@ const jobSchema = new Schema({
   instrument: { type: String },
   hirer: { type: Schema.Types.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, default: Date.now },
-  status: { type: String, enum: ['open', 'closed'], default: 'open' }
+  status: { type: String, enum: ['open', 'closed'], default: 'open' },
+  selectedApplication: { type: Schema.Types.ObjectId, ref: "Application", default: null },
+  selectedMusician: { type: Schema.Types.ObjectId, ref: "User", default: null }
 });
 
 module.exports = model("Job", jobSchema);

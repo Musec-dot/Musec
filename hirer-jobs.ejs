@@ -313,6 +313,13 @@
                 <% jobs.forEach((job) => { %>
                     <div class="job-card">
                         <span class="status-badge status-<%= job.status %>"><%= job.status.toUpperCase() %></span>
+                        <% if (job.selectedMusician) { %>
+                            <div style="background-color: rgba(76, 175, 80, 0.2); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.75rem; border: 1px solid #4caf50;">
+                                <p style="color: #4caf50; font-size: 0.85rem; font-weight: 600; margin: 0;">
+                                    ✓ Selected: <%= job.selectedMusician.username %>
+                                </p>
+                            </div>
+                        <% } %>
                         <h3><%= job.title %></h3>
                         <p class="meta"><%= job.location %> • <%= new Date(job.createdAt).toLocaleDateString() %></p>
                         <p class="description"><%= job.description %></p>

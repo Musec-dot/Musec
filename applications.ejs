@@ -151,9 +151,22 @@
                 </div>
 
                 <div class="flex items-center space-x-3">
-                  <button class="bg-[#FFE4B5] hover:bg-[#ffdfa0] text-black font-semibold text-sm px-6 py-2.5 rounded-full transition-colors cursor-pointer">
-                    Select
-                  </button>
+                  <% 
+                    const isSelected = application.status === 'selected' || 
+                      (job.selectedApplication && (
+                        (typeof job.selectedApplication === 'object' && job.selectedApplication._id && job.selectedApplication._id.toString() === application._id.toString()) ||
+                        (job.selectedApplication.toString() === application._id.toString())
+                      ));
+                  %>
+                  <% if (isSelected) { %>
+                    <button class="bg-green-600 hover:bg-green-700 text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-colors cursor-pointer" disabled>
+                      Selected ✓
+                    </button>
+                  <% } else { %>
+                    <button onclick="selectApplication('<%= application._id %>')" class="bg-[#FFE4B5] hover:bg-[#ffdfa0] text-black font-semibold text-sm px-6 py-2.5 rounded-full transition-colors cursor-pointer">
+                      Select
+                    </button>
+                  <% } %>
                   <button onclick="showApplicationDetails('<%= application._id %>')" class="bg-transparent hover:bg-white/5 border border-white/20 text-white/90 text-sm px-5 py-2.5 rounded-full transition-colors cursor-pointer">
                     More info
                   </button>
@@ -204,6 +217,33 @@
 
       function closeModal(applicationId) {
         document.getElementById('modal-' + applicationId).classList.add('hidden');
+      }
+
+      async function selectApplication(applicationId) {
+        if (!confirm('Are you sure you want to select this applicant? This will reject all other applications for this job.')) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`/applications/${applicationId}/select`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            alert('Applicant selected successfully!');
+            location.reload(); // Reload to show updated status
+          } else {
+            alert('Error: ' + (data.error || 'Failed to select applicant'));
+          }
+        } catch (error) {
+          console.error('Error selecting application:', error);
+          alert('An error occurred while selecting the applicant');
+        }
       }
 
       // Close modal on outside click

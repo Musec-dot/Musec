@@ -1,5 +1,7 @@
 const FriendRequest = require("../models/friensRequest");
 const User = require("../user");
+const Application = require("../models/Application");
+const Job = require("../models/Job");
 
 exports.sendRequest = async (req, res) => {
   try {
@@ -31,7 +33,14 @@ exports.sendRequest = async (req, res) => {
 
 exports.getPendingRequests = async (req, res) => {
   const requests = await FriendRequest.find({ to: req.user._id, status: 'pending' }).populate('from');
-  res.render('requests', { requests });
+  
+  // Get job applications where the user has been selected
+  const selectedApplications = await Application.find({ 
+    musician: req.user._id, 
+    status: 'selected' 
+  }).populate('job', 'title');
+  
+  res.render('requests', { requests, selectedApplications, user: req.user });
 };
 
 exports.acceptRequest = async (req, res) => {

@@ -10,7 +10,7 @@
 
   <div class="max-w-7xl mx-auto px-6 py-12">
     <h1 class="text-3xl font-bold mb-8 border-b border-purple-500 pb-2">
-      Pending Friend Requests
+      Notifications
     </h1>
 <a
   href="/"
@@ -18,35 +18,78 @@
 >
   Back to Home
 </a>
-    <% if (requests.length > 0) { %>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <% requests.forEach(req => { %>
-          <div class="bg-[#1e1e2f] p-6 rounded-2xl shadow-md hover:shadow-purple-500/30 transition-shadow duration-300 flex flex-col justify-between">
-            <p class="text-xl font-medium mb-4">
-              <%= req.from.username %> wants to be your friend
-            </p>
-            <form action="/requests/accept/<%= req._id %>" method="POST">
-              <button
-                type="submit"
-                class="w-full bg-purple-600 hover:bg-purple-700 py-2 px-4 rounded-lg font-medium transition duration-200"
-              >
-                Accept Request
-              </button>
-              <br><br>
-            </form>
-             <form action="/requests/reject/<%= req._id %>" method="POST">
-              <button
-                type="submit"
-                class="mt-90 w-full bg-purple-600 hover:bg-purple-700 py-2 px-4 rounded-lg font-medium transition duration-200"
-              >
-                Decline Request
-              </button>
-            </form>
-          </div>
-        <% }) %>
+
+    <!-- Job Selection Notifications -->
+    <% if (selectedApplications && selectedApplications.length > 0) { %>
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-6 text-green-400">Job Selections</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <% selectedApplications.forEach(app => { %>
+            <div class="bg-[#1e3a1e] border-2 border-green-500 p-6 rounded-2xl shadow-md hover:shadow-green-500/30 transition-shadow duration-300 flex flex-col justify-between">
+              <div class="mb-4">
+                <p class="text-green-400 font-semibold text-sm mb-2">✓ Selected</p>
+                <p class="text-xl font-medium mb-2 text-white">
+                  You have been selected for
+                </p>
+                <p class="text-lg font-bold text-green-300 mb-2">
+                  <%= app.job ? app.job.title : 'Job' %>
+                </p>
+                <p class="text-gray-300 text-sm">
+                  Congratulations! The hirer has selected your application.
+                </p>
+              </div>
+              <% if (app.job) { %>
+                <a
+                  href="/jobs/<%= app.job._id %>"
+                  class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition duration-200 text-center block"
+                >
+                  View Job Details
+                </a>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
       </div>
-    <% } else { %>
-      <p class="text-lg mt-6 text-gray-400">You have no pending friend requests.</p>
+    <% } %>
+
+    <!-- Friend Requests -->
+    <div>
+      <h2 class="text-2xl font-bold mb-6 text-purple-400">Pending Friend Requests</h2>
+      <% if (requests && requests.length > 0) { %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <% requests.forEach(req => { %>
+            <div class="bg-[#1e1e2f] p-6 rounded-2xl shadow-md hover:shadow-purple-500/30 transition-shadow duration-300 flex flex-col justify-between">
+              <p class="text-xl font-medium mb-4">
+                <%= req.from.username %> wants to be your friend
+              </p>
+              <form action="/requests/accept/<%= req._id %>" method="POST">
+                <button
+                  type="submit"
+                  class="w-full bg-purple-600 hover:bg-purple-700 py-2 px-4 rounded-lg font-medium transition duration-200"
+                >
+                  Accept Request
+                </button>
+                <br><br>
+              </form>
+               <form action="/requests/reject/<%= req._id %>" method="POST">
+                <button
+                  type="submit"
+                  class="mt-90 w-full bg-purple-600 hover:bg-purple-700 py-2 px-4 rounded-lg font-medium transition duration-200"
+                >
+                  Decline Request
+                </button>
+              </form>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <p class="text-lg mt-6 text-gray-400">You have no pending friend requests.</p>
+      <% } %>
+    </div>
+
+    <!-- Empty State -->
+    <% if ((!requests || requests.length === 0) && (!selectedApplications || selectedApplications.length === 0)) { %>
+      <p class="text-lg mt-6 text-gray-400">You have no notifications.</p>
     <% } %>
   </div>
 
