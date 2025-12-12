@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job - <%= job.title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Floating Navbar Styles */
+        .navbar-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem 1rem 1rem 1rem;
+            background-color: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .navbar {
+            background-color: #121212;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 64rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .search-container {
+            position: relative;
+        }
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            pointer-events: none;
+            width: 18px;
+            height: 18px;
+        }
+        .search-input {
+            background-color: #1e1e1e;
+            color: #d1d5db;
+            font-size: 0.875rem;
+            border-radius: 9999px;
+            padding: 0.625rem 1rem 0.625rem 2.5rem;
+            width: 16rem;
+            border: none;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 1px #4b5563;
+            background-color: #252525;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+        .nav-item:hover {
+            color: #e5e7eb;
+        }
+        .nav-item.active {
+            color: #ffdec1;
+        }
+        .nav-item .icon-wrapper {
+            transition: transform 0.2s;
+        }
+        .nav-item:hover .icon-wrapper {
+            transform: scale(1.1);
+        }
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+        .user-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9ca3af, #4b5563);
+            border: 2px solid #121212;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .user-avatar:hover {
+            opacity: 0.8;
+        }
+    </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #111;
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #fff 0%, #ff6b35 60%, #ff8c42 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ccc;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #ff6b35;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            padding: 0.875rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-1px);
+        }
+
+        .error {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: rgba(255, 107, 53, 0.1);
+            border-radius: 8px;
+            border: 1px solid #ff6b35;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #ff6b35;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .warning-box {
+            background-color: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #ffc107;
+        }
+
+        .warning-box p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Navbar -->
+    <div class="navbar-container">
+        <nav class="navbar">
+            <div class="search-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" placeholder="Parin goat?" class="search-input">
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-item">
+                    <div class="icon-wrapper"><i data-lucide="home" width="22" height="22"></i></div>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="/jobs" class="nav-item active">
+                    <div class="icon-wrapper"><i data-lucide="briefcase" width="22" height="22"></i></div>
+                    <span class="nav-label">Jobs</span>
+                </a>
+                <a href="/explore-musicians" class="nav-item">
+                    <div class="icon-wrapper"><i data-lucide="users" width="22" height="22"></i></div>
+                    <span class="nav-label">Network</span>
+                </a>
+                <a href="/msg" class="nav-item">
+                    <div class="icon-wrapper"><i data-lucide="message-square" width="22" height="22"></i></div>
+                    <span class="nav-label">Messaging</span>
+                </a>
+                <a href="/requests" class="nav-item">
+                    <div class="icon-wrapper"><i data-lucide="bell" width="22" height="22"></i></div>
+                    <span class="nav-label">Notifications</span>
+                </a>
+                <% if (locals.user && locals.user.profilePic) { %>
+                    <a href="/user/<%= user._id %>" class="user-avatar" style="background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center;"></a>
+                <% } else { %>
+                    <div class="user-avatar"></div>
+                <% } %>
+            </div>
+        </nav>
+    </div>
+    <script>lucide.createIcons();</script>
+
+    <div class="container" style="padding: 2rem 1rem;">
+        <a href="/hirer/jobs" class="back-link">← Back to My Jobs</a>
+        <h1>Edit Job</h1>
+        
+        <% if (job.selectedMusician) { %>
+            <div class="warning-box">
+                <p><strong>Note:</strong> A musician has already been selected for this job. Editing may affect the ongoing job process.</p>
+            </div>
+        <% } %>
+        
+        <% if (locals.error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+
+        <form action="/edit-job/<%= job._id %>" method="POST">
+            <div class="form-group">
+                <label for="title">Job Title *</label>
+                <input type="text" id="title" name="title" required value="<%= job.title %>" placeholder="e.g., Guitarist needed for wedding">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Job Description *</label>
+                <textarea id="description" name="description" required placeholder="Describe the job requirements, expectations, and any other relevant details..."><%= job.description %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="payment">Payment *</label>
+                <input type="text" id="payment" name="payment" required value="<%= job.payment %>" placeholder="e.g., $500, Negotiable, $1000-1500">
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location *</label>
+                <input type="text" id="location" name="location" required value="<%= job.location %>" placeholder="e.g., New Delhi, India">
+            </div>
+
+            <div class="form-group">
+                <label for="genre">Genre (Optional)</label>
+                <input type="text" id="genre" name="genre" value="<%= job.genre || '' %>" placeholder="e.g., Rock, Jazz, Classical">
+            </div>
+
+            <div class="form-group">
+                <label for="instrument">Instrument Required (Optional)</label>
+                <input type="text" id="instrument" name="instrument" value="<%= job.instrument || '' %>" placeholder="e.g., Guitar, Piano, Drums">
+            </div>
+
+            <button type="submit" class="submit-btn">Update Job</button>
+        </form>
+    </div>
+</body>
+</html>
+

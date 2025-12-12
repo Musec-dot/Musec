@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Job Postings</title>
+    <title>Incomplete Jobs</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -139,25 +139,6 @@
             background-clip: text;
         }
 
-        .post-job-btn {
-            background-color: #fff;
-            color: #000;
-            border: none;
-            padding: 0.875rem 2rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .post-job-btn:hover {
-            background-color: #f0f0f0;
-            transform: translateY(-1px);
-        }
-
         .jobs-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -208,46 +189,48 @@
 
         .job-actions {
             display: flex;
+            flex-direction: column;
             gap: 0.75rem;
         }
 
         .view-applications-btn {
-            background-color: #ff6b35;
-            color: #fff;
+            background-color: #fff;
+            color: #000;
             border: none;
             padding: 0.625rem 1.25rem;
             font-size: 0.9rem;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
-            flex: 1;
             text-align: center;
         }
 
         .view-applications-btn:hover {
-            background-color: #ff8c42;
+            background-color: #f0f0f0;
+            transform: translateY(-1px);
         }
 
-        .status-badge {
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid #374151;
+            color: #d1d5db;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
             display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            text-align: center;
         }
 
-        .status-open {
-            background-color: rgba(76, 175, 80, 0.2);
-            color: #4caf50;
-        }
-
-        .status-closed {
-            background-color: rgba(244, 67, 54, 0.2);
-            color: #f44336;
+        .btn-secondary:hover {
+            border-color: #6b7280;
+            color: #fff;
         }
 
         .empty-state {
@@ -260,6 +243,15 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
             color: #999;
+        }
+
+        .info-banner {
+            background-color: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #ffc107;
         }
     </style>
 </head>
@@ -304,65 +296,41 @@
 
     <div class="container" style="padding: 2rem 1rem;">
         <div class="header">
-            <h1>My Job Postings</h1>
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <a href="/hirer/incomplete-jobs" class="post-job-btn" style="background-color: transparent; border: 1px solid #374151; color: #d1d5db;">
-                    Incomplete Jobs
-                </a>
-                <a href="/hirer/active-jobs" class="post-job-btn" style="background-color: transparent; border: 1px solid #374151; color: #d1d5db;">
-                    Active Jobs
-                </a>
-                <a href="/post-job" class="post-job-btn">+ Post New Job</a>
+            <h1>Incomplete Jobs</h1>
+            <div style="display: flex; gap: 1rem;">
+                <a href="/hirer/jobs" class="btn-secondary">All Jobs</a>
+                <a href="/hirer/active-jobs" class="btn-secondary">Active Jobs</a>
             </div>
+        </div>
+
+        <div class="info-banner">
+            <p><strong>💡 Connect with selected musicians:</strong> These jobs have a selected musician but payment hasn't been completed yet. Connect with them, chat, and complete the payment to move the job to Active Jobs.</p>
         </div>
 
         <% if (jobs && jobs.length > 0) { %>
             <div class="jobs-grid">
                 <% jobs.forEach((job) => { %>
                     <div class="job-card">
-                        <span class="status-badge status-<%= job.status %>"><%= job.status.toUpperCase() %></span>
-                        <% if (job.selectedMusician) { %>
-                            <div style="background-color: rgba(76, 175, 80, 0.2); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.75rem; border: 1px solid #4caf50;">
-                                <p style="color: #4caf50; font-size: 0.85rem; font-weight: 600; margin: 0;">
-                                    ✓ Selected: <%= job.selectedMusician.username %>
-                                </p>
-                            </div>
-                        <% } %>
+                        <div style="background-color: rgba(255, 193, 7, 0.2); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.75rem; border: 1px solid #ffc107;">
+                            <p style="color: #ffc107; font-size: 0.85rem; font-weight: 600; margin: 0;">
+                                ⏳ Payment Pending
+                            </p>
+                        </div>
+                        <div style="background-color: rgba(76, 175, 80, 0.2); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.75rem; border: 1px solid #4caf50;">
+                            <p style="color: #4caf50; font-size: 0.85rem; font-weight: 600; margin: 0;">
+                                ✓ Selected: <%= job.selectedMusician.username %>
+                            </p>
+                        </div>
                         <h3><%= job.title %></h3>
-                        <p class="meta"><%= job.location %> • <%= new Date(job.createdAt).toLocaleDateString() %></p>
+                        <p class="meta">Musician: <%= job.selectedMusician.username %> • <%= new Date(job.createdAt).toLocaleDateString() %></p>
                         <p class="description"><%= job.description %></p>
                         <p class="payment">Payment: <%= job.payment %></p>
-                        <% if (job.selectedMusician) { %>
-                            <div style="margin-bottom: 1rem;">
-                                <% if (job.paymentStatus === 'paid') { %>
-                                    <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background-color: rgba(76, 175, 80, 0.2); color: #4caf50; margin-right: 0.5rem;">
-                                        ✓ Paid
-                                    </span>
-                                <% } else { %>
-                                    <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background-color: rgba(255, 193, 7, 0.2); color: #ffc107; margin-right: 0.5rem;">
-                                        Payment Pending
-                                    </span>
-                                <% } %>
-                                <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background-color: rgba(33, 150, 243, 0.2); color: #2196f3;">
-                                    <%= job.jobStatus ? job.jobStatus.replace('_', ' ').toUpperCase() : 'SELECTED' %>
-                                </span>
-                            </div>
-                        <% } %>
-                        <div class="job-actions" style="flex-direction: column;">
-                            <% if (job.selectedMusician) { %>
-                                <% if (job.paymentStatus !== 'paid') { %>
-                                    <a href="/job/<%= job._id %>/payment" class="view-applications-btn" style="margin-bottom: 0.5rem; display: block; text-align: center;">
-                                        Make Payment
-                                    </a>
-                                <% } %>
-                                <a href="/job/<%= job._id %>/track" class="view-applications-btn" style="margin-bottom: 0.5rem;">
-                                    Track Job
-                                </a>
-                            <% } else { %>
-                                <a href="/applications/<%= job._id %>" class="view-applications-btn" style="margin-bottom: 0.5rem;">View Applications</a>
-                            <% } %>
-                            <a href="/edit-job/<%= job._id %>" class="view-applications-btn" style="background-color: transparent; border: 1px solid #374151; color: #d1d5db; margin-top: 0.5rem; display: block; text-align: center;">
-                                Edit Job
+                        <div class="job-actions">
+                            <a href="/job/<%= job._id %>/room" class="view-applications-btn">
+                                Connect & Chat
+                            </a>
+                            <a href="/job/<%= job._id %>/payment" class="btn-secondary">
+                                Make Payment
                             </a>
                         </div>
                     </div>
@@ -370,9 +338,9 @@
             </div>
         <% } else { %>
             <div class="empty-state">
-                <h2>No jobs posted yet</h2>
-                <p>Start by posting your first job opening!</p>
-                <a href="/post-job" class="post-job-btn" style="margin-top: 1.5rem;">Post Your First Job</a>
+                <h2>No incomplete jobs</h2>
+                <p>All your selected jobs have been paid and moved to Active Jobs.</p>
+                <a href="/hirer/active-jobs" class="view-applications-btn" style="margin-top: 1.5rem; display: inline-block;">View Active Jobs</a>
             </div>
         <% } %>
     </div>

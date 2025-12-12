@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Job - <%= job.title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+        .status-step {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .status-step::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: -1rem;
+            width: 2px;
+            background: #333;
+        }
+        .status-step:last-child::before {
+            display: none;
+        }
+        .status-step.active::before {
+            background: #ff6b35;
+        }
+        .status-step.completed::before {
+            background: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Navbar -->
+    <div class="navbar-container" style="position: sticky; top: 0; z-index: 100; display: flex; justify-content: center; padding: 1.5rem 1rem 1rem 1rem; background-color: rgba(5, 5, 5, 0.95); backdrop-filter: blur(8px);">
+        <nav style="background-color: #121212; border-radius: 9999px; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 64rem; border: 1px solid rgba(255, 255, 255, 0.05);">
+            <a href="<%= isHirer ? '/hirer/jobs' : '/jobs' %>" style="display: flex; align-items: center; color: #fff; text-decoration: none;">
+                <i data-lucide="arrow-left" width="20" height="20" style="margin-right: 0.5rem;"></i>
+                <span>Back</span>
+            </a>
+        </nav>
+    </div>
+    <script>lucide.createIcons();</script>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-4xl font-bold mb-2" style="background: linear-gradient(135deg, #fff 0%, #ff6b35 60%, #ff8c42 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <%= job.title %>
+        </h1>
+        <p class="text-gray-400 mb-8">Track your job progress</p>
+
+        <!-- Job Info Card -->
+        <div class="bg-[#111] border border-[#333] rounded-lg p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-gray-400 text-sm mb-1">Hirer</p>
+                    <p class="text-white font-semibold"><%= job.hirer.username %></p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm mb-1">Musician</p>
+                    <p class="text-white font-semibold"><%= job.selectedMusician ? job.selectedMusician.username : 'Not selected' %></p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm mb-1">Payment Amount</p>
+                    <p class="text-[#ff6b35] font-semibold"><%= job.payment %></p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm mb-1">Location</p>
+                    <p class="text-white"><%= job.location %></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Timeline -->
+        <div class="bg-[#111] border border-[#333] rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-6">Job Status</h2>
+            
+            <div class="space-y-6">
+                <!-- Step 1: Selected -->
+                <div class="status-step <%= job.jobStatus === 'selected' ? 'active' : (['payment_pending', 'in_progress', 'completed'].includes(job.jobStatus) ? 'completed' : '') %>">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center <%= job.jobStatus === 'selected' ? 'bg-[#ff6b35]' : (['payment_pending', 'in_progress', 'completed'].includes(job.jobStatus) ? 'bg-green-500' : 'bg-gray-600') %>">
+                            <% if (['payment_pending', 'in_progress', 'completed'].includes(job.jobStatus)) { %>
+                                <i data-lucide="check" width="20" height="20" class="text-white"></i>
+                            <% } else { %>
+                                <i data-lucide="user-check" width="20" height="20" class="text-white"></i>
+                            <% } %>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-semibold text-white">Musician Selected</h3>
+                            <p class="text-gray-400 text-sm">Musician has been selected for this job</p>
+                            <% if (job.connectedAt) { %>
+                                <p class="text-gray-500 text-xs mt-1"><%= new Date(job.connectedAt).toLocaleDateString() %></p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Payment -->
+                <div class="status-step <%= job.jobStatus === 'payment_pending' ? 'active' : (['in_progress', 'completed'].includes(job.jobStatus) ? 'completed' : '') %>">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center <%= job.paymentStatus === 'paid' ? 'bg-green-500' : (job.jobStatus === 'payment_pending' ? 'bg-[#ff6b35]' : 'bg-gray-600') %>">
+                            <% if (job.paymentStatus === 'paid') { %>
+                                <i data-lucide="check" width="20" height="20" class="text-white"></i>
+                            <% } else { %>
+                                <i data-lucide="credit-card" width="20" height="20" class="text-white"></i>
+                            <% } %>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-semibold text-white">Payment</h3>
+                            <p class="text-gray-400 text-sm">
+                                <% if (job.paymentStatus === 'paid') { %>
+                                    Payment completed
+                                <% } else { %>
+                                    Payment pending
+                                <% } %>
+                            </p>
+                            <% if (job.paymentDate) { %>
+                                <p class="text-gray-500 text-xs mt-1"><%= new Date(job.paymentDate).toLocaleDateString() %></p>
+                            <% } %>
+                            <% if (isHirer && job.paymentStatus !== 'paid') { %>
+                                <a href="/job/<%= job._id %>/payment" class="inline-block mt-2 text-[#ff6b35] hover:text-[#ff8c42] text-sm font-medium">
+                                    Make Payment →
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: In Progress -->
+                <div class="status-step <%= job.jobStatus === 'in_progress' ? 'active' : (job.jobStatus === 'completed' ? 'completed' : '') %>">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center <%= job.jobStatus === 'in_progress' ? 'bg-[#ff6b35]' : (job.jobStatus === 'completed' ? 'bg-green-500' : 'bg-gray-600') %>">
+                            <% if (job.jobStatus === 'completed') { %>
+                                <i data-lucide="check" width="20" height="20" class="text-white"></i>
+                            <% } else { %>
+                                <i data-lucide="loader" width="20" height="20" class="text-white"></i>
+                            <% } %>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-semibold text-white">In Progress</h3>
+                            <p class="text-gray-400 text-sm">Job is currently in progress</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Completed -->
+                <div class="status-step <%= job.jobStatus === 'completed' ? 'active completed' : '' %>">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center <%= job.jobStatus === 'completed' ? 'bg-green-500' : 'bg-gray-600' %>">
+                            <% if (job.jobStatus === 'completed') { %>
+                                <i data-lucide="check-circle" width="20" height="20" class="text-white"></i>
+                            <% } else { %>
+                                <i data-lucide="circle" width="20" height="20" class="text-white"></i>
+                            <% } %>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-semibold text-white">Completed</h3>
+                            <p class="text-gray-400 text-sm">Job has been completed</p>
+                            <% if (job.completedDate) { %>
+                                <p class="text-gray-500 text-xs mt-1"><%= new Date(job.completedDate).toLocaleDateString() %></p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions (for Hirer only) -->
+        <% if (isHirer && job.jobStatus !== 'completed' && job.paymentStatus === 'paid') { %>
+            <div class="bg-[#111] border border-[#333] rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Update Job Status</h2>
+                <div class="flex gap-4">
+                    <% if (job.jobStatus === 'in_progress') { %>
+                        <button onclick="updateStatus('completed')" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                            Mark as Completed
+                        </button>
+                    <% } else if (job.jobStatus === 'payment_pending') { %>
+                        <button onclick="updateStatus('in_progress')" class="bg-[#ff6b35] hover:bg-[#ff8c42] text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                            Start Job
+                        </button>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Contact Section -->
+        <div class="bg-[#111] border border-[#333] rounded-lg p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4">Contact</h2>
+            <div class="flex gap-4">
+                <a href="/msg" class="bg-[#ff6b35] hover:bg-[#ff8c42] text-white font-semibold px-6 py-3 rounded-lg transition-colors inline-flex items-center">
+                    <i data-lucide="message-square" width="20" height="20" class="mr-2"></i>
+                    Send Message
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        async function updateStatus(status) {
+            if (!confirm(`Are you sure you want to mark this job as ${status.replace('_', ' ')}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/job/<%= job._id %>/status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Job status updated successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to update status'));
+                }
+            } catch (error) {
+                console.error('Update status error:', error);
+                alert('An error occurred while updating status');
+            }
+        }
+    </script>
+</body>
+</html>
+

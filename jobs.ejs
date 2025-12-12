@@ -433,8 +433,20 @@
 
     <main class="main-container">
         <div class="header">
-            <h1>Discover Gigs</h1>
-            <p>work with talented musicians</p>
+            <div>
+                <h1>Discover Gigs</h1>
+                <p>work with talented musicians</p>
+            </div>
+            <% if (user && user.role === 'musician') { %>
+                <div style="display: flex; gap: 0.75rem;">
+                    <a href="/musician/incomplete-jobs" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
+                        Incomplete Jobs
+                    </a>
+                    <a href="/musician/jobs" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
+                        Active Jobs
+                    </a>
+                </div>
+            <% } %>
         </div>
 
         <div class="filter-bar">

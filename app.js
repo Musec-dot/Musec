@@ -19,6 +19,7 @@ const Post = require('./models/Post');
 const Comment = require('./models/Comment');
 const Job = require('./models/Job');
 const Application = require('./models/Application');
+const Payment = require('./models/Payment');
 
 const app = express();
 const server = http.createServer(app);
@@ -263,6 +264,63 @@ app.post('/post-job', async (req, res) => {
   }
 });
 
+// Edit Job Routes
+app.get('/edit-job/:jobId', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'hirer') return res.redirect('/');
+  
+  try {
+    const job = await Job.findById(req.params.jobId)
+      .populate('selectedMusician', 'username');
+    
+    if (!job) return res.status(404).send('Job not found');
+    
+    // Check if user is the hirer
+    if (job.hirer.toString() !== req.user._id.toString()) {
+      return res.status(403).send('Unauthorized');
+    }
+    
+    res.render('edit-job', { job, user: req.user });
+  } catch (err) {
+    console.error('Edit job error:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+app.post('/edit-job/:jobId', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'hirer') return res.redirect('/');
+  
+  try {
+    const job = await Job.findById(req.params.jobId);
+    
+    if (!job) return res.status(404).send('Job not found');
+    
+    // Check if user is the hirer
+    if (job.hirer.toString() !== req.user._id.toString()) {
+      return res.status(403).send('Unauthorized');
+    }
+    
+    const { title, description, payment, location, genre, instrument } = req.body;
+    
+    // Update job fields
+    job.title = title;
+    job.description = description;
+    job.payment = payment;
+    job.location = location;
+    job.genre = genre || null;
+    job.instrument = instrument || null;
+    
+    await job.save();
+    
+    res.redirect('/hirer/jobs');
+  } catch (err) {
+    console.error('Update job error:', err);
+    const job = await Job.findById(req.params.jobId).populate('selectedMusician', 'username');
+    res.render('edit-job', { job, user: req.user, error: 'Failed to update job' });
+  }
+});
+
 // View All Jobs (for musicians)
 app.get('/jobs', async (req, res) => {
   // Redirect hirers to their jobs page
@@ -342,6 +400,63 @@ app.get('/hirer/jobs', async (req, res) => {
   res.render('hirer-jobs', { jobs, user: req.user });
 });
 
+// Hirer's Incomplete Jobs (selected but payment not done)
+app.get('/hirer/incomplete-jobs', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'hirer') return res.redirect('/');
+  
+  const jobs = await Job.find({ 
+    hirer: req.user._id,
+    selectedMusician: { $exists: true, $ne: null },
+    paymentStatus: { $ne: 'paid' } // Jobs with selected musician but payment not done
+  })
+    .populate('selectedMusician', 'username profilePic')
+    .sort({ createdAt: -1 });
+  res.render('hirer-incomplete-jobs', { jobs, user: req.user });
+});
+
+// Hirer's Active Jobs (jobs with payment completed)
+app.get('/hirer/active-jobs', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'hirer') return res.redirect('/');
+  
+  const jobs = await Job.find({ 
+    hirer: req.user._id,
+    paymentStatus: 'paid' // Only show jobs after payment
+  })
+    .populate('selectedMusician', 'username profilePic')
+    .sort({ createdAt: -1 });
+  res.render('hirer-active-jobs', { jobs, user: req.user });
+});
+
+// Musician's Incomplete Jobs (selected but payment not done)
+app.get('/musician/incomplete-jobs', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'musician') return res.redirect('/');
+  
+  const jobs = await Job.find({ 
+    selectedMusician: req.user._id,
+    paymentStatus: { $ne: 'paid' } // Jobs where selected but payment not done
+  })
+    .populate('hirer', 'username profilePic')
+    .sort({ createdAt: -1 });
+  res.render('musician-incomplete-jobs', { jobs, user: req.user });
+});
+
+// Musician's Active Jobs (jobs where they've been selected and payment is done)
+app.get('/musician/jobs', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  if (req.user.role !== 'musician') return res.redirect('/');
+  
+  const jobs = await Job.find({ 
+    selectedMusician: req.user._id,
+    paymentStatus: 'paid' // Only show jobs after payment
+  })
+    .populate('hirer', 'username profilePic')
+    .sort({ createdAt: -1 });
+  res.render('musician-jobs', { jobs, user: req.user });
+});
+
 // View Applications for a Job
 app.get('/applications/:jobId', async (req, res) => {
   if (!req.user) return res.redirect('/login');
@@ -399,18 +514,231 @@ app.post('/applications/:applicationId/select', async (req, res) => {
     application.status = 'selected';
     await application.save();
     
+    // Connect hirer and musician (add to each other's friends list if not already)
+    const hirer = await User.findById(job.hirer);
+    const musician = await User.findById(application.musician);
+    
+    if (hirer && musician) {
+      // Add musician to hirer's friends if not already
+      if (!hirer.friends.includes(musician._id)) {
+        hirer.friends.push(musician._id);
+        await hirer.save();
+      }
+      // Add hirer to musician's friends if not already
+      if (!musician.friends.includes(hirer._id)) {
+        musician.friends.push(hirer._id);
+        await musician.save();
+      }
+    }
+    
     // Update job with selected application and musician
     job.selectedApplication = application._id;
     job.selectedMusician = application.musician;
     job.status = 'closed'; // Close the job
+    job.jobStatus = 'selected'; // Initial job status
+    job.connectedAt = new Date(); // Record connection time
     await job.save();
     
-    res.json({ success: true, message: 'Application selected successfully' });
+    res.json({ success: true, message: 'Application selected successfully. You are now connected!', jobId: job._id });
   } catch (err) {
     console.error('Select application error:', err);
     res.status(500).json({ error: 'Failed to select application' });
   }
 });
+// Payment Routes
+app.get('/job/:jobId/payment', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  
+  try {
+    const job = await Job.findById(req.params.jobId)
+      .populate('hirer', 'username')
+      .populate('selectedMusician', 'username');
+    
+    if (!job) return res.status(404).send('Job not found');
+    
+    // Check if user is the hirer
+    if (job.hirer._id.toString() !== req.user._id.toString()) {
+      return res.status(403).send('Unauthorized');
+    }
+    
+    // Check if musician is selected
+    if (!job.selectedMusician) {
+      return res.status(400).send('No musician selected for this job');
+    }
+    
+    const payment = await Payment.findOne({ job: job._id });
+    
+    res.render('payment', { job, payment, user: req.user });
+  } catch (err) {
+    console.error('Payment page error:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+app.post('/job/:jobId/payment', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const job = await Job.findById(req.params.jobId);
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    
+    // Check if user is the hirer
+    if (job.hirer.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    
+    // Check if already paid
+    if (job.paymentStatus === 'paid') {
+      return res.status(400).json({ error: 'Payment already completed' });
+    }
+    
+    const { paymentMethod, transactionId, notes } = req.body;
+    
+    // Create or update payment record
+    let payment = await Payment.findOne({ job: job._id });
+    if (!payment) {
+      payment = await Payment.create({
+        job: job._id,
+        hirer: job.hirer,
+        musician: job.selectedMusician,
+        amount: job.payment,
+        paymentMethod: paymentMethod || 'other',
+        transactionId: transactionId || null,
+        notes: notes || null,
+        status: 'completed',
+        paymentDate: new Date()
+      });
+    } else {
+      payment.paymentMethod = paymentMethod || payment.paymentMethod;
+      payment.transactionId = transactionId || payment.transactionId;
+      payment.notes = notes || payment.notes;
+      payment.status = 'completed';
+      payment.paymentDate = new Date();
+      await payment.save();
+    }
+    
+    // Update job payment status and job status
+    job.paymentStatus = 'paid';
+    job.paymentDate = new Date();
+    job.jobStatus = 'in_progress'; // Move to in_progress after payment
+    await job.save();
+    
+    res.json({ success: true, message: 'Payment recorded successfully' });
+  } catch (err) {
+    console.error('Payment error:', err);
+    res.status(500).json({ error: 'Failed to process payment' });
+  }
+});
+
+// Job Room (Chat + Payment)
+app.get('/job/:jobId/room', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  
+  try {
+    const job = await Job.findById(req.params.jobId)
+      .populate('hirer', 'username profilePic')
+      .populate('selectedMusician', 'username profilePic')
+      .populate('selectedApplication');
+    
+    if (!job) return res.status(404).send('Job not found');
+    
+    // Check if user is either the hirer or the selected musician
+    const isHirer = job.hirer._id.toString() === req.user._id.toString();
+    const isMusician = job.selectedMusician && job.selectedMusician._id.toString() === req.user._id.toString();
+    
+    if (!isHirer && !isMusician) {
+      return res.status(403).send('Unauthorized');
+    }
+    
+    // Check if musician is selected
+    if (!job.selectedMusician) {
+      return res.status(400).send('No musician selected for this job');
+    }
+    
+    const payment = await Payment.findOne({ job: job._id });
+    
+    res.render('job-room', { 
+      job, 
+      payment, 
+      user: req.user, 
+      isHirer,
+      isMusician 
+    });
+  } catch (err) {
+    console.error('Job room error:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Job Tracking Routes
+app.get('/job/:jobId/track', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  
+  try {
+    const job = await Job.findById(req.params.jobId)
+      .populate('hirer', 'username profilePic')
+      .populate('selectedMusician', 'username profilePic')
+      .populate('selectedApplication');
+    
+    if (!job) return res.status(404).send('Job not found');
+    
+    // Check if user is either the hirer or the selected musician
+    const isHirer = job.hirer._id.toString() === req.user._id.toString();
+    const isMusician = job.selectedMusician && job.selectedMusician._id.toString() === req.user._id.toString();
+    
+    if (!isHirer && !isMusician) {
+      return res.status(403).send('Unauthorized');
+    }
+    
+    const payment = await Payment.findOne({ job: job._id });
+    
+    res.render('job-track', { 
+      job, 
+      payment, 
+      user: req.user, 
+      isHirer,
+      isMusician 
+    });
+  } catch (err) {
+    console.error('Job tracking error:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Update Job Status
+app.post('/job/:jobId/status', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const { status } = req.body;
+    const job = await Job.findById(req.params.jobId);
+    
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    
+    // Check if user is the hirer
+    if (job.hirer.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    
+    // Validate status
+    const validStatuses = ['selected', 'payment_pending', 'in_progress', 'completed', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+    
+    job.jobStatus = status;
+    if (status === 'completed') {
+      job.completedDate = new Date();
+    }
+    await job.save();
+    
+    res.json({ success: true, message: 'Job status updated successfully' });
+  } catch (err) {
+    console.error('Update job status error:', err);
+    res.status(500).json({ error: 'Failed to update job status' });
+  }
+});
+
 app.get('/msg', (req, res) => {
   if (!req.user) return res.redirect('/login');
   res.render('msg', {

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Room - <%= job.title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .chat-container {
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-container::-webkit-scrollbar-track {
+            background: #111;
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Navbar -->
+    <div class="navbar-container" style="position: sticky; top: 0; z-index: 100; display: flex; justify-content: center; padding: 1rem; background-color: rgba(5, 5, 5, 0.95); backdrop-filter: blur(8px);">
+        <nav style="background-color: #121212; border-radius: 9999px; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 64rem; border: 1px solid rgba(255, 255, 255, 0.05);">
+            <a href="<%= isHirer ? '/hirer/jobs' : '/musician/jobs' %>" style="display: flex; align-items: center; color: #fff; text-decoration: none;">
+                <i data-lucide="arrow-left" width="20" height="20" style="margin-right: 0.5rem;"></i>
+                <span>Back</span>
+            </a>
+            <h2 style="color: #fff; font-size: 1rem; font-weight: 600;"><%= job.title %></h2>
+            <div style="width: 100px;"></div>
+        </nav>
+    </div>
+    <script>lucide.createIcons();</script>
+
+    <div class="container mx-auto px-4 py-4 max-w-6xl" style="height: calc(100vh - 80px);">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="height: 100%;">
+            <!-- Left: Job Info & Payment -->
+            <div class="lg:col-span-1 space-y-4" style="overflow-y: auto;">
+                <!-- Job Info Card -->
+                <div class="bg-[#111] border border-[#333] rounded-lg p-4">
+                    <h3 class="text-lg font-semibold mb-3">Job Details</h3>
+                    <div class="space-y-2 text-sm">
+                        <div>
+                            <p class="text-gray-400">Hirer</p>
+                            <p class="text-white font-medium"><%= job.hirer.username %></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Musician</p>
+                            <p class="text-white font-medium"><%= job.selectedMusician ? job.selectedMusician.username : 'Not selected' %></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Location</p>
+                            <p class="text-white"><%= job.location %></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Payment Amount</p>
+                            <p class="text-[#ff6b35] font-semibold text-lg"><%= job.payment %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="bg-[#111] border border-[#333] rounded-lg p-4">
+                    <h3 class="text-lg font-semibold mb-3">Payment</h3>
+                    <% if (job.paymentStatus === 'paid') { %>
+                        <div class="bg-green-900/20 border border-green-500/50 rounded-lg p-3 mb-3">
+                            <div class="flex items-center mb-2">
+                                <i data-lucide="check-circle" width="20" height="20" class="text-green-500 mr-2"></i>
+                                <span class="text-green-400 font-semibold">Payment Completed</span>
+                            </div>
+                            <% if (payment && payment.transactionId) { %>
+                                <p class="text-xs text-gray-400">Transaction ID: <%= payment.transactionId %></p>
+                            <% } %>
+                            <p class="text-xs text-gray-400 mt-1">Paid on <%= new Date(job.paymentDate).toLocaleDateString() %></p>
+                        </div>
+                        <a href="/job/<%= job._id %>/track" class="block w-full bg-[#2196f3] hover:bg-[#1976d2] text-white font-semibold px-4 py-2 rounded-lg transition-colors text-center">
+                            Track Job Progress
+                        </a>
+                    <% } else if (isHirer) { %>
+                        <form id="paymentForm" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-300 mb-1">Payment Method</label>
+                                <select name="paymentMethod" class="w-full bg-[#1e1e1e] border border-[#333] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#ff6b35]">
+                                    <option value="card">Credit/Debit Card</option>
+                                    <option value="bank_transfer">Bank Transfer</option>
+                                    <option value="paypal">PayPal</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-300 mb-1">Transaction ID (Optional)</label>
+                                <input type="text" name="transactionId" class="w-full bg-[#1e1e1e] border border-[#333] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#ff6b35]" placeholder="Enter transaction ID">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-300 mb-1">Notes (Optional)</label>
+                                <textarea name="notes" rows="2" class="w-full bg-[#1e1e1e] border border-[#333] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#ff6b35]" placeholder="Payment notes"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-[#ff6b35] hover:bg-[#ff8c42] text-white font-semibold px-4 py-2 rounded-lg transition-colors">
+                                Mark Payment as Completed
+                            </button>
+                        </form>
+                    <% } else { %>
+                        <div class="bg-yellow-900/20 border border-yellow-500/50 rounded-lg p-3">
+                            <p class="text-yellow-400 text-sm">Waiting for payment from hirer</p>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Job Status -->
+                <div class="bg-[#111] border border-[#333] rounded-lg p-4">
+                    <h3 class="text-lg font-semibold mb-3">Job Status</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-400 text-sm">Status</span>
+                            <span class="text-white font-medium text-sm"><%= job.jobStatus ? job.jobStatus.replace('_', ' ').toUpperCase() : 'SELECTED' %></span>
+                        </div>
+                        <% if (job.connectedAt) { %>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400 text-sm">Connected</span>
+                                <span class="text-gray-300 text-xs"><%= new Date(job.connectedAt).toLocaleDateString() %></span>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Chat Section -->
+            <div class="lg:col-span-2 bg-[#111] border border-[#333] rounded-lg flex flex-col" style="height: 100%;">
+                <!-- Chat Header -->
+                <div class="border-b border-[#333] p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <% if (isHirer && job.selectedMusician) { %>
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 p-[2px] mr-3">
+                                    <div class="w-full h-full rounded-full bg-[#111] flex items-center justify-center overflow-hidden">
+                                        <% if (job.selectedMusician.profilePic) { %>
+                                            <img src="<%= job.selectedMusician.profilePic %>" alt="<%= job.selectedMusician.username %>" class="w-full h-full object-cover">
+                                        <% } else { %>
+                                            <span class="text-white text-sm"><%= job.selectedMusician.username.charAt(0).toUpperCase() %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-semibold"><%= job.selectedMusician.username %></h3>
+                                    <p class="text-gray-400 text-xs">Musician</p>
+                                </div>
+                            <% } else if (!isHirer && job.hirer) { %>
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 p-[2px] mr-3">
+                                    <div class="w-full h-full rounded-full bg-[#111] flex items-center justify-center overflow-hidden">
+                                        <% if (job.hirer.profilePic) { %>
+                                            <img src="<%= job.hirer.profilePic %>" alt="<%= job.hirer.username %>" class="w-full h-full object-cover">
+                                        <% } else { %>
+                                            <span class="text-white text-sm"><%= job.hirer.username.charAt(0).toUpperCase() %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-semibold"><%= job.hirer.username %></h3>
+                                    <p class="text-gray-400 text-xs">Hirer</p>
+                                </div>
+                            <% } %>
+                        </div>
+                        <a href="/msg" class="text-[#ff6b35] hover:text-[#ff8c42] text-sm font-medium">
+                            Open in Messages
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chatBox" class="chat-container p-4 flex-1 space-y-4">
+                    <!-- Messages will be loaded here -->
+                </div>
+
+                <!-- Chat Input -->
+                <div class="border-t border-[#333] p-4">
+                    <form id="chatForm" class="flex gap-2">
+                        <input type="text" id="messageInput" placeholder="Type a message..." class="flex-1 bg-[#1e1e1e] border border-[#333] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#ff6b35]" autocomplete="off">
+                        <button type="submit" class="bg-[#ff6b35] hover:bg-[#ff8c42] text-white font-semibold px-6 py-2 rounded-lg transition-colors">
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        const socket = io();
+        const chatBox = document.getElementById('chatBox');
+        const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const myId = '<%= user._id.toString() %>';
+        const otherUserId = '<%= isHirer ? (job.selectedMusician ? job.selectedMusician._id.toString() : "") : (job.hirer ? job.hirer._id.toString() : "") %>';
+        const jobId = '<%= job._id.toString() %>';
+
+        // Join chat room
+        socket.emit('joinRoom', { userId: myId, friendId: otherUserId });
+
+        // Load existing messages
+        async function loadMessages() {
+            try {
+                const res = await fetch(`/messages/${otherUserId}`);
+                const data = await res.json();
+                
+                chatBox.innerHTML = '';
+                
+                if (data.messages && data.messages.length > 0) {
+                    data.messages.forEach(msg => {
+                        addMessageToChat(msg);
+                    });
+                } else {
+                    chatBox.innerHTML = '<div class="text-center text-gray-500 py-8"><p>No messages yet. Start the conversation!</p></div>';
+                }
+                
+                scrollToBottom();
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        function addMessageToChat(msg) {
+            const isMine = (typeof msg.from === 'object' ? msg.from._id : msg.from) === myId;
+            const div = document.createElement('div');
+            div.className = `flex ${isMine ? 'justify-end' : 'justify-start'} mb-4`;
+
+            if (!isMine) {
+                const avatar = document.createElement('div');
+                avatar.className = 'w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 p-[2px] mr-2 flex-shrink-0';
+                avatar.innerHTML = '<div class="w-full h-full rounded-full bg-[#111] flex items-center justify-center"><span class="text-white text-xs">' + (isMine ? 'You' : 'U').charAt(0) + '</span></div>';
+                div.appendChild(avatar);
+            }
+
+            const messageContainer = document.createElement('div');
+            messageContainer.className = `flex flex-col items-${isMine ? 'end' : 'start'} max-w-[70%]`;
+
+            const bubble = document.createElement('div');
+            bubble.className = isMine 
+                ? 'bg-[#ff6b35] text-white p-3 rounded-2xl rounded-tr-sm text-sm'
+                : 'bg-[#1e1e1e] text-gray-200 p-3 rounded-2xl rounded-tl-sm text-sm border border-gray-800';
+            bubble.textContent = msg.content || msg.text || '';
+            messageContainer.appendChild(bubble);
+
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'text-xs text-gray-500 mt-1';
+            const msgDate = new Date(msg.timestamp || Date.now());
+            timeSpan.textContent = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            messageContainer.appendChild(timeSpan);
+
+            div.appendChild(messageContainer);
+            chatBox.appendChild(div);
+        }
+
+        function scrollToBottom() {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Send message
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const content = messageInput.value.trim();
+            if (!content || !otherUserId) return;
+
+            socket.emit('sendMessage', { from: myId, to: otherUserId, content });
+            messageInput.value = '';
+        });
+
+        // Receive new message
+        socket.on('newMessage', (msg) => {
+            const isFromCurrentChat = (msg.from === myId && msg.to === otherUserId) || 
+                                     (msg.from === otherUserId && msg.to === myId);
+            if (isFromCurrentChat) {
+                addMessageToChat(msg);
+                scrollToBottom();
+            }
+        });
+
+        // Payment form
+        const paymentForm = document.getElementById('paymentForm');
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(paymentForm);
+                const data = {
+                    paymentMethod: formData.get('paymentMethod'),
+                    transactionId: formData.get('transactionId'),
+                    notes: formData.get('notes')
+                };
+                
+                try {
+                    const response = await fetch(`/job/${jobId}/payment`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('Payment recorded successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (result.error || 'Failed to process payment'));
+                    }
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    alert('An error occurred while processing payment');
+                }
+            });
+        }
+
+        // Load messages on page load
+        loadMessages();
+    </script>
+</body>
+</html>
+
