@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: '#050505',
+              card: '#121212',
+              'card-hover': '#1a1a1a',
+              subtext: '#888888',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #050505;
+        color: white;
+      }
+      /* Hide scrollbar for clean UI */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      html {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#050505] selection:bg-gray-700/50">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
+      <!-- Search Bar -->
+      <div class="flex-1 flex justify-center md:justify-start lg:ml-20">
+        <div class="relative w-full max-w-[400px] group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <i data-lucide="search" class="h-4 w-4 text-gray-400"></i>
+          </div>
+          <input
+            type="text"
+            class="block w-full pl-11 pr-4 py-2.5 border-none rounded-full leading-5 bg-[#1a1a1a] text-gray-300 placeholder-gray-400/80 focus:outline-none focus:bg-[#222] focus:ring-0 text-sm transition-colors font-medium"
+            placeholder="Parin goat?"
+          />
+        </div>
+      </div>
+
+      <!-- Navigation Icons -->
+      <nav class="hidden md:flex items-center gap-8 ml-8">
+        <!-- Home -->
+        <div class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-gray-400 group-hover:text-gray-200">
+            <i data-lucide="home" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-gray-400 group-hover:text-gray-300">Home</span>
+        </div>
+        
+        <!-- Network -->
+        <div class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-gray-400 group-hover:text-gray-200">
+            <i data-lucide="users" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-gray-400 group-hover:text-gray-300">Network</span>
+        </div>
+
+        <!-- Messaging -->
+        <div class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-gray-400 group-hover:text-gray-200">
+            <i data-lucide="message-circle" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-gray-400 group-hover:text-gray-300">Messaging</span>
+        </div>
+
+        <!-- Notifications (Active) -->
+        <div class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-white">
+            <i data-lucide="bell" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-white">Notifications</span>
+        </div>
+        
+        <!-- User Profile Circle -->
+        <div class="ml-2">
+           <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#e0d4b8] to-[#9e8c6b] flex items-center justify-center overflow-hidden shadow-inner cursor-pointer hover:opacity-90 transition-opacity">
+               <div class="w-full h-full bg-gradient-to-b from-transparent to-black/10 flex items-center justify-center">
+                  <span class="text-[#3a3123] text-lg font-semibold">+</span>
+               </div>
+           </div>
+        </div>
+      </nav>
+      
+      <!-- Mobile Menu Placeholder -->
+      <div class="md:hidden text-white">
+        <button class="p-2">
+            <div class="w-6 h-0.5 bg-white mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-white mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-white"></div>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto max-w-[1000px] px-4 pt-10 pb-20">
+      <div class="mb-9">
+        <h1 class="text-4xl font-bold text-white mb-1.5 tracking-tight">Notifications</h1>
+        <p class="text-[#777777] text-[13px] font-normal tracking-wide">all info at one place</p>
+      </div>
+
+      <div id="notification-container" class="flex flex-col w-full">
+        <!-- JS will inject cards here -->
+      </div>
+    </main>
+
+    <script>
+      // Mock Data
+      const notifications = Array(8).fill(null).map((_, i) => ({
+        id: i.toString(),
+        name: 'Pranav Kapur',
+        message: 'Lorem ipsum dolor sit amet, consectetur adip',
+        avatar: `https://picsum.photos/seed/${i + 420}/200/200`
+      }));
+
+      // Render Logic
+      const container = document.getElementById('notification-container');
+
+      notifications.forEach(notification => {
+        const cardHTML = `
+          <div class="group w-full bg-[#121212] hover:bg-[#181818] transition-all duration-200 rounded-[2.5rem] py-3.5 px-4 flex items-center justify-between mb-3.5 cursor-pointer">
+            <div class="flex items-center gap-4">
+              <!-- Avatar with Gradient Ring -->
+              <div class="relative p-[2px] rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 shrink-0">
+                <div class="bg-black rounded-full p-[2px]">
+                  <img 
+                    src="${notification.avatar}" 
+                    alt="${notification.name}" 
+                    class="w-10 h-10 rounded-full object-cover"
+                  />
+                </div>
+              </div>
+              
+              <!-- Text Content -->
+              <div class="flex flex-col justify-center">
+                <h3 class="text-white text-[15px] font-bold leading-snug tracking-wide">${notification.name}</h3>
+                <p class="text-[#888888] text-[14px] font-normal leading-snug">${notification.message}</p>
+              </div>
+            </div>
+
+            <!-- Action Menu -->
+            <button class="p-2 text-[#555] hover:text-white transition-colors rounded-full mr-1">
+              <i data-lucide="more-horizontal" width="24" height="24"></i>
+            </button>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', cardHTML);
+      });
+
+      // Initialize Icons
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

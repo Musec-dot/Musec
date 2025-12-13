@@ -32,15 +32,33 @@ exports.sendRequest = async (req, res) => {
 
 
 exports.getPendingRequests = async (req, res) => {
-  const requests = await FriendRequest.find({ to: req.user._id, status: 'pending' }).populate('from');
+  if (!req.user) return res.redirect('/login');
   
-  // Get job applications where the user has been selected
-  const selectedApplications = await Application.find({ 
-    musician: req.user._id, 
-    status: 'selected' 
-  }).populate('job', 'title');
-  
-  res.render('requests', { requests, selectedApplications, user: req.user });
+  try {
+    const requests = await FriendRequest.find({ to: req.user._id, status: 'pending' }).populate('from', 'username profilePic');
+    
+    // Get job applications where the user has been selected
+    const selectedApplications = await Application.find({ 
+      musician: req.user._id, 
+      status: 'selected' 
+    }).populate('job', 'title _id');
+    
+    console.log('Friend requests found:', requests.length);
+    console.log('Selected applications found:', selectedApplications.length);
+    
+    res.render('notif', { 
+      requests: requests || [], 
+      selectedApplications: selectedApplications || [], 
+      user: req.user 
+    });
+  } catch (err) {
+    console.error('Error fetching notifications:', err);
+    res.render('notif', { 
+      requests: [], 
+      selectedApplications: [], 
+      user: req.user 
+    });
+  }
 };
 
 exports.acceptRequest = async (req, res) => {

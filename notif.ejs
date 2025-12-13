@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: '#050505',
+              card: '#121212',
+              'card-hover': '#181818',
+              subtext: '#888888',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #050505;
+        color: white;
+      }
+      /* Hide scrollbar for clean UI */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      html {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#050505] selection:bg-gray-700/50">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
+      <!-- Search Bar -->
+      <div class="flex-1 flex justify-center md:justify-start lg:ml-20">
+        <div class="relative w-full max-w-[400px] group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <i data-lucide="search" class="h-4 w-4 text-gray-400"></i>
+          </div>
+          <input
+            type="text"
+            class="block w-full pl-11 pr-4 py-2.5 border-none rounded-full leading-5 bg-[#1a1a1a] text-gray-300 placeholder-gray-400/80 focus:outline-none focus:bg-[#222] focus:ring-0 text-sm transition-colors font-medium"
+            placeholder="Parin goat?"
+          />
+        </div>
+      </div>
+
+      <!-- Navigation Icons -->
+      <nav class="hidden md:flex items-center gap-8 ml-8">
+        <!-- Home -->
+        <a href="/" class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-gray-400 group-hover:text-gray-200">
+            <i data-lucide="home" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-gray-400 group-hover:text-gray-300">Home</span>
+        </a>
+        
+        <!-- Network -->
+        <a href="/explore-musicians" class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-gray-400 group-hover:text-gray-200">
+            <i data-lucide="users" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-gray-400 group-hover:text-gray-300">Network</span>
+        </a>
+
+        <!-- Messaging -->
+        <a href="/msg" class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-gray-400 group-hover:text-gray-200">
+            <i data-lucide="message-circle" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-gray-400 group-hover:text-gray-300">Messaging</span>
+        </a>
+
+        <!-- Notifications (Active) -->
+        <a href="/requests" class="flex flex-col items-center cursor-pointer group">
+          <div class="mb-1 transition-colors duration-200 text-white">
+            <i data-lucide="bell" width="22" height="22"></i>
+          </div>
+          <span class="text-[10px] font-medium tracking-wide transition-colors duration-200 text-white">Notifications</span>
+        </a>
+        
+        <!-- User Profile Circle -->
+        <div class="ml-2">
+          <% if (locals.user && locals.user.profilePic) { %>
+            <a href="/user/<%= user._id %>" class="w-9 h-9 rounded-full bg-gradient-to-br from-[#e0d4b8] to-[#9e8c6b] flex items-center justify-center overflow-hidden shadow-inner cursor-pointer hover:opacity-90 transition-opacity" style="background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center;">
+            </a>
+          <% } else { %>
+            <a href="/user/<%= user._id %>" class="w-9 h-9 rounded-full bg-gradient-to-br from-[#e0d4b8] to-[#9e8c6b] flex items-center justify-center overflow-hidden shadow-inner cursor-pointer hover:opacity-90 transition-opacity">
+              <div class="w-full h-full bg-gradient-to-b from-transparent to-black/10 flex items-center justify-center">
+                <span class="text-[#3a3123] text-lg font-semibold"><%= user ? user.username.charAt(0).toUpperCase() : '+' %></span>
+              </div>
+            </a>
+          <% } %>
+        </div>
+      </nav>
+      
+      <!-- Mobile Menu Placeholder -->
+      <div class="md:hidden text-white">
+        <button class="p-2">
+            <div class="w-6 h-0.5 bg-white mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-white mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-white"></div>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto max-w-[1000px] px-4 pt-10 pb-20">
+      <div class="mb-9">
+        <h1 class="text-4xl font-bold text-white mb-1.5 tracking-tight">Notifications</h1>
+        <p class="text-[#777777] text-[13px] font-normal tracking-wide">all info at one place</p>
+      </div>
+
+      <div id="notification-container" class="flex flex-col w-full">
+        <!-- Friend Requests -->
+        <% 
+          const friendRequests = requests || [];
+          if (friendRequests.length > 0) { 
+        %>
+          <% friendRequests.forEach(req => { %>
+            <% if (req && req.from) { %>
+              <div class="group w-full bg-[#121212] hover:bg-[#181818] transition-all duration-200 rounded-[2.5rem] py-3.5 px-4 flex items-center justify-between mb-3.5">
+                <div class="flex items-center gap-4 flex-1">
+                  <!-- Avatar with Gradient Ring -->
+                  <div class="relative p-[2px] rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 shrink-0">
+                    <div class="bg-black rounded-full p-[2px]">
+                      <% if (req.from && req.from.profilePic) { %>
+                        <img 
+                          src="<%= req.from.profilePic %>" 
+                          alt="<%= req.from.username || 'User' %>" 
+                          class="w-10 h-10 rounded-full object-cover"
+                        />
+                      <% } else { %>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#e0d4b8] to-[#9e8c6b] flex items-center justify-center">
+                          <span class="text-[#3a3123] text-sm font-semibold"><%= (req.from && req.from.username) ? req.from.username.charAt(0).toUpperCase() : 'U' %></span>
+                        </div>
+                      <% } %>
+                    </div>
+                  </div>
+                  
+                  <!-- Text Content -->
+                  <div class="flex flex-col justify-center flex-1">
+                    <h3 class="text-white text-[15px] font-bold leading-snug tracking-wide"><%= (req.from && req.from.username) ? req.from.username : 'User' %></h3>
+                    <p class="text-[#888888] text-[14px] font-normal leading-snug">wants to be your friend</p>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="flex items-center gap-2">
+                    <form action="/requests/accept/<%= req._id %>" method="POST" class="inline">
+                      <button type="submit" class="px-4 py-1.5 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-100 transition-colors">
+                        Accept
+                      </button>
+                    </form>
+                    <form action="/requests/reject/<%= req._id %>" method="POST" class="inline">
+                      <button type="submit" class="px-4 py-1.5 bg-transparent border border-gray-600 text-gray-300 text-sm font-semibold rounded-full hover:border-gray-500 hover:text-white transition-colors">
+                        Decline
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          <% }); %>
+        <% } %>
+
+        <!-- Job Selection Notifications -->
+        <% if (typeof selectedApplications !== 'undefined' && selectedApplications && selectedApplications.length > 0) { %>
+          <% selectedApplications.forEach(app => { %>
+            <% if (app && app.job) { %>
+              <div class="group w-full bg-[#121212] hover:bg-[#181818] transition-all duration-200 rounded-[2.5rem] py-3.5 px-4 flex items-center justify-between mb-3.5">
+                <div class="flex items-center gap-4 flex-1">
+                  <!-- Avatar with Gradient Ring (Green for job selection) -->
+                  <div class="relative p-[2px] rounded-full bg-gradient-to-tr from-green-500 via-emerald-500 to-teal-500 shrink-0">
+                    <div class="bg-black rounded-full p-[2px]">
+                      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center">
+                        <i data-lucide="briefcase" width="20" height="20" class="text-white"></i>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Text Content -->
+                  <div class="flex flex-col justify-center flex-1">
+                    <h3 class="text-white text-[15px] font-bold leading-snug tracking-wide">Job Selection</h3>
+                    <p class="text-[#888888] text-[14px] font-normal leading-snug">
+                      You've been selected for <strong class="text-green-400"><%= app.job.title || 'a job' %></strong>
+                    </p>
+                  </div>
+
+                  <!-- Action Button -->
+                  <a href="/job/<%= app.job._id %>/room" class="px-4 py-1.5 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-100 transition-colors">
+                    View Job
+                  </a>
+                </div>
+              </div>
+            <% } %>
+          <% }); %>
+        <% } %>
+
+        <!-- Empty State -->
+        <% 
+          const hasRequests = friendRequests && friendRequests.length > 0;
+          const hasJobSelections = selectedApplications && selectedApplications.length > 0;
+        %>
+        <% if (!hasRequests && !hasJobSelections) { %>
+          <div class="text-center py-12">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#121212] flex items-center justify-center">
+              <i data-lucide="bell-off" width="32" height="32" class="text-gray-500"></i>
+            </div>
+            <p class="text-[#888888] text-[15px] font-normal">You have no notifications</p>
+          </div>
+        <% } %>
+      </div>
+    </main>
+
+    <script>
+      // Initialize Icons
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
+
