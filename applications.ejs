@@ -63,7 +63,7 @@
                     <span style="font-size: 10px; font-weight: 500; letter-spacing: 0.025em;">Notifications</span>
                 </a>
                 <% if (locals.user && locals.user.profilePic) { %>
-                    <a href="/user/<%= user._id %>" style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center; border: 2px solid #121212; cursor: pointer;"></a>
+                    <a href="/profile/<%= user._id %>" style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center; border: 2px solid #121212; cursor: pointer;"></a>
                 <% } else { %>
                     <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: linear-gradient(135deg, #9ca3af, #4b5563); border: 2px solid #121212; cursor: pointer;"></div>
                 <% } %>
@@ -193,7 +193,7 @@
                       Select
                     </button>
                   <% } %>
-                  <a href="/user/<%= application.musician._id %>" target="_blank" class="bg-transparent hover:bg-white/5 border border-white/20 text-white/90 text-sm px-5 py-2.5 rounded-full transition-colors cursor-pointer inline-flex items-center">
+                  <a href="/profile/<%= application.musician._id %>" target="_blank" class="bg-transparent hover:bg-white/5 border border-white/20 text-white/90 text-sm px-5 py-2.5 rounded-full transition-colors cursor-pointer inline-flex items-center">
                     <i data-lucide="user" width="14" height="14" class="mr-1"></i>
                     View Profile
                   </a>

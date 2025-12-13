@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alex Rivers Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #050505;
+        color: #ffffff;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* Loading spinner animation */
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+    </style>
+    <!-- Import Map for Gemini -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://esm.sh/@google/genai@^1.33.0"
+      }
+    }
+    </script>
+</head>
+<body class="selection:bg-[#f97316] selection:text-white pb-12">
+
+    <!-- Navbar -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-transparent w-full max-w-[1400px] mx-auto">
+        <!-- Search -->
+        <div class="relative w-full max-w-md">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+            </div>
+            <input type="text" placeholder="Parin goat?" class="w-full bg-[#1a1a1a] text-gray-300 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-gray-700 transition-all placeholder-gray-500" />
+        </div>
+
+        <!-- Nav Items -->
+        <div class="flex items-center space-x-8">
+            <div class="flex flex-col items-center cursor-pointer group text-white">
+                <div class="mb-1"><i data-lucide="home" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Home</span>
+            </div>
+            <div class="flex flex-col items-center cursor-pointer group text-gray-400 hover:text-gray-200">
+                <div class="mb-1"><i data-lucide="users" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Network</span>
+            </div>
+            <div class="flex flex-col items-center cursor-pointer group text-gray-400 hover:text-gray-200">
+                <div class="mb-1"><i data-lucide="message-square" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Messaging</span>
+            </div>
+            <div class="flex flex-col items-center cursor-pointer group text-gray-400 hover:text-gray-200">
+                <div class="mb-1"><i data-lucide="bell" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Notifications</span>
+            </div>
+            
+            <!-- Profile/Add -->
+            <div class="relative group cursor-pointer">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-b from-gray-600 to-gray-400 flex items-center justify-center overflow-hidden border border-gray-600">
+                    <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i data-lucide="plus" class="text-gray-900 opacity-50 w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-[1400px] mx-auto px-4 md:px-6">
+        
+        <!-- Header -->
+        <div class="relative mb-6">
+            <!-- Banner -->
+            <div class="h-48 md:h-64 w-full rounded-b-3xl overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=2070&auto=format&fit=crop" alt="Studio Background" class="w-full h-full object-cover opacity-40" />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#2a1b3d] to-transparent mix-blend-multiply pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Profile Info Overlay -->
+            <div class="max-w-[1400px] mx-auto px-6 relative -mt-16 flex flex-col md:flex-row items-end md:items-end gap-6">
+                <!-- Avatar -->
+                <div class="relative">
+                    <div class="w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-gradient-to-br from-gray-700 to-gray-900 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" alt="Alex Rivers" class="w-full h-full rounded-full object-cover border-4 border-[#1a1a1a]" />
+                    </div>
+                    <div class="absolute bottom-2 right-0 bg-[#22c55e] p-1 rounded-full border-4 border-[#050505]">
+                        <i data-lucide="music" class="text-black fill-current w-[14px] h-[14px]"></i>
+                    </div>
+                </div>
+
+                <!-- Text Info -->
+                <div class="flex-1 pb-2">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+                        <div>
+                            <h1 class="text-3xl font-bold text-white mb-0.5">Alex Rivers</h1>
+                            <p class="text-[#a1a1aa] font-medium">@alexrivers</p>
+                        </div>
+                        <div class="flex gap-2 mt-2 md:mt-0">
+                            <span class="px-3 py-1 rounded-full bg-[#3a2a2a] text-[#d69e9e] text-xs font-semibold border border-[#523838]">Producer</span>
+                            <span class="px-3 py-1 rounded-full bg-[#3a352a] text-[#d6c79e] text-xs font-semibold border border-[#524d38]">Synth</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-3 pb-4">
+                    <button class="flex items-center gap-2 bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-4 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                        <i data-lucide="mail" class="w-4 h-4"></i> Message
+                    </button>
+                    <button class="flex items-center gap-2 bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-4 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i> Follow
+                    </button>
+                    <button class="flex items-center gap-2 bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-4 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                        <i data-lucide="users" class="w-4 h-4"></i> Invite to Collab
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Grid: About, Stats, Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+            
+            <!-- About Section - Col Span 4 -->
+            <div class="lg:col-span-4 bg-[#151516] rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xl font-bold mb-4">About</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Electronic music producer and sound designer from Los Angeles. Specializing in ambient soundscapes, cinematic compositions, and experimental beats. Always looking for new collaborators to push creative boundaries.
+                    </p>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center text-xs text-gray-500 font-medium">
+                        <i data-lucide="map-pin" class="text-[#f97316] w-[14px] h-[14px] mr-3"></i> Los Angeles, CA
+                    </div>
+                    <div class="flex items-center text-xs text-gray-500 font-medium">
+                        <i data-lucide="calendar" class="text-[#f97316] w-[14px] h-[14px] mr-3"></i> Joined March 2023
+                    </div>
+                    <div class="flex items-center text-xs text-gray-500 font-medium">
+                        <i data-lucide="music" class="text-[#f97316] w-[14px] h-[14px] mr-3"></i> Synthesizer, Piano
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid - Col Span 4 -->
+            <div class="lg:col-span-4 grid grid-cols-2 gap-4">
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1">127</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Tracks</span>
+                </div>
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1">23</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Collabs</span>
+                </div>
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1">2.1K</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Followers</span>
+                </div>
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1">45K</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Streams</span>
+                </div>
+            </div>
+
+            <!-- Recent Activity - Col Span 4 -->
+            <div class="lg:col-span-4 bg-[#151516] rounded-2xl p-6 border border-white/5">
+                <h2 class="text-sm font-bold mb-4 text-gray-200">Recent Activity</h2>
+                <div class="space-y-5">
+                    <div class="flex items-start gap-3">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" alt="Maya" class="w-8 h-8 rounded-full object-cover mt-0.5" />
+                        <div class="flex-1">
+                            <p class="text-xs text-gray-300"><span class="font-bold text-white">Maya</span> liked your track</p>
+                            <p class="text-[10px] text-gray-600 mt-1">2 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=200" alt="Studio Echo" class="w-8 h-8 rounded-full object-cover mt-0.5" />
+                        <div class="flex-1">
+                            <p class="text-xs text-gray-300"><span class="font-bold text-white">Studio Echo</span> sent you a booking request</p>
+                            <p class="text-[10px] text-gray-600 mt-1">5 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" alt="DJ Pulse" class="w-8 h-8 rounded-full object-cover mt-0.5" />
+                        <div class="flex-1">
+                            <p class="text-xs text-gray-300"><span class="font-bold text-white">DJ Pulse</span> wants to collaborate</p>
+                            <p class="text-[10px] text-gray-600 mt-1">1 day ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Section -->
+        <div class="bg-[#151516] rounded-2xl p-6 border border-white/5 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-[#f97316]">Post</h2>
+                <button id="openModalBtn" class="bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 text-xs px-4 py-2 rounded-xl font-medium transition-colors border border-white/5">
+                    Create New
+                </button>
+            </div>
+            
+            <div id="postsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Posts will be injected here -->
+                <div class="bg-[#0a0a0a] rounded-xl h-48 border border-white/5 opacity-50"></div>
+                <div class="bg-[#0a0a0a] rounded-xl h-48 border border-white/5 opacity-50"></div>
+                <div class="bg-[#0a0a0a] rounded-xl h-48 border border-white/5 opacity-50"></div>
+            </div>
+        </div>
+
+        <!-- Recent Collaborations -->
+        <div class="w-full">
+            <div class="flex justify-between items-end mb-4 px-1">
+                <h2 class="text-xl font-bold text-white">Recent Collaborations</h2>
+                <button class="text-xs text-[#d97706] hover:text-[#f59e0b] font-medium transition-colors">View All</button>
+            </div>
+
+            <div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+                <!-- Collab 1 -->
+                <div class="min-w-[280px] bg-[#151516] rounded-2xl p-4 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop" alt="Maya Chen" class="w-12 h-12 rounded-full object-cover" />
+                        <div>
+                            <h3 class="font-semibold text-white text-sm">Maya Chen</h3>
+                            <p class="text-xs text-gray-500">Vocalist | Berlin</p>
+                        </div>
+                    </div>
+                    <button class="w-full py-2 bg-[#27272a] hover:bg-[#3f3f46] rounded-lg text-xs font-medium text-gray-300 flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="mail" class="w-[14px] h-[14px]"></i> Message
+                    </button>
+                </div>
+
+                <!-- Collab 2 -->
+                <div class="min-w-[280px] bg-[#151516] rounded-2xl p-4 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=200&auto=format&fit=crop" alt="Echo Studios" class="w-12 h-12 rounded-full object-cover" />
+                        <div>
+                            <h3 class="font-semibold text-white text-sm">Echo Studios</h3>
+                            <p class="text-xs text-gray-500">Recording | LA</p>
+                        </div>
+                    </div>
+                    <button class="w-full py-2 bg-[#f97316] hover:bg-[#ea580c] rounded-lg text-xs font-medium text-white flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="calendar" class="w-[14px] h-[14px]"></i> Book Session
+                    </button>
+                </div>
+
+                <!-- Collab 3 -->
+                <div class="min-w-[280px] bg-[#151516] rounded-2xl p-4 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" alt="DJ Pulse" class="w-12 h-12 rounded-full object-cover" />
+                        <div>
+                            <h3 class="font-semibold text-white text-sm">DJ Pulse</h3>
+                            <p class="text-xs text-gray-500">Producer | NYC</p>
+                        </div>
+                    </div>
+                    <button class="w-full py-2 bg-[#27272a] hover:bg-[#3f3f46] rounded-lg text-xs font-medium text-gray-300 flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="users" class="w-[14px] h-[14px]"></i> Invite
+                    </button>
+                </div>
+                
+                 <!-- Collab 4 -->
+                <div class="min-w-[280px] bg-[#151516] rounded-2xl p-4 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" alt="DJ Pulse" class="w-12 h-12 rounded-full object-cover" />
+                        <div>
+                            <h3 class="font-semibold text-white text-sm">DJ Pulse</h3>
+                            <p class="text-xs text-gray-500">Producer | NYC</p>
+                        </div>
+                    </div>
+                    <button class="w-full py-2 bg-[#27272a] hover:bg-[#3f3f46] rounded-lg text-xs font-medium text-gray-300 flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="users" class="w-[14px] h-[14px]"></i> Invite
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="postModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#1a1a1a] border border-white/10 rounded-2xl w-full max-w-lg p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="sparkles" class="text-[#f97316] w-5 h-5"></i>
+                    AI Post Generator
+                </h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">What's on your mind?</label>
+                    <input id="postTopic" type="text" placeholder="e.g., Just finished a new synth track..." class="w-full bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#f97316] transition-colors" />
+                </div>
+
+                <div id="generateBtnContainer">
+                    <button id="generateBtn" class="w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all bg-gray-800 text-gray-500 cursor-not-allowed" disabled>
+                        <i data-lucide="sparkles" class="w-[18px] h-[18px]"></i>
+                        <span>Generate with Gemini</span>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden bg-[#0a0a0a] border border-white/5 rounded-xl p-4 mt-4">
+                    <p id="generatedText" class="text-gray-200 mb-4 font-medium"></p>
+                    <div class="flex gap-3">
+                        <button id="discardBtn" class="flex-1 py-2 rounded-lg border border-white/10 text-gray-400 hover:text-white transition-colors text-sm">Discard</button>
+                        <button id="postToFeedBtn" class="flex-1 py-2 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition-colors text-sm">Post to Feed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { GoogleGenAI } from "@google/genai";
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Application State
+        const state = {
+            isModalOpen: false,
+            posts: [] // Array of strings
+        };
+
+        // DOM Elements
+        const modal = document.getElementById('postModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const topicInput = document.getElementById('postTopic');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const generatedTextEl = document.getElementById('generatedText');
+        const discardBtn = document.getElementById('discardBtn');
+        const postToFeedBtn = document.getElementById('postToFeedBtn');
+        const postsGrid = document.getElementById('postsGrid');
+        const generateBtnContainer = document.getElementById('generateBtnContainer');
+
+        // Gemini Setup
+        const apiKey = process.env.API_KEY || '';
+        const ai = new GoogleGenAI({ apiKey });
+
+        // Functions
+        function toggleModal(show) {
+            state.isModalOpen = show;
+            if (show) {
+                modal.classList.remove('hidden');
+                topicInput.focus();
+            } else {
+                modal.classList.add('hidden');
+                resetModal();
+            }
+        }
+
+        function resetModal() {
+            topicInput.value = '';
+            resultContainer.classList.add('hidden');
+            generatedTextEl.textContent = '';
+            generateBtnContainer.classList.remove('hidden');
+            updateGenerateButtonState();
+        }
+
+        function updateGenerateButtonState() {
+            if (topicInput.value.trim() !== '') {
+                generateBtn.removeAttribute('disabled');
+                generateBtn.classList.remove('bg-gray-800', 'text-gray-500', 'cursor-not-allowed');
+                generateBtn.classList.add('bg-[#f97316]', 'hover:bg-[#ea580c]', 'text-white');
+            } else {
+                generateBtn.setAttribute('disabled', 'true');
+                generateBtn.classList.add('bg-gray-800', 'text-gray-500', 'cursor-not-allowed');
+                generateBtn.classList.remove('bg-[#f97316]', 'hover:bg-[#ea580c]', 'text-white');
+            }
+        }
+
+        async function generateContent() {
+            const topic = topicInput.value;
+            if (!topic || !apiKey) return;
+
+            // Loading State
+            const originalBtnContent = generateBtn.innerHTML;
+            generateBtn.innerHTML = `<i data-lucide="loader-2" class="animate-spin w-[18px] h-[18px]"></i> <span>Dreaming up content...</span>`;
+            lucide.createIcons();
+            generateBtn.disabled = true;
+
+            try {
+                const response = await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: `You are Alex Rivers, a cool electronic music producer and sound designer from Los Angeles. 
+                    Write a short, engaging social media post (max 2 sentences) about: ${topic}. 
+                    Use relevant emojis. Keep it professional but vibe-y.`,
+                });
+                
+                const text = response.text || "Could not generate content.";
+                
+                generatedTextEl.textContent = text;
+                generateBtnContainer.classList.add('hidden');
+                resultContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error generating content. Check API Key.");
+            } finally {
+                // Restore button
+                generateBtn.innerHTML = originalBtnContent;
+                lucide.createIcons();
+                generateBtn.disabled = false;
+            }
+        }
+
+        function createPost(content) {
+            // Update State
+            state.posts.unshift(content);
+            renderPosts();
+            toggleModal(false);
+        }
+
+        function renderPosts() {
+            // Clear current posts
+            postsGrid.innerHTML = '';
+            
+            // Render actual posts
+            state.posts.forEach(post => {
+                const postEl = document.createElement('div');
+                postEl.className = "bg-[#0a0a0a] rounded-xl p-6 h-48 border border-white/5 flex flex-col justify-center";
+                postEl.innerHTML = `
+                    <p class="text-sm text-gray-300 italic">"${post}"</p>
+                    <div class="mt-4 flex gap-2">
+                        <div class="h-2 w-2 rounded-full bg-[#f97316]"></div>
+                        <div class="h-2 w-2 rounded-full bg-gray-800"></div>
+                    </div>
+                `;
+                postsGrid.appendChild(postEl);
+            });
+
+            // Render placeholders
+            const placeholdersNeeded = Math.max(0, 3 - state.posts.length);
+            for(let i=0; i<placeholdersNeeded; i++) {
+                const ph = document.createElement('div');
+                ph.className = "bg-[#0a0a0a] rounded-xl h-48 border border-white/5 opacity-50";
+                postsGrid.appendChild(ph);
+            }
+        }
+
+        // Event Listeners
+        openModalBtn.addEventListener('click', () => toggleModal(true));
+        closeModalBtn.addEventListener('click', () => toggleModal(false));
+        topicInput.addEventListener('input', updateGenerateButtonState);
+        generateBtn.addEventListener('click', generateContent);
+        discardBtn.addEventListener('click', () => {
+             resultContainer.classList.add('hidden');
+             generateBtnContainer.classList.remove('hidden');
+             generatedTextEl.textContent = '';
+        });
+        postToFeedBtn.addEventListener('click', () => {
+            const content = generatedTextEl.textContent;
+            if(content) createPost(content);
+        });
+
+        // Close modal on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) toggleModal(false);
+        });
+
+    </script>
+</body>
+</html>

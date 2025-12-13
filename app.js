@@ -997,7 +997,53 @@ app.post('/signup-music', async (req, res) => {
   }
 });
 
-// Profile
+// Profile - handle both /profile and /profile/:id
+app.get('/profile', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  
+  try {
+    const profileUser = await User.findById(req.user._id);
+    
+    if (!profileUser) {
+      return res.status(404).send('User not found');
+    }
+    
+    res.render('profile', { 
+      user: profileUser,
+      currentUser: req.user,
+      isOwnProfile: true
+    });
+  } catch (err) {
+    console.error('Profile error:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/profile/:id', async (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  
+  try {
+    const profileUserId = req.params.id;
+    const profileUser = await User.findById(profileUserId);
+    
+    if (!profileUser) {
+      return res.status(404).send('User not found');
+    }
+    
+    // Check if viewing own profile or someone else's
+    const isOwnProfile = profileUserId === req.user._id.toString();
+    
+    res.render('profile', { 
+      user: profileUser,
+      currentUser: req.user,
+      isOwnProfile: isOwnProfile
+    });
+  } catch (err) {
+    console.error('Profile error:', err);
+    res.status(500).send('Server error');
+  }
+});
+
 app.get('/update-profile', async (req, res) => {
   if (!req.user) return res.redirect('/login');
   res.render('user_profile', { user: req.user });
@@ -1014,6 +1060,519 @@ app.post('/update-profile', async (req, res) => {
   });
 
   res.redirect('/');
+});
+
+// Profile API Routes
+app.get('/api/profile/posts', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.user._id.toString();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6; // Show 6 posts initially
+    const skip = (page - 1) * limit;
+    
+    const posts = await Post.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    
+    const totalPosts = await Post.countDocuments({ author: userId });
+    const hasMore = skip + posts.length < totalPosts;
+    
+    res.json({ 
+      success: true, 
+      posts,
+      hasMore,
+      totalPosts,
+      currentPage: page
+    });
+  } catch (err) {
+    console.error('Error fetching posts:', err);
+    res.status(500).json({ error: 'Failed to fetch posts' });
+  }
+});
+
+app.get('/api/profile/posts/:userId', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.params.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6; // Show 6 posts initially
+    const skip = (page - 1) * limit;
+    
+    const posts = await Post.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    
+    const totalPosts = await Post.countDocuments({ author: userId });
+    const hasMore = skip + posts.length < totalPosts;
+    
+    res.json({ 
+      success: true, 
+      posts,
+      hasMore,
+      totalPosts,
+      currentPage: page
+    });
+  } catch (err) {
+    console.error('Error fetching posts:', err);
+    res.status(500).json({ error: 'Failed to fetch posts' });
+  }
+});
+
+app.get('/api/profile/stats', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.user._id.toString();
+    const profileUser = await User.findById(userId);
+    
+    if (!profileUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const tracksCount = await Post.countDocuments({ author: userId });
+    const collabsCount = await Job.countDocuments({ 
+      $or: [
+        { hirer: userId, selectedMusician: { $exists: true, $ne: null } },
+        { selectedMusician: userId }
+      ]
+    });
+    const followersCount = profileUser.friends ? profileUser.friends.length : 0;
+    // Streams count - you can customize this based on your needs
+    const streamsCount = 0; // Placeholder - implement based on your streaming logic
+    
+    res.json({ 
+      success: true, 
+      stats: {
+        tracks: tracksCount,
+        collabs: collabsCount,
+        followers: followersCount,
+        streams: streamsCount
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching stats:', err);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+app.get('/api/profile/stats/:userId', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.params.userId;
+    const profileUser = await User.findById(userId);
+    
+    if (!profileUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const tracksCount = await Post.countDocuments({ author: userId });
+    const collabsCount = await Job.countDocuments({ 
+      $or: [
+        { hirer: userId, selectedMusician: { $exists: true, $ne: null } },
+        { selectedMusician: userId }
+      ]
+    });
+    const followersCount = profileUser.friends ? profileUser.friends.length : 0;
+    // Streams count - you can customize this based on your needs
+    const streamsCount = 0; // Placeholder - implement based on your streaming logic
+    
+    res.json({ 
+      success: true, 
+      stats: {
+        tracks: tracksCount,
+        collabs: collabsCount,
+        followers: followersCount,
+        streams: streamsCount
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching stats:', err);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+// Helper function for time ago
+function getTimeAgo(date) {
+  const now = new Date();
+  const diff = now - new Date(date);
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  
+  if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+  if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+  return 'Just now';
+}
+
+app.get('/api/profile/activity', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.user._id.toString();
+    // Get recent posts that were liked
+    const recentPosts = await Post.find({ 
+      author: userId,
+      likes: { $exists: true, $ne: [] }
+    })
+      .populate('likes', 'username profilePic')
+      .sort({ createdAt: -1 })
+      .limit(5);
+    
+    // Get recent comments on user's posts
+    const userPostIds = await Post.find({ author: userId }).distinct('_id');
+    const recentComments = await Comment.find({ 
+      post: { $in: userPostIds }
+    })
+      .populate('author', 'username profilePic')
+      .populate('post')
+      .sort({ createdAt: -1 })
+      .limit(5);
+    
+    // Get friend requests (only for own profile)
+    const FriendRequest = require('./models/friensRequest');
+    let recentRequests = [];
+    if (userId === req.user._id.toString()) {
+      recentRequests = await FriendRequest.find({ 
+        to: userId,
+        status: 'pending'
+      })
+        .populate('from', 'username profilePic')
+        .sort({ createdAt: -1 })
+        .limit(5);
+    }
+    
+    const activity = [];
+    
+    // Add likes activity
+    recentPosts.forEach(post => {
+      if (post.likes && post.likes.length > 0) {
+        const liker = post.likes[0];
+        const timeAgo = getTimeAgo(post.createdAt);
+        activity.push({
+          name: liker.username || 'Someone',
+          userId: liker._id,
+          message: 'liked your track',
+          avatar: liker.profilePic || '/images/avatar.png',
+          time: timeAgo,
+          timestamp: post.createdAt
+        });
+      }
+    });
+    
+    // Add comments activity
+    recentComments.forEach(comment => {
+      const timeAgo = getTimeAgo(comment.createdAt);
+      activity.push({
+        name: comment.author.username || 'Someone',
+        userId: comment.author._id,
+        message: 'commented on your post',
+        avatar: comment.author.profilePic || '/images/avatar.png',
+        time: timeAgo,
+        timestamp: comment.createdAt
+      });
+    });
+    
+    // Add friend requests activity
+    recentRequests.forEach(request => {
+      const timeAgo = getTimeAgo(request.createdAt);
+      activity.push({
+        name: request.from.username || 'Someone',
+        userId: request.from._id,
+        message: 'sent you a friend request',
+        avatar: request.from.profilePic || '/images/avatar.png',
+        time: timeAgo,
+        timestamp: request.createdAt
+      });
+    });
+    
+    // Sort by timestamp (most recent first) and limit to 5
+    activity.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    activity.splice(5);
+    
+    // Remove timestamp before sending
+    activity.forEach(item => delete item.timestamp);
+    
+    res.json({ success: true, activity });
+  } catch (err) {
+    console.error('Error fetching activity:', err);
+    res.status(500).json({ error: 'Failed to fetch activity' });
+  }
+});
+
+app.get('/api/profile/activity/:userId', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.params.userId;
+    // Get recent posts that were liked
+    const recentPosts = await Post.find({ 
+      author: userId,
+      likes: { $exists: true, $ne: [] }
+    })
+      .populate('likes', 'username profilePic')
+      .sort({ createdAt: -1 })
+      .limit(5);
+    
+    // Get recent comments on user's posts
+    const userPostIds = await Post.find({ author: userId }).distinct('_id');
+    const recentComments = await Comment.find({ 
+      post: { $in: userPostIds }
+    })
+      .populate('author', 'username profilePic')
+      .populate('post')
+      .sort({ createdAt: -1 })
+      .limit(5);
+    
+    // Get friend requests (only for own profile)
+    const FriendRequest = require('./models/friensRequest');
+    let recentRequests = [];
+    if (userId === req.user._id.toString()) {
+      recentRequests = await FriendRequest.find({ 
+        to: userId,
+        status: 'pending'
+      })
+        .populate('from', 'username profilePic')
+        .sort({ createdAt: -1 })
+        .limit(5);
+    }
+    
+    const activity = [];
+    
+    // Add likes activity
+    recentPosts.forEach(post => {
+      if (post.likes && post.likes.length > 0) {
+        const liker = post.likes[0];
+        const timeAgo = getTimeAgo(post.createdAt);
+        activity.push({
+          name: liker.username || 'Someone',
+          userId: liker._id,
+          message: 'liked your track',
+          avatar: liker.profilePic || '/images/avatar.png',
+          time: timeAgo,
+          timestamp: post.createdAt
+        });
+      }
+    });
+    
+    // Add comments activity
+    recentComments.forEach(comment => {
+      const timeAgo = getTimeAgo(comment.createdAt);
+      activity.push({
+        name: comment.author.username || 'Someone',
+        userId: comment.author._id,
+        message: 'commented on your post',
+        avatar: comment.author.profilePic || '/images/avatar.png',
+        time: timeAgo,
+        timestamp: comment.createdAt
+      });
+    });
+    
+    // Add friend requests activity
+    recentRequests.forEach(request => {
+      const timeAgo = getTimeAgo(request.createdAt);
+      activity.push({
+        name: request.from.username || 'Someone',
+        userId: request.from._id,
+        message: 'sent you a friend request',
+        avatar: request.from.profilePic || '/images/avatar.png',
+        time: timeAgo,
+        timestamp: request.createdAt
+      });
+    });
+    
+    // Sort by timestamp (most recent first) and limit to 5
+    activity.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    activity.splice(5);
+    
+    // Remove timestamp before sending
+    activity.forEach(item => delete item.timestamp);
+    
+    res.json({ success: true, activity });
+  } catch (err) {
+    console.error('Error fetching activity:', err);
+    res.status(500).json({ error: 'Failed to fetch activity' });
+  }
+});
+
+app.get('/api/profile/collaborations', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.user._id.toString();
+    
+    // Get jobs where user is involved
+    const jobs = await Job.find({
+      $or: [
+        { hirer: userId, selectedMusician: { $exists: true, $ne: null } },
+        { selectedMusician: userId }
+      ]
+    })
+      .populate('hirer', 'username profilePic')
+      .populate('selectedMusician', 'username profilePic')
+      .sort({ createdAt: -1 })
+      .limit(10);
+    
+    const collaborations = jobs.map(job => {
+      const collaborator = job.hirer._id.toString() === userId.toString() 
+        ? job.selectedMusician 
+        : job.hirer;
+      
+      return {
+        name: collaborator.username || 'Unknown',
+        role: job.hirer._id.toString() === userId.toString() ? 'Musician' : 'Hirer',
+        location: job.location || '',
+        avatar: collaborator.profilePic || '/images/avatar.png',
+        jobId: job._id,
+        userId: collaborator._id
+      };
+    });
+    
+    res.json({ success: true, collaborations });
+  } catch (err) {
+    console.error('Error fetching collaborations:', err);
+    res.status(500).json({ error: 'Failed to fetch collaborations' });
+  }
+});
+
+app.get('/api/profile/collaborations/:userId', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const userId = req.params.userId;
+    
+    // Get jobs where user is involved
+    const jobs = await Job.find({
+      $or: [
+        { hirer: userId, selectedMusician: { $exists: true, $ne: null } },
+        { selectedMusician: userId }
+      ]
+    })
+      .populate('hirer', 'username profilePic')
+      .populate('selectedMusician', 'username profilePic')
+      .sort({ createdAt: -1 })
+      .limit(10);
+    
+    const collaborations = jobs.map(job => {
+      const collaborator = job.hirer._id.toString() === userId.toString() 
+        ? job.selectedMusician 
+        : job.hirer;
+      
+      return {
+        name: collaborator.username || 'Unknown',
+        role: job.hirer._id.toString() === userId.toString() ? 'Musician' : 'Hirer',
+        location: job.location || '',
+        avatar: collaborator.profilePic || '/images/avatar.png',
+        jobId: job._id,
+        userId: collaborator._id
+      };
+    });
+    
+    res.json({ success: true, collaborations });
+  } catch (err) {
+    console.error('Error fetching collaborations:', err);
+    res.status(500).json({ error: 'Failed to fetch collaborations' });
+  }
+});
+
+app.post('/api/profile/generate-post', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const { topic } = req.body;
+    if (!topic) {
+      return res.status(400).json({ error: 'Topic is required' });
+    }
+    
+    // Check if Gemini API key is available
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Gemini API key not configured' });
+    }
+    
+    // Use Google Generative AI
+    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    
+    const prompt = `You are ${req.user.username}, a ${req.user.role || 'musician'}. 
+Write a short, engaging social media post (max 2 sentences) about: ${topic}. 
+Use relevant emojis. Keep it professional but vibe-y.`;
+    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    res.json({ success: true, content: text });
+  } catch (err) {
+    console.error('Error generating post:', err);
+    res.status(500).json({ error: 'Failed to generate post. Make sure Gemini API key is set.' });
+  }
+});
+
+app.post('/api/profile/create-post', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const { content } = req.body;
+    if (!content) {
+      return res.status(400).json({ error: 'Content is required' });
+    }
+    
+    const post = await Post.create({
+      author: req.user._id,
+      title: content.substring(0, 100), // Use first 100 chars as title
+      content: content,
+      fileUrl: null,
+      fileType: null
+    });
+    
+    res.json({ success: true, post });
+  } catch (err) {
+    console.error('Error creating post:', err);
+    res.status(500).json({ error: 'Failed to create post' });
+  }
+});
+
+// API endpoint for sending friend request (JSON response)
+app.post('/api/profile/follow', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  
+  try {
+    const { toId } = req.body;
+    
+    if (!toId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+    
+    if (req.user._id.toString() === toId) {
+      return res.status(400).json({ error: 'Cannot follow yourself' });
+    }
+    
+    const FriendRequest = require('./models/friensRequest');
+    const exists = await FriendRequest.findOne({ 
+      from: req.user._id, 
+      to: toId, 
+      status: 'pending' 
+    });
+    
+    if (exists) {
+      return res.json({ success: false, message: 'Request already sent' });
+    }
+    
+    await FriendRequest.create({ from: req.user._id, to: toId });
+    res.json({ success: true, message: 'Friend request sent successfully' });
+  } catch (err) {
+    console.error('Error sending friend request:', err);
+    res.status(500).json({ error: 'Failed to send friend request' });
+  }
 });
 
 // Live Stream

@@ -210,7 +210,7 @@
             <span class="nav-label">Notifications</span>
           </a>
           <% if (locals.user && locals.user.profilePic) { %>
-            <a href="/user/<%= user._id %>" class="user-avatar" style="background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center;"></a>
+            <a href="/profile/<%= user._id %>" class="user-avatar" style="background-image: url('<%= user.profilePic %>'); background-size: cover; background-position: center;"></a>
           <% } else { %>
             <div class="user-avatar"></div>
           <% } %>
@@ -398,7 +398,7 @@
                   <!-- Header -->
                   <div class="flex justify-between items-start mb-4">
                     <div class="flex gap-4">
-                      <a href="/user/<%= post.author?._id %>" class="relative cursor-pointer">
+                      <a href="/profile/<%= post.author?._id %>" class="relative cursor-pointer">
                          <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-white/20 to-transparent">
                            <img src="<%= post.author?.profilePic || '/images/avatar.png' %>" alt="<%= post.author?.username || 'User' %>" class="w-full h-full rounded-full object-cover" />
                          </div>

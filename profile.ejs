@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= user ? user.username : 'Profile' %> Profile</title>
+    <script>
+        // Store profile user ID for API calls
+        const profileUserId = '<%= user ? user._id : "" %>';
+        const currentUserId = '<%= currentUser ? currentUser._id : "" %>';
+        const isOwnProfile = <%= typeof isOwnProfile !== 'undefined' && isOwnProfile ? 'true' : 'false' %>;
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #050505;
+        color: #ffffff;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* Loading spinner animation */
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+    </style>
+</head>
+<body class="selection:bg-[#f97316] selection:text-white pb-12">
+
+    <!-- Navbar -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-transparent w-full max-w-[1400px] mx-auto">
+        <!-- Search -->
+        <div class="relative w-full max-w-md">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+            </div>
+            <input type="text" placeholder="Search..." class="w-full bg-[#1a1a1a] text-gray-300 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-gray-700 transition-all placeholder-gray-500" />
+        </div>
+
+        <!-- Nav Items -->
+        <div class="flex items-center space-x-8">
+            <a href="/" class="flex flex-col items-center cursor-pointer group text-white">
+                <div class="mb-1"><i data-lucide="home" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Home</span>
+            </a>
+            <a href="/explore-musicians" class="flex flex-col items-center cursor-pointer group text-gray-400 hover:text-gray-200">
+                <div class="mb-1"><i data-lucide="users" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Network</span>
+            </a>
+            <a href="/msg" class="flex flex-col items-center cursor-pointer group text-gray-400 hover:text-gray-200">
+                <div class="mb-1"><i data-lucide="message-square" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Messaging</span>
+            </a>
+            <a href="/requests" class="flex flex-col items-center cursor-pointer group text-gray-400 hover:text-gray-200">
+                <div class="mb-1"><i data-lucide="bell" class="w-5 h-5"></i></div>
+                <span class="text-[10px] font-medium tracking-wide">Notifications</span>
+            </a>
+            
+            <!-- Profile/Add -->
+            <a href="/profile" class="relative group cursor-pointer">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-b from-gray-600 to-gray-400 flex items-center justify-center overflow-hidden border border-gray-600">
+                    <% if (user && user.profilePic) { %>
+                        <img src="<%= user.profilePic %>" alt="<%= user.username %>" class="w-full h-full object-cover" />
+                    <% } else { %>
+                        <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <i data-lucide="user" class="text-gray-900 opacity-50 w-5 h-5"></i>
+                    <% } %>
+                </div>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-[1400px] mx-auto px-4 md:px-6">
+        
+        <!-- Header -->
+        <div class="relative mb-6">
+            <!-- Banner -->
+            <div class="h-48 md:h-64 w-full rounded-b-3xl overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=2070&auto=format&fit=crop" alt="Studio Background" class="w-full h-full object-cover opacity-40" />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#2a1b3d] to-transparent mix-blend-multiply pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Profile Info Overlay -->
+            <div class="max-w-[1400px] mx-auto px-6 relative -mt-16 flex flex-col md:flex-row items-end md:items-end gap-6">
+                <!-- Avatar -->
+                <div class="relative">
+                    <div class="w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-gradient-to-br from-gray-700 to-gray-900 shadow-2xl">
+                        <% if (user && user.profilePic) { %>
+                            <img src="<%= user.profilePic %>" alt="<%= user.username %>" class="w-full h-full rounded-full object-cover border-4 border-[#1a1a1a]" />
+                        <% } else { %>
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" alt="<%= user ? user.username : 'User' %>" class="w-full h-full rounded-full object-cover border-4 border-[#1a1a1a]" />
+                        <% } %>
+                    </div>
+                    <div class="absolute bottom-2 right-0 bg-[#22c55e] p-1 rounded-full border-4 border-[#050505]">
+                        <i data-lucide="music" class="text-black fill-current w-[14px] h-[14px]"></i>
+                    </div>
+                </div>
+
+                <!-- Text Info -->
+                <div class="flex-1 pb-2">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+                        <div>
+                            <h1 class="text-3xl font-bold text-white mb-0.5">
+                                <a href="/profile/<%= user ? user._id : '' %>" class="hover:text-[#f97316] transition-colors">
+                                    <%= user ? user.username : 'User' %>
+                                </a>
+                            </h1>
+                            <p class="text-[#a1a1aa] font-medium">@<%= user ? user.username.toLowerCase().replace(/\s+/g, '') : 'user' %></p>
+                        </div>
+                        <div class="flex gap-2 mt-2 md:mt-0" id="tagsContainer">
+                            <% if (user && user.role) { %>
+                                <span class="px-3 py-1 rounded-full bg-[#3a2a2a] text-[#d69e9e] text-xs font-semibold border border-[#523838]"><%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %></span>
+                            <% } %>
+                            <% if (user && user.genres && user.genres.length > 0) { %>
+                                <% user.genres.slice(0, 2).forEach(genre => { %>
+                                    <span class="px-3 py-1 rounded-full bg-[#3a352a] text-[#d6c79e] text-xs font-semibold border border-[#524d38]"><%= genre %></span>
+                                <% }); %>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-3 pb-4">
+                    <% if (!isOwnProfile) { %>
+                        <a href="/msg" class="flex items-center gap-2 bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-4 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                            <i data-lucide="mail" class="w-4 h-4"></i> Message
+                        </a>
+                        <button id="followBtn" class="flex items-center gap-2 bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-4 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i> <span id="followBtnText">Follow</span>
+                        </button>
+                        <button id="inviteCollabBtn" class="flex items-center gap-2 bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-4 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                            <i data-lucide="users" class="w-4 h-4"></i> Invite to Collab
+                        </button>
+                    <% } else { %>
+                        <a href="/update-profile" class="flex items-center gap-2 bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-4 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                            <i data-lucide="edit" class="w-4 h-4"></i> Edit Profile
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Grid: About, Stats, Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+            
+            <!-- About Section - Col Span 4 -->
+            <div class="lg:col-span-4 bg-[#151516] rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xl font-bold mb-4">About</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6" id="aboutText">
+                        <%= user && user.bio ? user.bio : 'No bio available yet.' %>
+                    </p>
+                </div>
+                <div class="space-y-3">
+                    <% if (user && (user.city || user.country)) { %>
+                        <div class="flex items-center text-xs text-gray-500 font-medium">
+                            <i data-lucide="map-pin" class="text-[#f97316] w-[14px] h-[14px] mr-3"></i> 
+                            <%= [user.city, user.country].filter(Boolean).join(', ') || 'Location not set' %>
+                        </div>
+                    <% } %>
+                    <% if (user && user.createdAt) { %>
+                        <div class="flex items-center text-xs text-gray-500 font-medium">
+                            <i data-lucide="calendar" class="text-[#f97316] w-[14px] h-[14px] mr-3"></i> 
+                            Joined <%= new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) %>
+                        </div>
+                    <% } %>
+                    <% if (user && user.instruments && user.instruments.length > 0) { %>
+                        <div class="flex items-center text-xs text-gray-500 font-medium">
+                            <i data-lucide="music" class="text-[#f97316] w-[14px] h-[14px] mr-3"></i> 
+                            <%= user.instruments.join(', ') %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Stats Grid - Col Span 4 -->
+            <div class="lg:col-span-4 grid grid-cols-2 gap-4" id="statsContainer">
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1" id="tracksCount">0</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Tracks</span>
+                </div>
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1" id="collabsCount">0</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Collabs</span>
+                </div>
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1" id="followersCount">0</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Connections</span>
+                </div>
+                <div class="bg-[#151516] rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5 hover:border-white/10 transition-colors">
+                    <span class="text-2xl font-bold text-[#f97316] mb-1" id="streamsCount">0</span>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">Streams</span>
+                </div>
+            </div>
+
+            <!-- Recent Activity - Col Span 4 -->
+            <div class="lg:col-span-4 bg-[#151516] rounded-2xl p-6 border border-white/5">
+                <h2 class="text-sm font-bold mb-4 text-gray-200">Recent Activity</h2>
+                <div class="space-y-5" id="activityContainer">
+                    <!-- Activity items will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Section -->
+        <div class="bg-[#151516] rounded-2xl p-6 border border-white/5 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-[#f97316]">Post</h2>
+                <% if (isOwnProfile) { %>
+                    <button id="openModalBtn" class="bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 text-xs px-4 py-2 rounded-xl font-medium transition-colors border border-white/5">
+                        Create New
+                    </button>
+                <% } %>
+            </div>
+            
+            <div id="postsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Posts will be injected here -->
+            </div>
+            
+            <div id="loadMoreContainer" class="mt-6 text-center hidden">
+                <button id="loadMoreBtn" class="bg-[#1f1f22] hover:bg-[#2a2a2e] text-gray-200 px-6 py-2 rounded-xl text-sm font-medium transition-colors border border-white/5">
+                    Load More
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Collaborations -->
+        <div class="w-full">
+            <div class="flex justify-between items-end mb-4 px-1">
+                <h2 class="text-xl font-bold text-white">Recent Collaborations</h2>
+                <button class="text-xs text-[#d97706] hover:text-[#f59e0b] font-medium transition-colors">View All</button>
+            </div>
+
+            <div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2" id="collaborationsContainer">
+                <!-- Collaborations will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="postModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#1a1a1a] border border-white/10 rounded-2xl w-full max-w-lg p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="sparkles" class="text-[#f97316] w-5 h-5"></i>
+                    AI Post Generator
+                </h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">What's on your mind?</label>
+                    <input id="postTopic" type="text" placeholder="e.g., Just finished a new synth track..." class="w-full bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#f97316] transition-colors" />
+                </div>
+
+                <div id="generateBtnContainer">
+                    <button id="generateBtn" class="w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all bg-gray-800 text-gray-500 cursor-not-allowed" disabled>
+                        <i data-lucide="sparkles" class="w-[18px] h-[18px]"></i>
+                        <span>Generate with Gemini</span>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden bg-[#0a0a0a] border border-white/5 rounded-xl p-4 mt-4">
+                    <p id="generatedText" class="text-gray-200 mb-4 font-medium"></p>
+                    <div class="flex gap-3">
+                        <button id="discardBtn" class="flex-1 py-2 rounded-lg border border-white/10 text-gray-400 hover:text-white transition-colors text-sm">Discard</button>
+                        <button id="postToFeedBtn" class="flex-1 py-2 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition-colors text-sm">Post to Feed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Application State
+        const state = {
+            isModalOpen: false,
+            posts: [],
+            currentPage: 1,
+            hasMore: false,
+            isLoading: false
+        };
+
+        // DOM Elements
+        const modal = document.getElementById('postModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const topicInput = document.getElementById('postTopic');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const generatedTextEl = document.getElementById('generatedText');
+        const discardBtn = document.getElementById('discardBtn');
+        const postToFeedBtn = document.getElementById('postToFeedBtn');
+        const postsGrid = document.getElementById('postsGrid');
+        const generateBtnContainer = document.getElementById('generateBtnContainer');
+
+        // Functions
+        function toggleModal(show) {
+            state.isModalOpen = show;
+            if (show) {
+                modal.classList.remove('hidden');
+                if (topicInput) topicInput.focus();
+            } else {
+                modal.classList.add('hidden');
+                resetModal();
+            }
+        }
+
+        function resetModal() {
+            if (topicInput) topicInput.value = '';
+            if (resultContainer) resultContainer.classList.add('hidden');
+            if (generatedTextEl) generatedTextEl.textContent = '';
+            if (generateBtnContainer) generateBtnContainer.classList.remove('hidden');
+            updateGenerateButtonState();
+        }
+
+        function updateGenerateButtonState() {
+            if (!topicInput || !generateBtn) return;
+            if (topicInput.value.trim() !== '') {
+                generateBtn.removeAttribute('disabled');
+                generateBtn.classList.remove('bg-gray-800', 'text-gray-500', 'cursor-not-allowed');
+                generateBtn.classList.add('bg-[#f97316]', 'hover:bg-[#ea580c]', 'text-white');
+            } else {
+                generateBtn.setAttribute('disabled', 'true');
+                generateBtn.classList.add('bg-gray-800', 'text-gray-500', 'cursor-not-allowed');
+                generateBtn.classList.remove('bg-[#f97316]', 'hover:bg-[#ea580c]', 'text-white');
+            }
+        }
+
+        async function generateContent() {
+            const topic = topicInput.value;
+            if (!topic) return;
+
+            // Loading State
+            const originalBtnContent = generateBtn.innerHTML;
+            generateBtn.innerHTML = `<i data-lucide="loader-2" class="animate-spin w-[18px] h-[18px]"></i> <span>Dreaming up content...</span>`;
+            lucide.createIcons();
+            generateBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/profile/generate-post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ topic })
+                });
+
+                const data = await response.json();
+                
+                if (data.success && data.content) {
+                    generatedTextEl.textContent = data.content;
+                    generateBtnContainer.classList.add('hidden');
+                    resultContainer.classList.remove('hidden');
+                } else {
+                    alert(data.error || "Error generating content.");
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error generating content. Please try again.");
+            } finally {
+                // Restore button
+                generateBtn.innerHTML = originalBtnContent;
+                lucide.createIcons();
+                generateBtn.disabled = false;
+            }
+        }
+
+        async function createPost(content) {
+            try {
+                const response = await fetch('/api/profile/create-post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Reload posts
+                    loadPosts();
+                    toggleModal(false);
+                } else {
+                    alert(data.error || "Error creating post.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error creating post. Please try again.");
+            }
+        }
+
+        async function loadPosts(page = 1, append = false) {
+            if (state.isLoading) return;
+            state.isLoading = true;
+            
+            try {
+                const url = `/api/profile/posts/${profileUserId}?page=${page}&limit=6`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (append) {
+                        state.posts = [...state.posts, ...(data.posts || [])];
+                    } else {
+                        state.posts = data.posts || [];
+                    }
+                    state.currentPage = data.currentPage || page;
+                    state.hasMore = data.hasMore || false;
+                    renderPosts();
+                    
+                    // Show/hide load more button
+                    const loadMoreContainer = document.getElementById('loadMoreContainer');
+                    if (loadMoreContainer) {
+                        if (state.hasMore) {
+                            loadMoreContainer.classList.remove('hidden');
+                        } else {
+                            loadMoreContainer.classList.add('hidden');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading posts:", error);
+            } finally {
+                state.isLoading = false;
+            }
+        }
+        
+        function loadMorePosts() {
+            if (state.hasMore && !state.isLoading) {
+                loadPosts(state.currentPage + 1, true);
+            }
+        }
+
+        function renderPosts() {
+            if (!postsGrid) return;
+            
+            // Clear current posts
+            postsGrid.innerHTML = '';
+            
+            if (state.posts.length === 0) {
+                // Render placeholders
+                for(let i=0; i<3; i++) {
+                    const ph = document.createElement('div');
+                    ph.className = "bg-[#0a0a0a] rounded-xl h-48 border border-white/5 opacity-50";
+                    postsGrid.appendChild(ph);
+                }
+                return;
+            }
+            
+            // Render actual posts
+            state.posts.forEach(post => {
+                const postEl = document.createElement('div');
+                postEl.className = "bg-[#0a0a0a] rounded-xl p-6 h-48 border border-white/5 flex flex-col justify-center";
+                const content = post.content || post.title || '';
+                postEl.innerHTML = `
+                    <p class="text-sm text-gray-300 italic">"${content}"</p>
+                    <div class="mt-4 flex gap-2">
+                        <div class="h-2 w-2 rounded-full bg-[#f97316]"></div>
+                        <div class="h-2 w-2 rounded-full bg-gray-800"></div>
+                    </div>
+                `;
+                postsGrid.appendChild(postEl);
+            });
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`/api/profile/stats/${profileUserId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('tracksCount').textContent = data.stats.tracks || 0;
+                    document.getElementById('collabsCount').textContent = data.stats.collabs || 0;
+                    document.getElementById('followersCount').textContent = data.stats.followers || 0;
+                    document.getElementById('streamsCount').textContent = data.stats.streams || 0;
+                }
+            } catch (error) {
+                console.error("Error loading stats:", error);
+            }
+        }
+
+        async function loadActivity() {
+            try {
+                const response = await fetch(`/api/profile/activity/${profileUserId}`);
+                const data = await response.json();
+                
+                if (data.success && data.activity) {
+                    const container = document.getElementById('activityContainer');
+                    if (!container) return;
+                    
+                    container.innerHTML = '';
+                    
+                    if (data.activity.length === 0) {
+                        container.innerHTML = '<p class="text-xs text-gray-500">No recent activity</p>';
+                        return;
+                    }
+                    
+                    data.activity.forEach(activity => {
+                        const activityEl = document.createElement('div');
+                        activityEl.className = 'flex items-start gap-3';
+                        const userId = activity.userId || '';
+                        const nameLink = userId ? `<a href="/profile/${userId}" class="font-bold text-white hover:text-[#f97316] transition-colors cursor-pointer">${activity.name}</a>` : `<span class="font-bold text-white">${activity.name}</span>`;
+                        activityEl.innerHTML = `
+                            <a href="${userId ? '/profile/' + userId : '#'}" class="flex items-start gap-3 w-full">
+                                <img src="${activity.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200'}" alt="${activity.name}" class="w-8 h-8 rounded-full object-cover mt-0.5" />
+                                <div class="flex-1">
+                                    <p class="text-xs text-gray-300">${nameLink} ${activity.message}</p>
+                                    <p class="text-[10px] text-gray-600 mt-1">${activity.time}</p>
+                                </div>
+                            </a>
+                        `;
+                        container.appendChild(activityEl);
+                    });
+                }
+            } catch (error) {
+                console.error("Error loading activity:", error);
+            }
+        }
+
+        async function loadCollaborations() {
+            try {
+                const response = await fetch(`/api/profile/collaborations/${profileUserId}`);
+                const data = await response.json();
+                
+                if (data.success && data.collaborations) {
+                    const container = document.getElementById('collaborationsContainer');
+                    if (!container) return;
+                    
+                    container.innerHTML = '';
+                    
+                    if (data.collaborations.length === 0) {
+                        container.innerHTML = '<p class="text-xs text-gray-500">No collaborations yet</p>';
+                        return;
+                    }
+                    
+                    data.collaborations.forEach(collab => {
+                        const collabEl = document.createElement('div');
+                        collabEl.className = 'min-w-[280px] bg-[#151516] rounded-2xl p-4 border border-white/5 flex flex-col gap-4';
+                        collabEl.innerHTML = `
+                            <div class="flex items-center gap-3">
+                                <a href="/profile/${collab.userId}" class="flex items-center gap-3 w-full">
+                                    <img src="${collab.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop'}" alt="${collab.name}" class="w-12 h-12 rounded-full object-cover" />
+                                    <div>
+                                        <h3 class="font-semibold text-white text-sm hover:text-[#f97316] transition-colors">${collab.name}</h3>
+                                        <p class="text-xs text-gray-500">${collab.role || ''} ${collab.location ? '| ' + collab.location : ''}</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <a href="/msg" class="w-full py-2 bg-[#27272a] hover:bg-[#3f3f46] rounded-lg text-xs font-medium text-gray-300 flex items-center justify-center gap-2 transition-colors">
+                                <i data-lucide="mail" class="w-[14px] h-[14px]"></i> Message
+                            </a>
+                        `;
+                        container.appendChild(collabEl);
+                    });
+                    
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error("Error loading collaborations:", error);
+            }
+        }
+        
+        // Follow functionality
+        async function handleFollow() {
+            const followBtn = document.getElementById('followBtn');
+            const followBtnText = document.getElementById('followBtnText');
+            
+            if (!followBtn || !profileUserId) return;
+            
+            try {
+                followBtn.disabled = true;
+                const response = await fetch('/api/profile/follow', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ toId: profileUserId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    followBtnText.textContent = 'Request Sent';
+                    followBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    alert('Friend request sent successfully!');
+                } else {
+                    alert(data.message || data.error || 'Failed to send friend request');
+                }
+            } catch (error) {
+                console.error("Error sending follow request:", error);
+                alert("Error sending friend request. Please try again.");
+            } finally {
+                followBtn.disabled = false;
+            }
+        }
+        
+        // Copy profile link to clipboard
+        function copyProfileLink() {
+            const profileUrl = window.location.origin + '/profile/' + profileUserId;
+            
+            navigator.clipboard.writeText(profileUrl).then(() => {
+                // Show feedback
+                const inviteBtn = document.getElementById('inviteCollabBtn');
+                if (inviteBtn) {
+                    const originalText = inviteBtn.innerHTML;
+                    inviteBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copied!';
+                    inviteBtn.classList.add('bg-[#22c55e]', 'text-white');
+                    inviteBtn.classList.remove('bg-[#1f1f22]', 'text-gray-200');
+                    lucide.createIcons();
+                    
+                    setTimeout(() => {
+                        inviteBtn.innerHTML = originalText;
+                        inviteBtn.classList.remove('bg-[#22c55e]', 'text-white');
+                        inviteBtn.classList.add('bg-[#1f1f22]', 'text-gray-200');
+                        lucide.createIcons();
+                    }, 2000);
+                }
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy link. Please copy manually: ' + profileUrl);
+            });
+        }
+
+        // Event Listeners
+        if (openModalBtn) {
+            openModalBtn.addEventListener('click', () => toggleModal(true));
+        }
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => toggleModal(false));
+        }
+        if (topicInput) {
+            topicInput.addEventListener('input', updateGenerateButtonState);
+        }
+        if (generateBtn) {
+            generateBtn.addEventListener('click', generateContent);
+        }
+        if (discardBtn) {
+            discardBtn.addEventListener('click', () => {
+                resultContainer.classList.add('hidden');
+                generateBtnContainer.classList.remove('hidden');
+                generatedTextEl.textContent = '';
+            });
+        }
+        if (postToFeedBtn) {
+            postToFeedBtn.addEventListener('click', () => {
+                const content = generatedTextEl.textContent;
+                if(content) createPost(content);
+            });
+        }
+
+        // Close modal on outside click
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) toggleModal(false);
+            });
+        }
+
+        // Event Listeners for new features
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', loadMorePosts);
+        }
+        
+        const followBtn = document.getElementById('followBtn');
+        if (followBtn) {
+            followBtn.addEventListener('click', handleFollow);
+        }
+        
+        const inviteCollabBtn = document.getElementById('inviteCollabBtn');
+        if (inviteCollabBtn) {
+            inviteCollabBtn.addEventListener('click', copyProfileLink);
+        }
+        
+        // Load data on page load
+        loadPosts();
+        loadStats();
+        loadActivity();
+        loadCollaborations();
+    </script>
+</body>
+</html>
