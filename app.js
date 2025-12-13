@@ -592,30 +592,104 @@ app.post('/job/:jobId/payment', async (req, res) => {
       return res.status(400).json({ error: 'Payment already completed' });
     }
     
-    const { paymentMethod, transactionId, notes } = req.body;
+    const { paymentMethod, transactionId, notes, cardNumber, expiryDate, cardName, bankReference, paypalEmail } = req.body;
     
-    // Create or update payment record
-    let payment = await Payment.findOne({ job: job._id });
-    if (!payment) {
-      payment = await Payment.create({
-        job: job._id,
-        hirer: job.hirer,
-        musician: job.selectedMusician,
-        amount: job.payment,
-        paymentMethod: paymentMethod || 'other',
-        transactionId: transactionId || null,
-        notes: notes || null,
-        status: 'completed',
-        paymentDate: new Date()
-      });
-    } else {
-      payment.paymentMethod = paymentMethod || payment.paymentMethod;
-      payment.transactionId = transactionId || payment.transactionId;
-      payment.notes = notes || payment.notes;
-      payment.status = 'completed';
-      payment.paymentDate = new Date();
-      await payment.save();
+    // Generate realistic transaction ID if not provided
+    let generatedTransactionId = transactionId;
+    if (!generatedTransactionId) {
+      const timestamp = Date.now();
+      const random = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+      
+      // Format based on payment method
+      if (paymentMethod === 'card') {
+        // Format: TXN-YYYYMMDD-HHMMSS-XXXXXX
+        const date = new Date();
+        const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+        const timeStr = date.toTimeString().slice(0, 8).replace(/:/g, '');
+        generatedTransactionId = `TXN-${dateStr}-${timeStr}-${random}`;
+      } else if (paymentMethod === 'bank_transfer') {
+        // Format: BT-XXXXXXXXXX
+        generatedTransactionId = `BT-${timestamp.toString().slice(-10)}${random}`;
+      } else if (paymentMethod === 'paypal') {
+        // Format: PP-XXXXXXXXXX
+        generatedTransactionId = `PP-${timestamp.toString().slice(-10)}${random}`;
+      } else {
+        // Generic format
+        generatedTransactionId = `PAY-${timestamp}-${random}`;
+      }
     }
+    
+    // Validate card data if card payment
+    if (paymentMethod === 'card') {
+      // Mask card number for security (only store last 4 digits)
+      const maskedCard = cardNumber ? cardNumber.replace(/\s/g, '').slice(-4) : null;
+      
+      // Basic validation (in real system, this would be more thorough)
+      if (cardNumber && cardNumber.replace(/\s/g, '').length < 13) {
+        return res.status(400).json({ error: 'Invalid card number' });
+      }
+      
+      // Store masked card info in notes if needed
+      const cardInfo = `Card ending in ${maskedCard}, Exp: ${expiryDate}, Name: ${cardName}`;
+      const finalNotes = notes ? `${notes}\n${cardInfo}` : cardInfo;
+      
+      // Create or update payment record
+      let payment = await Payment.findOne({ job: job._id });
+      if (!payment) {
+        payment = await Payment.create({
+          job: job._id,
+          hirer: job.hirer,
+          musician: job.selectedMusician,
+          amount: job.payment,
+          paymentMethod: paymentMethod || 'card',
+          transactionId: generatedTransactionId,
+          notes: finalNotes,
+          status: 'completed',
+          paymentDate: new Date()
+        });
+      } else {
+        payment.paymentMethod = paymentMethod || payment.paymentMethod;
+        payment.transactionId = generatedTransactionId;
+        payment.notes = finalNotes;
+        payment.status = 'completed';
+        payment.paymentDate = new Date();
+        await payment.save();
+      }
+    } else {
+      // For other payment methods
+      let finalNotes = notes || '';
+      if (paymentMethod === 'bank_transfer' && bankReference) {
+        finalNotes = finalNotes ? `${notes}\nBank Reference: ${bankReference}` : `Bank Reference: ${bankReference}`;
+      } else if (paymentMethod === 'paypal' && paypalEmail) {
+        finalNotes = finalNotes ? `${notes}\nPayPal Email: ${paypalEmail}` : `PayPal Email: ${paypalEmail}`;
+      }
+      
+      // Create or update payment record
+      let payment = await Payment.findOne({ job: job._id });
+      if (!payment) {
+        payment = await Payment.create({
+          job: job._id,
+          hirer: job.hirer,
+          musician: job.selectedMusician,
+          amount: job.payment,
+          paymentMethod: paymentMethod || 'other',
+          transactionId: generatedTransactionId,
+          notes: finalNotes || null,
+          status: 'completed',
+          paymentDate: new Date()
+        });
+      } else {
+        payment.paymentMethod = paymentMethod || payment.paymentMethod;
+        payment.transactionId = generatedTransactionId;
+        payment.notes = finalNotes || payment.notes;
+        payment.status = 'completed';
+        payment.paymentDate = new Date();
+        await payment.save();
+      }
+    }
+    
+    // Simulate processing delay (for realistic feel)
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     // Update job payment status and job status
     job.paymentStatus = 'paid';
@@ -623,7 +697,11 @@ app.post('/job/:jobId/payment', async (req, res) => {
     job.jobStatus = 'in_progress'; // Move to in_progress after payment
     await job.save();
     
-    res.json({ success: true, message: 'Payment recorded successfully' });
+    res.json({ 
+      success: true, 
+      message: 'Payment processed successfully',
+      transactionId: generatedTransactionId
+    });
   } catch (err) {
     console.error('Payment error:', err);
     res.status(500).json({ error: 'Failed to process payment' });

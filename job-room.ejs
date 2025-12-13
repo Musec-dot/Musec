@@ -91,28 +91,19 @@
                             Track Job Progress
                         </a>
                     <% } else if (isHirer) { %>
-                        <form id="paymentForm" class="space-y-3">
-                            <div>
-                                <label class="block text-xs font-medium text-gray-300 mb-1">Payment Method</label>
-                                <select name="paymentMethod" class="w-full bg-[#1e1e1e] border border-[#333] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#ff6b35]">
-                                    <option value="card">Credit/Debit Card</option>
-                                    <option value="bank_transfer">Bank Transfer</option>
-                                    <option value="paypal">PayPal</option>
-                                    <option value="other">Other</option>
-                                </select>
+                        <div class="space-y-3">
+                            <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 mb-3">
+                                <p class="text-sm text-blue-300 mb-2">
+                                    <i data-lucide="info" width="16" height="16" class="inline mr-1"></i>
+                                    Complete Payment
+                                </p>
+                                <p class="text-xs text-gray-400">Use our secure payment gateway to complete your payment.</p>
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-300 mb-1">Transaction ID (Optional)</label>
-                                <input type="text" name="transactionId" class="w-full bg-[#1e1e1e] border border-[#333] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#ff6b35]" placeholder="Enter transaction ID">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-300 mb-1">Notes (Optional)</label>
-                                <textarea name="notes" rows="2" class="w-full bg-[#1e1e1e] border border-[#333] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#ff6b35]" placeholder="Payment notes"></textarea>
-                            </div>
-                            <button type="submit" class="w-full bg-[#ff6b35] hover:bg-[#ff8c42] text-white font-semibold px-4 py-2 rounded-lg transition-colors">
-                                Mark Payment as Completed
-                            </button>
-                        </form>
+                            <a href="/job/<%= job._id %>/payment" class="block w-full bg-gradient-to-r from-[#ff6b35] to-[#ff8c42] hover:from-[#ff8c42] hover:to-[#ff6b35] text-white font-semibold px-4 py-3 rounded-lg transition-all transform hover:scale-[1.02] text-center shadow-lg">
+                                <i data-lucide="credit-card" width="16" height="16" class="inline mr-2"></i>
+                                Pay <%= job.payment %>
+                            </a>
+                        </div>
                     <% } else { %>
                         <div class="bg-yellow-900/20 border border-yellow-500/50 rounded-lg p-3">
                             <p class="text-yellow-400 text-sm">Waiting for payment from hirer</p>
@@ -289,43 +280,6 @@
                 scrollToBottom();
             }
         });
-
-        // Payment form
-        const paymentForm = document.getElementById('paymentForm');
-        if (paymentForm) {
-            paymentForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const formData = new FormData(paymentForm);
-                const data = {
-                    paymentMethod: formData.get('paymentMethod'),
-                    transactionId: formData.get('transactionId'),
-                    notes: formData.get('notes')
-                };
-                
-                try {
-                    const response = await fetch(`/job/${jobId}/payment`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        alert('Payment recorded successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + (result.error || 'Failed to process payment'));
-                    }
-                } catch (error) {
-                    console.error('Payment error:', error);
-                    alert('An error occurred while processing payment');
-                }
-            });
-        }
 
         // Load messages on page load
         loadMessages();
